@@ -100,6 +100,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 	// Bank contents are cleared from the client when the bank interface closes,
 	// so we cache the last-seen snapshot here.
 	private volatile Item[] cachedBankItems = new Item[0];
+	private volatile Item[] cachedGimBankItems = new Item[0];
 
 	@Override
 	protected void startUp() throws Exception
@@ -327,7 +328,13 @@ public class GIMProgressTrackerPlugin extends Plugin
 			Item[] items = event.getItemContainer().getItems();
 			cachedBankItems = items != null ? items : new Item[0];
 		}
-		if (id == InventoryID.INVENTORY.getId() || id == InventoryID.BANK.getId())
+		if (id == InventoryID.GROUP_STORAGE.getId())
+		{
+			Item[] items = event.getItemContainer().getItems();
+			cachedGimBankItems = items != null ? items : new Item[0];
+		}
+		if (id == InventoryID.INVENTORY.getId() || id == InventoryID.BANK.getId()
+			|| id == InventoryID.GROUP_STORAGE.getId())
 		{
 			if (panel != null)
 			{
@@ -369,6 +376,19 @@ public class GIMProgressTrackerPlugin extends Plugin
 		if (bankCount >= needed)
 		{
 			return ItemStatus.IN_BANK;
+		}
+
+		int gimCount = 0;
+		for (Item item : cachedGimBankItems)
+		{
+			if (item.getId() != -1 && itemManager.canonicalize(item.getId()) == itemId)
+			{
+				gimCount += item.getQuantity();
+			}
+		}
+		if (gimCount >= needed)
+		{
+			return ItemStatus.IN_GIM_BANK;
 		}
 
 		return ItemStatus.NOT_FOUND;

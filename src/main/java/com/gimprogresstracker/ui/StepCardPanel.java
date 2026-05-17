@@ -168,6 +168,9 @@ class StepCardPanel extends JPanel
 			case IN_BANK:
 				nameColor = Color.WHITE;
 				break;
+			case IN_GIM_BANK:
+				nameColor = new Color(30, 190, 255);
+				break;
 			default:
 				nameColor = new Color(220, 50, 50);
 				break;
