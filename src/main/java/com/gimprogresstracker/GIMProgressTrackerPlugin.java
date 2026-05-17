@@ -26,8 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
-import net.runelite.api.AccountType;
 import net.runelite.api.Client;
+import net.runelite.api.Varbits;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
@@ -190,10 +190,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 			{
 				tracker.setPlayerName(name);
 			}
-			AccountType type = client.getAccountType();
-			isGroupIronman = type == AccountType.GROUP_IRONMAN
-				|| type == AccountType.HARDCORE_GROUP_IRONMAN
-				|| type == AccountType.UNRANKED_GROUP_IRONMAN;
+			// Varbit 1777 (ACCOUNT_TYPE): 4=Group Ironman, 5=Hardcore Group Ironman, 6=Unranked Group Ironman
+			int acctType = client.getVarbitValue(Varbits.ACCOUNT_TYPE);
+			isGroupIronman = acctType == 4 || acctType == 5 || acctType == 6;
 		}
 	}
 
