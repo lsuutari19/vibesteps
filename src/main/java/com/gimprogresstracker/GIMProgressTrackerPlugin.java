@@ -15,6 +15,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -51,6 +53,7 @@ import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
+import net.runelite.client.Notifier;
 import net.runelite.client.util.LinkBrowser;
 
 @Slf4j
@@ -100,6 +103,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 	@Inject
 	private ClientThread clientThread;
 
+	@Inject
+	private Notifier notifier;
+
 	private GIMProgressTrackerPanel panel;
 	private NavigationButton navButton;
 	private WorldMapPoint mapPoint;
@@ -124,7 +130,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 		mapPointIcon = buildMapPointIcon(config.highlightColor());
 
 		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
-			this::isQuestHelperInstalled, this::openQuestGuide, itemManager, this::checkItemStatus,
+			this::isQuestHelperInstalled, this::openQuestHelperForQuest, this::openWikiForQuest,
+			itemManager, this::checkItemStatus,
 			id -> itemNameCache.getOrDefault(id, "Item #" + id),
 			() -> !cachedBank.isEmpty(),
 			() -> !cachedGimBank.isEmpty(),
@@ -132,7 +139,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
-			.icon(PanelIcons.navIcon())
+			.icon(PanelIcons.navIcon(GIMProgressTrackerPlugin.class))
 			.priority(7)
 			.panel(panel)
 			.build();
@@ -460,10 +467,21 @@ public class GIMProgressTrackerPlugin extends Plugin
 				&& pluginManager.isPluginEnabled(p));
 	}
 
-	private void openQuestGuide(String questName)
+	private void openWikiForQuest(String questName)
 	{
 		String encoded = questName.replace(" ", "_").replace("'", "%27");
 		LinkBrowser.browse("https://oldschool.runescape.wiki/w/" + encoded);
+	}
+
+	private void openQuestHelperForQuest(String questName)
+	{
+		// RuneLite's ClientUI.openPanel is package-private so we can't call it directly.
+		// Best effort: copy the quest name to the clipboard so the user can paste it
+		// into Quest Helper's search box, and show a notification as a nudge.
+		Toolkit.getDefaultToolkit()
+			.getSystemClipboard()
+			.setContents(new StringSelection(questName), null);
+		notifier.notify("Vibe Steps: search for \"" + questName + "\" in Quest Helper");
 	}
 
 	private String currentPlayerName()

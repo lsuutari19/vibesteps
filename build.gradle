@@ -27,6 +27,13 @@ dependencies {
 	testImplementation group: 'net.runelite', name:'jshell', version: runeLiteVersion
 }
 
+// Include PNG files that live alongside Java sources as classpath resources.
+processResources {
+	from('src/main/java') {
+		include '**/*.png'
+	}
+}
+
 group = 'com.gimprogresstracker'
 
 tasks.withType(JavaCompile).configureEach {

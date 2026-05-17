@@ -47,7 +47,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Consumer<Path> onGuideFileChosen;
 	private final Runnable onResetRequested;
 	private final Supplier<Boolean> questHelperInstalled;
-	private final Consumer<String> openQuestGuide;
+	private final Consumer<String> openQuestHelper;
+	private final Consumer<String> openWikiGuide;
 	private final ItemManager itemManager;
 	private final Function<RequiredItem, ItemStatus> itemStatus;
 	private final Function<Integer, String> itemName;
@@ -63,7 +64,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private int expandedDescriptionStepId = -1;
 
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
-		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager,
+		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestHelper, Consumer<String> openWikiGuide,
+		ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
 		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady, Supplier<Boolean> isGroupIronman)
 	{
@@ -72,7 +74,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.onGuideFileChosen = onGuideFileChosen;
 		this.onResetRequested = onResetRequested;
 		this.questHelperInstalled = questHelperInstalled;
-		this.openQuestGuide = openQuestGuide;
+		this.openQuestHelper = openQuestHelper;
+		this.openWikiGuide = openWikiGuide;
 		this.itemManager = itemManager;
 		this.itemStatus = itemStatus;
 		this.itemName = itemName;
@@ -370,13 +373,16 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			questName = QuestDetector.detectQuestName(current.getStep().getDescription()).orElse(null);
 		}
 
-		String questBtnLabel = null;
-		Runnable questAction = null;
+		Runnable wikiAction = null;
+		Runnable questHelperAction = null;
 		if (questName != null)
 		{
-			questBtnLabel = questHelperInstalled.get() ? "Open in Quest Helper" : "View Quest Guide";
 			final String finalQuestName = questName;
-			questAction = () -> openQuestGuide.accept(finalQuestName);
+			wikiAction = () -> openWikiGuide.accept(finalQuestName);
+			if (questHelperInstalled.get())
+			{
+				questHelperAction = () -> openQuestHelper.accept(finalQuestName);
+			}
 		}
 
 		int stepId = current.getStep().getId();
@@ -385,7 +391,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			descriptionExpanded = !descriptionExpanded;
 			expandedDescriptionStepId = stepId;
 		};
-		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction,
+		StepCardPanel card = new StepCardPanel(current, tracker, questName, wikiAction, questHelperAction,
 			itemManager, itemStatus, itemName, startExpanded, onDescriptionToggled);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
