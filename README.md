@@ -8,24 +8,51 @@ The plugin is fully local — no external server is contacted.
 
 ## Features
 
+### Step tracking
 - Sidebar panel showing the current step with description, required items,
   location, and quest links
-- Required items colour-coded by location: **green** = in inventory or equipped,
-  **white** = in bank, **cyan** = in GIM shared storage, **red** = not found
+- Required items colour-coded by location: **green** = in inventory or
+  equipped, **white** = in bank, **cyan** = in GIM shared storage,
+  **red** = not found
 - World-map marker for the current step's location coordinates
 - **Mark as Completed**, **← Back** (undo last completed step), **Skip →**,
   and **Move to TO-DO** buttons on every step card
+
+### Progress management
 - **TO-DO section** — defer a step to revisit later; shown below the upcoming
   list with a blue accent and an Activate button to restore it
-- **Upcoming steps** — shows the next 3 steps (first one with a 50-word
-  preview, the rest as their short TLDR title)
-- **Progress bar** — orange segment for completed/skipped, blue segment for
-  TO-DO steps
-- **AFK suggestion** — click "Suggest AFK task" to get a skill-level-appropriate
-  activity while you're not following the guide; Regenerate or Dismiss as needed
+- **Upcoming steps** — shows the next 3 upcoming tasks: the first with a
+  50-word description preview, the rest as their short TLDR title
+- **Progress bar** — orange segment for completed/skipped steps, blue
+  segment for TO-DO steps, with a `done • todo • left` counter below
+
+### AFK suggestions
+- Click **Suggest AFK task** to get a skill-level-appropriate activity to do
+  while not actively following the guide
+- Tasks are filtered by your current skill levels — nothing is suggested
+  that you can't do yet
+- **Regenerate** to get a different suggestion, **Dismiss** to hide it
+
+### Teammates panel
+- A second nav button (**GRP**) opens a separate Teammates panel
+- Reads `*_progress.json` files from the configured shared folder and shows
+  a card per teammate with:
+  - Their current step (breadcrumb, TLDR heading, 20-word description preview)
+  - A **Map** button that places a blue world-map marker at their step's
+    location — works even if they are on a different guide
+  - Progress stats: percentage done, step count, TO-DO count
+  - Last-updated time ("X min ago")
+- If a teammate uses a different guide, their guide name and raw step counts
+  are shown alongside their current step snapshot
+- **Refresh** button re-reads the folder without restarting
+- Step info is available to teammates because the plugin snapshots your
+  current step's text and coordinates into the exported file on every
+  auto-export
+
+### Other
 - Per-character progress saved to `.runelite/gim-progress-tracker/progress/`
-- Optional auto-export to a shared folder (Dropbox, OneDrive, etc.) for
-  teammates to see your progress
+- Optional auto-export to a shared folder (Dropbox, OneDrive, etc.) so
+  teammates can see your current step in the Teammates panel
 
 ---
 
@@ -84,7 +111,7 @@ automatically on startup.
 | `id` | Yes | Unique integer within the guide |
 | `tldr` | No | 1–3 word title shown in the step card header and upcoming list. If omitted, falls back to "Step N". |
 | `description` | Yes | Full step text. Supports `\n` for line breaks. |
-| `location` | No | World coordinates `{ x, y, plane }`. Adds a world-map marker. |
+| `location` | No | World coordinates `{ x, y, plane }`. Adds a world-map marker and enables the Map button in the Teammates panel. |
 | `requiredItems` | No | Array of `{ itemId, quantity }`. Item IDs are OSRS item IDs. The plugin checks inventory, equipped gear, bank, and GIM shared storage. |
 | `skipIfBanked` | No | Boolean hint (not yet enforced in UI). |
 | `questHelperLink` | No | URL opened by the "Open Quest Helper link" button on the step card. |
@@ -173,6 +200,48 @@ Or set the path in the plugin config so it auto-loads on startup.
 
 ---
 
+## Team sync (shared folder)
+
+The shared folder feature lets your whole GIM team see each other's progress
+without any server — just a folder you all have access to (Dropbox, OneDrive,
+a network share, etc.).
+
+### Setup
+
+1. In plugin settings → **Team sync**, set **Shared folder path** to the
+   shared folder every teammate can read from.
+2. Enable **Auto-export progress**. Whenever you mark a step, your progress
+   file is written to that folder as `<name>_progress.json`.
+3. Have each teammate do the same, writing to the same folder.
+
+### What gets exported
+
+Each exported file contains your completed/skipped/todo step IDs, plus a
+snapshot of your current step's breadcrumb, TLDR, description, and location.
+This snapshot lets teammates read your current step in the Teammates panel
+even if they haven't imported the same guide.
+
+### Viewing teammates
+
+Click the **GRP** nav button to open the Teammates panel. Each teammate's
+card shows:
+
+- Their name and when the file was last updated
+- Progress percentage and step count (if they share the same guide)
+  or their guide name and raw step count (if they use a different one)
+- Their current step: chapter › section breadcrumb, step heading, and a
+  short description preview
+- A **Map** button (if the step has coordinates) that places a blue marker
+  on your world map
+
+Hit **Refresh** to re-read the folder at any time.
+
+> **Note:** The current step info in the Teammates panel only updates when
+> a teammate marks a step while auto-export is enabled. Teammates who have
+> never exported, or who export infrequently, may show stale or no step info.
+
+---
+
 ## Building & running (developers)
 
 ```bash
@@ -195,7 +264,7 @@ each feature works in-game before considering it done.
 
 | Data | Location |
 |---|---|
-| Per-character progress | `.runelite/gim-progress-tracker/progress/<name>_<guide>.json` |
+| Per-character progress | `.runelite/gim-progress-tracker/progress/<name>_progress.json` |
 | Auto-export (shared folder) | Configured in plugin settings; filename `<name>_progress.json` |
 
 Progress files are plain JSON and can be inspected or reset by deleting them.
