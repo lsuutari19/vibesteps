@@ -463,6 +463,26 @@ public class GIMProgressTrackerPlugin extends Plugin
 			return;
 		}
 		String fname = PluginPaths.sanitizeForFilename(tracker.getProgress().getPlayerName()) + "_progress.json";
+
+		// Snapshot current step so teammates can display it regardless of which guide they have loaded.
+		Optional<StepEntry> currentStep = tracker.getCurrentStep();
+		if (currentStep.isPresent())
+		{
+			StepEntry entry = currentStep.get();
+			tracker.getProgress().setCurrentStepBreadcrumb(
+				entry.getChapter().getName() + " › " + entry.getSection().getName());
+			tracker.getProgress().setCurrentStepTldr(entry.getStep().getTldr());
+			tracker.getProgress().setCurrentStepDescription(entry.getStep().getDescription());
+			tracker.getProgress().setCurrentStepLocation(entry.getStep().getLocation());
+		}
+		else
+		{
+			tracker.getProgress().setCurrentStepBreadcrumb(null);
+			tracker.getProgress().setCurrentStepTldr(null);
+			tracker.getProgress().setCurrentStepDescription(null);
+			tracker.getProgress().setCurrentStepLocation(null);
+		}
+
 		try
 		{
 			progressStore.exportTo(tracker.getProgress(), dir.resolve(fname));

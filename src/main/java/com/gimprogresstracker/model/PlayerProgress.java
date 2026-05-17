@@ -14,6 +14,13 @@ public class PlayerProgress
 	private Set<Integer> todoStepIds = new LinkedHashSet<>();
 	private String lastUpdated;
 
+	// Snapshot written at export time so teammates can display your current step
+	// even if they have a different guide loaded. Ignored for local progress tracking.
+	private String currentStepBreadcrumb;
+	private String currentStepTldr;
+	private String currentStepDescription;
+	private Location currentStepLocation;
+
 	public Set<Integer> getCompletedStepIds()
 	{
 		if (completedStepIds == null)

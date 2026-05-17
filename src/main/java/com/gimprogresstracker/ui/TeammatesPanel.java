@@ -210,34 +210,36 @@ public class TeammatesPanel extends PluginPanel
 		String theirGuide = progress.getGuideName();
 		boolean guideMismatch = localGuide != null && theirGuide != null && !localGuide.equals(theirGuide);
 
+		int done = progress.getCompletedStepIds().size() + progress.getSkippedStepIds().size();
+		int todo = progress.getTodoStepIds().size();
+
 		if (guideMismatch)
 		{
-			// Show their guide name so you still know what they're working on
 			if (theirGuide != null && !theirGuide.isEmpty())
 			{
 				card.add(mutedLabel("Guide: " + theirGuide));
 				card.add(Box.createVerticalStrut(3));
 			}
-			// Show raw progress counts — we can't compute % without their guide's step list
-			int done = progress.getCompletedStepIds().size() + progress.getSkippedStepIds().size();
-			int todo = progress.getTodoStepIds().size();
+			// Raw counts — no % since we don't have their guide's total step count
 			if (done > 0 || todo > 0)
 			{
-				String stats = done + " steps done" + (todo > 0 ? "  •  " + todo + " todo" : "");
-				JLabel statsLabel = new JLabel(stats);
+				JLabel statsLabel = new JLabel(done + " steps done" + (todo > 0 ? "  •  " + todo + " todo" : ""));
 				statsLabel.setFont(FontManager.getRunescapeSmallFont());
 				statsLabel.setForeground(DONE_COLOR);
 				statsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 				card.add(statsLabel);
 			}
+			card.add(Box.createVerticalStrut(5));
+			// Use the snapshot written into the export file at their end
+			addCurrentStepSection(card,
+				progress.getCurrentStepBreadcrumb(),
+				progress.getCurrentStepTldr(),
+				progress.getCurrentStepDescription(),
+				progress.getCurrentStepLocation());
 		}
 		else
 		{
-			// Progress stats
 			int total = tracker.getTotalCount();
-			int done = progress.getCompletedStepIds().size() + progress.getSkippedStepIds().size();
-			int todo = progress.getTodoStepIds().size();
-
 			if (total > 0)
 			{
 				String pct = String.format("%d%%", Math.round(done * 100.0 / total));
@@ -255,73 +257,15 @@ public class TeammatesPanel extends PluginPanel
 
 			card.add(Box.createVerticalStrut(5));
 
-			// Current step
 			Optional<StepEntry> currentOpt = tracker.getCurrentStepFor(progress);
 			if (currentOpt.isPresent())
 			{
 				StepEntry entry = currentOpt.get();
-				String breadcrumb = entry.getChapter().getName() + " › " + entry.getSection().getName();
-				card.add(mutedLabel(breadcrumb));
-
-				String tldr = entry.getStep().getTldr();
-				String heading = (tldr != null && !tldr.isEmpty()) ? tldr : "Step " + entry.getStep().getId();
-
-				// Step heading row: TLDR label + optional Map button
-				JPanel stepRow = new JPanel();
-				stepRow.setLayout(new BoxLayout(stepRow, BoxLayout.X_AXIS));
-				stepRow.setOpaque(false);
-				stepRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-				stepRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
-
-				JLabel stepLabel = new JLabel(heading);
-				stepLabel.setFont(FontManager.getRunescapeBoldFont());
-				stepLabel.setForeground(Color.WHITE);
-				stepRow.add(stepLabel);
-
-				Location loc = entry.getStep().getLocation();
-				if (loc != null)
-				{
-					stepRow.add(Box.createHorizontalStrut(6));
-					JButton mapBtn = new JButton("Map");
-					mapBtn.setFont(FontManager.getRunescapeSmallFont());
-					mapBtn.setForeground(MAP_BTN_FG);
-					mapBtn.setBackground(CARD_BG);
-					mapBtn.setBorder(BorderFactory.createLineBorder(MAP_BTN_FG, 1));
-					mapBtn.setFocusPainted(false);
-					mapBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-					mapBtn.setToolTipText("Mark this location on the world map");
-					mapBtn.addMouseListener(new MouseAdapter()
-					{
-						@Override
-						public void mouseEntered(MouseEvent e)
-						{
-							mapBtn.setBackground(new Color(30, 60, 100));
-						}
-
-						@Override
-						public void mouseExited(MouseEvent e)
-						{
-							mapBtn.setBackground(CARD_BG);
-						}
-					});
-					mapBtn.addActionListener(e -> onMapClicked.accept(loc));
-					stepRow.add(mapBtn);
-				}
-
-				stepRow.add(Box.createHorizontalGlue());
-				card.add(stepRow);
-
-				String desc = entry.getStep().getDescription();
-				if (desc != null && !desc.isEmpty())
-				{
-					String preview = firstWords(desc, 20);
-					JLabel descLabel = new JLabel("<html><body style='width:190px'>" + preview + "</body></html>");
-					descLabel.setFont(FontManager.getRunescapeSmallFont());
-					descLabel.setForeground(MUTED);
-					descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-					card.add(Box.createVerticalStrut(2));
-					card.add(descLabel);
-				}
+				addCurrentStepSection(card,
+					entry.getChapter().getName() + " › " + entry.getSection().getName(),
+					entry.getStep().getTldr(),
+					entry.getStep().getDescription(),
+					entry.getStep().getLocation());
 			}
 			else if (total > 0 && done >= total)
 			{
@@ -334,6 +278,75 @@ public class TeammatesPanel extends PluginPanel
 		}
 
 		return card;
+	}
+
+	private void addCurrentStepSection(JPanel card, String breadcrumb, String tldr, String desc, Location loc)
+	{
+		if (breadcrumb == null && tldr == null && desc == null)
+		{
+			return;
+		}
+		if (breadcrumb != null)
+		{
+			card.add(mutedLabel(breadcrumb));
+		}
+		if (tldr != null || loc != null)
+		{
+			String heading = (tldr != null && !tldr.isEmpty()) ? tldr : "Current step";
+
+			JPanel stepRow = new JPanel();
+			stepRow.setLayout(new BoxLayout(stepRow, BoxLayout.X_AXIS));
+			stepRow.setOpaque(false);
+			stepRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+			stepRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+
+			JLabel stepLabel = new JLabel(heading);
+			stepLabel.setFont(FontManager.getRunescapeBoldFont());
+			stepLabel.setForeground(Color.WHITE);
+			stepRow.add(stepLabel);
+
+			if (loc != null)
+			{
+				stepRow.add(Box.createHorizontalStrut(6));
+				JButton mapBtn = new JButton("Map");
+				mapBtn.setFont(FontManager.getRunescapeSmallFont());
+				mapBtn.setForeground(MAP_BTN_FG);
+				mapBtn.setBackground(CARD_BG);
+				mapBtn.setBorder(BorderFactory.createLineBorder(MAP_BTN_FG, 1));
+				mapBtn.setFocusPainted(false);
+				mapBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+				mapBtn.setToolTipText("Mark this location on the world map");
+				mapBtn.addMouseListener(new MouseAdapter()
+				{
+					@Override
+					public void mouseEntered(MouseEvent e)
+					{
+						mapBtn.setBackground(new Color(30, 60, 100));
+					}
+
+					@Override
+					public void mouseExited(MouseEvent e)
+					{
+						mapBtn.setBackground(CARD_BG);
+					}
+				});
+				mapBtn.addActionListener(e -> onMapClicked.accept(loc));
+				stepRow.add(mapBtn);
+			}
+
+			stepRow.add(Box.createHorizontalGlue());
+			card.add(stepRow);
+		}
+		if (desc != null && !desc.isEmpty())
+		{
+			String preview = firstWords(desc, 20);
+			JLabel descLabel = new JLabel("<html><body style='width:190px'>" + preview + "</body></html>");
+			descLabel.setFont(FontManager.getRunescapeSmallFont());
+			descLabel.setForeground(MUTED);
+			descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			card.add(Box.createVerticalStrut(2));
+			card.add(descLabel);
+		}
 	}
 
 	private JPanel errorCard(String filename, String error)
