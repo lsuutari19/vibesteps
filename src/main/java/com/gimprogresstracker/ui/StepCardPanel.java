@@ -177,6 +177,6 @@ class StepCardPanel extends JPanel
 			.replace("&", "&amp;")
 			.replace("<", "&lt;")
 			.replace(">", "&gt;");
-		return "<html><body style='width: 195px'>" + escaped + "</body></html>";
+		return "<html><body style='width: 170px'>" + escaped + "</body></html>";
 	}
 }
