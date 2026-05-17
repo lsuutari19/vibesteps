@@ -51,12 +51,15 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final ItemManager itemManager;
 	private final Function<RequiredItem, ItemStatus> itemStatus;
 	private final Function<Integer, String> itemName;
+	private final Supplier<Boolean> bankReady;
+	private final Supplier<Boolean> gimBankReady;
 
 	private final JPanel contentPanel = new JPanel();
 
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
 		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager,
-		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName)
+		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
+		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -67,6 +70,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.itemManager = itemManager;
 		this.itemStatus = itemStatus;
 		this.itemName = itemName;
+		this.bankReady = bankReady;
+		this.gimBankReady = gimBankReady;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -101,6 +106,12 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			contentPanel.add(guideHeader(guide));
 			contentPanel.add(Box.createVerticalStrut(10));
 			contentPanel.add(progressSection());
+			JPanel tips = setupTips();
+			if (tips != null)
+			{
+				contentPanel.add(Box.createVerticalStrut(8));
+				contentPanel.add(tips);
+			}
 			contentPanel.add(Box.createVerticalStrut(12));
 			contentPanel.add(currentStepSection());
 			contentPanel.add(Box.createVerticalStrut(12));
@@ -263,6 +274,57 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		panel.add(stats);
 
 		return panel;
+	}
+
+	private JPanel setupTips()
+	{
+		boolean needBank = !bankReady.get();
+		boolean needGim = !gimBankReady.get();
+		boolean needQH = !questHelperInstalled.get();
+
+		if (!needBank && !needGim && !needQH)
+		{
+			return null;
+		}
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(new Color(28, 32, 36));
+		panel.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(new Color(60, 70, 80)),
+			BorderFactory.createEmptyBorder(7, 9, 7, 9)));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel header = new JLabel("SETUP TIPS");
+		header.setFont(FontManager.getRunescapeSmallFont());
+		header.setForeground(new Color(140, 170, 200));
+		header.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.add(header);
+		panel.add(Box.createVerticalStrut(4));
+
+		if (needBank)
+		{
+			panel.add(tipRow("Open your bank once to enable item tracking"));
+		}
+		if (needGim)
+		{
+			panel.add(tipRow("Open GIM shared storage to track group items"));
+		}
+		if (needQH)
+		{
+			panel.add(tipRow("Install Quest Helper for enhanced quest buttons"));
+		}
+
+		return panel;
+	}
+
+	private static JLabel tipRow(String text)
+	{
+		JLabel l = new JLabel("<html><body style='width: 130px'>• " + text + "</body></html>");
+		l.setFont(FontManager.getRunescapeSmallFont());
+		l.setForeground(new Color(170, 190, 210));
+		l.setAlignmentX(Component.LEFT_ALIGNMENT);
+		return l;
 	}
 
 	private JPanel currentStepSection()
