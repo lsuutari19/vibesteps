@@ -32,11 +32,13 @@ import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
+import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.ClientToolbar;
 import net.runelite.client.ui.NavigationButton;
 import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
+import net.runelite.client.util.LinkBrowser;
 
 @Slf4j
 @PluginDescriptor(
@@ -76,6 +78,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 	@Inject
 	private ConfigManager configManager;
 
+	@Inject
+	private PluginManager pluginManager;
+
 	private GIMProgressTrackerPanel panel;
 	private NavigationButton navButton;
 	private WorldMapPoint mapPoint;
@@ -87,7 +92,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 	{
 		mapPointIcon = buildMapPointIcon(config.highlightColor());
 
-		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress);
+		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
+			this::isQuestHelperInstalled, this::openQuestGuide);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
@@ -296,6 +302,19 @@ public class GIMProgressTrackerPlugin extends Plugin
 		{
 			log.debug("Failed to export progress to shared folder", e);
 		}
+	}
+
+	private boolean isQuestHelperInstalled()
+	{
+		return pluginManager.getPlugins().stream()
+			.anyMatch(p -> "QuestHelperPlugin".equals(p.getClass().getSimpleName())
+				&& pluginManager.isPluginEnabled(p));
+	}
+
+	private void openQuestGuide(String questName)
+	{
+		String encoded = questName.replace(" ", "_").replace("'", "%27");
+		LinkBrowser.browse("https://oldschool.runescape.wiki/w/" + encoded);
 	}
 
 	private String currentPlayerName()

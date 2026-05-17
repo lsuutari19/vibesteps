@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -27,6 +28,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import com.gimprogresstracker.util.QuestDetector;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
@@ -40,15 +42,20 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final ProgressTracker tracker;
 	private final Consumer<Path> onGuideFileChosen;
 	private final Runnable onResetRequested;
+	private final Supplier<Boolean> questHelperInstalled;
+	private final Consumer<String> openQuestGuide;
 
 	private final JPanel contentPanel = new JPanel();
 
-	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested)
+	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
+		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide)
 	{
 		super(false);
 		this.tracker = tracker;
 		this.onGuideFileChosen = onGuideFileChosen;
 		this.onResetRequested = onResetRequested;
+		this.questHelperInstalled = questHelperInstalled;
+		this.openQuestGuide = openQuestGuide;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -276,7 +283,23 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			done.add(sub);
 			return done;
 		}
-		StepCardPanel card = new StepCardPanel(currentOpt.get(), tracker);
+		StepEntry current = currentOpt.get();
+		String questName = current.getStep().getQuestName();
+		if (questName == null || questName.isEmpty())
+		{
+			questName = QuestDetector.detectQuestName(current.getStep().getDescription()).orElse(null);
+		}
+
+		String questBtnLabel = null;
+		Runnable questAction = null;
+		if (questName != null)
+		{
+			questBtnLabel = questHelperInstalled.get() ? "Open in Quest Helper" : "View Quest Guide";
+			final String finalQuestName = questName;
+			questAction = () -> openQuestGuide.accept(finalQuestName);
+		}
+
+		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		card.setMaximumSize(new Dimension(Integer.MAX_VALUE, card.getPreferredSize().height));
 		return card;
