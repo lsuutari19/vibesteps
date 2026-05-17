@@ -20,7 +20,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
@@ -31,7 +34,6 @@ import net.runelite.api.Varbits;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
 import net.runelite.api.Item;
-import net.runelite.api.ItemContainer;
 import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
@@ -110,11 +112,11 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 	private volatile boolean isGroupIronman = false;
 
-	// All three containers are cached so checkItemStatus can be called from any
-	// thread without touching the client API (which requires the client thread).
-	private volatile Item[] cachedInventoryItems = new Item[0];
-	private volatile Item[] cachedBankItems = new Item[0];
-	private volatile Item[] cachedGimBankItems = new Item[0];
+	// Pre-canonicalized item ID → quantity maps, built on the client thread so
+	// checkItemStatus can do pure map lookups from any thread (including the EDT).
+	private volatile Map<Integer, Integer> cachedInventory = Collections.emptyMap();
+	private volatile Map<Integer, Integer> cachedBank = Collections.emptyMap();
+	private volatile Map<Integer, Integer> cachedGimBank = Collections.emptyMap();
 
 	@Override
 	protected void startUp() throws Exception
@@ -124,8 +126,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
 			this::isQuestHelperInstalled, this::openQuestGuide, itemManager, this::checkItemStatus,
 			id -> itemNameCache.getOrDefault(id, "Item #" + id),
-			() -> cachedBankItems.length > 0,
-			() -> cachedGimBankItems.length > 0,
+			() -> !cachedBank.isEmpty(),
+			() -> !cachedGimBank.isEmpty(),
 			() -> isGroupIronman);
 
 		navButton = NavigationButton.builder()
@@ -391,75 +393,63 @@ public class GIMProgressTrackerPlugin extends Plugin
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
 		int id = event.getContainerId();
+		boolean relevant = false;
 		if (id == InventoryID.INVENTORY.getId())
 		{
-			Item[] items = event.getItemContainer().getItems();
-			cachedInventoryItems = items != null ? items : new Item[0];
+			cachedInventory = buildItemMap(event.getItemContainer().getItems());
+			relevant = true;
 		}
 		if (id == InventoryID.BANK.getId())
 		{
-			Item[] items = event.getItemContainer().getItems();
-			cachedBankItems = items != null ? items : new Item[0];
+			cachedBank = buildItemMap(event.getItemContainer().getItems());
+			relevant = true;
 		}
 		if (id == InventoryID.GROUP_STORAGE.getId())
 		{
-			Item[] items = event.getItemContainer().getItems();
-			cachedGimBankItems = items != null ? items : new Item[0];
+			cachedGimBank = buildItemMap(event.getItemContainer().getItems());
+			relevant = true;
 		}
-		if (id == InventoryID.INVENTORY.getId() || id == InventoryID.BANK.getId()
-			|| id == InventoryID.GROUP_STORAGE.getId())
+		if (relevant && panel != null)
 		{
-			if (panel != null)
-			{
-				panel.refresh();
-			}
+			panel.refresh();
 		}
+	}
+
+	private Map<Integer, Integer> buildItemMap(Item[] items)
+	{
+		if (items == null)
+		{
+			return Collections.emptyMap();
+		}
+		Map<Integer, Integer> map = new HashMap<>();
+		for (Item item : items)
+		{
+			if (item.getId() == -1)
+			{
+				continue;
+			}
+			int canonical = itemManager.canonicalize(item.getId());
+			map.merge(canonical, item.getQuantity(), Integer::sum);
+		}
+		return map;
 	}
 
 	private ItemStatus checkItemStatus(RequiredItem required)
 	{
 		int itemId = required.getItemId();
 		int needed = required.getQuantity();
-
-		int invCount = 0;
-		for (Item item : cachedInventoryItems)
-		{
-			if (item.getId() == itemId)
-			{
-				invCount += item.getQuantity();
-			}
-		}
-		if (invCount >= needed)
+		if (cachedInventory.getOrDefault(itemId, 0) >= needed)
 		{
 			return ItemStatus.IN_INVENTORY;
 		}
-
-		int bankCount = 0;
-		for (Item item : cachedBankItems)
-		{
-			if (item.getId() != -1 && itemManager.canonicalize(item.getId()) == itemId)
-			{
-				bankCount += item.getQuantity();
-			}
-		}
-		if (bankCount >= needed)
+		if (cachedBank.getOrDefault(itemId, 0) >= needed)
 		{
 			return ItemStatus.IN_BANK;
 		}
-
-		int gimCount = 0;
-		for (Item item : cachedGimBankItems)
-		{
-			if (item.getId() != -1 && itemManager.canonicalize(item.getId()) == itemId)
-			{
-				gimCount += item.getQuantity();
-			}
-		}
-		if (gimCount >= needed)
+		if (cachedGimBank.getOrDefault(itemId, 0) >= needed)
 		{
 			return ItemStatus.IN_GIM_BANK;
 		}
-
 		return ItemStatus.NOT_FOUND;
 	}
 
