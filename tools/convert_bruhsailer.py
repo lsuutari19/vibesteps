@@ -17,6 +17,8 @@ The BRUHsailer schema stores step text as an array of rich-text segments
   - normalises curly/smart apostrophes before keyword matching so names like
     "Witch's Potion" and "Tarn's Lair" match dictionary entries written with
     straight apostrophes
+  - auto-generates a `tldr` (1-3 words) from the first line of each step
+    description; override by editing the output JSON directly
   - drops empty steps, sections, and chapters
   - validates the result against the same rules GuideImporter enforces
 """
@@ -893,6 +895,28 @@ def detect_location(text: str) -> Optional[Tuple[int, int, int]]:
     return best_coords
 
 
+_TLDR_ARTICLES = frozenset({"a", "an", "the"})
+_TLDR_LEADING_NUM = __import__("re").compile(r"^\d+[.)]\s*")
+
+
+def generate_tldr(description: str) -> str:
+    """Return a 1-3 word summary from the first line of a step description.
+
+    Articles (a/an/the) are skipped so the result leads with an action word
+    or noun.  The caller can override the generated value by editing the JSON.
+    """
+    first_line = description.split("\n")[0].strip()
+    first_line = _TLDR_LEADING_NUM.sub("", first_line)  # drop "1. " / "2) " prefixes
+    words = []
+    for word in first_line.split():
+        clean = word.strip(".,!?:;()-")
+        if clean.lower() not in _TLDR_ARTICLES and clean:
+            words.append(clean.capitalize())
+        if len(words) >= 3:
+            break
+    return " ".join(words)
+
+
 def convert_step(src_step: dict, next_id: int) -> Optional[dict]:
     content = src_step.get("content", [])
     description = flatten_content(content).strip()
@@ -909,7 +933,8 @@ def convert_step(src_step: dict, next_id: int) -> Optional[dict]:
     if not description:
         return None
 
-    out = {"id": next_id, "description": description}
+    tldr = generate_tldr(description)
+    out = {"id": next_id, "tldr": tldr, "description": description}
 
     coords = detect_location(description)
     if coords is not None:
@@ -941,7 +966,7 @@ def convert(src: dict) -> Tuple[dict, dict]:
     if src.get("updatedOn"):
         out["version"] = str(src["updatedOn"])
 
-    stats = {"steps": 0, "located": 0, "links": 0, "quests": 0, "items": 0, "dropped_empty": 0}
+    stats = {"steps": 0, "tldr": 0, "located": 0, "links": 0, "quests": 0, "items": 0, "dropped_empty": 0}
     next_id = 1
 
     for src_chapter in src.get("chapters", []) or []:
@@ -961,6 +986,8 @@ def convert(src: dict) -> Tuple[dict, dict]:
                     continue
                 section["steps"].append(step)
                 stats["steps"] += 1
+                if step.get("tldr"):
+                    stats["tldr"] += 1
                 if "location" in step:
                     stats["located"] += 1
                 if "questHelperLink" in step:
@@ -1024,9 +1051,11 @@ def main() -> int:
 
     sys.stderr.write(
         "converted {steps} steps "
-        "({located} with detected location, {links} with quest-helper link, "
-        "{quests} with quest name, {items} with required items, "
-        "{dropped_empty} empty steps dropped)\n".format(**stats)
+        "({tldr} with auto-tldr, {located} with detected location, "
+        "{links} with quest-helper link, {quests} with quest name, "
+        "{items} with required items, {dropped_empty} empty steps dropped)\n"
+        "Tip: edit 'tldr' fields in the output JSON to customise the 1-3 word step headers.\n"
+        .format(**stats)
     )
     return 0
 
