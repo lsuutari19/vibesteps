@@ -32,7 +32,7 @@ public final class PanelIcons
 			g.setColor(Color.WHITE);
 			Font font = new Font(Font.SANS_SERIF, Font.BOLD, 13);
 			g.setFont(font);
-			String text = "GIM";
+			String text = "VS";
 			FontMetrics fm = g.getFontMetrics();
 			int tx = (size - fm.stringWidth(text)) / 2;
 			int ty = (size - fm.getHeight()) / 2 + fm.getAscent();
