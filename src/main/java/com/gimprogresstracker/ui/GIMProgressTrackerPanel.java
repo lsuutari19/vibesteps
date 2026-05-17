@@ -57,6 +57,11 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 	private final JPanel contentPanel = new JPanel();
 
+	// Persist description expand state across refreshes so inventory/bank events
+	// don't auto-collapse text the user has explicitly opened.
+	private boolean descriptionExpanded = false;
+	private int expandedDescriptionStepId = -1;
+
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
 		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
@@ -374,7 +379,14 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			questAction = () -> openQuestGuide.accept(finalQuestName);
 		}
 
-		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction, itemManager, itemStatus, itemName);
+		int stepId = current.getStep().getId();
+		boolean startExpanded = descriptionExpanded && expandedDescriptionStepId == stepId;
+		Runnable onDescriptionToggled = () -> {
+			descriptionExpanded = !descriptionExpanded;
+			expandedDescriptionStepId = stepId;
+		};
+		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction,
+			itemManager, itemStatus, itemName, startExpanded, onDescriptionToggled);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
 	}
