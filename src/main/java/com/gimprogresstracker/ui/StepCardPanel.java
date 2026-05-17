@@ -112,21 +112,21 @@ class StepCardPanel extends JPanel
 			add(Box.createVerticalStrut(4));
 			if (questHelperAction != null)
 			{
-				JButton qhBtn = styledButton("Quest Helper", new Color(100, 200, 220),
-					new Color(28, 50, 58), new Color(40, 72, 84), new Color(60, 120, 140));
-				qhBtn.addActionListener(e ->
+				JButton copyBtn = styledButton("Copy Name", ColorScheme.LIGHT_GRAY_COLOR,
+					SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+				copyBtn.addActionListener(e ->
 				{
 					questHelperAction.run();
-					qhBtn.setText("Copied!");
-					javax.swing.Timer t = new javax.swing.Timer(1500, ev -> qhBtn.setText("Quest Helper"));
+					copyBtn.setText("Copied!");
+					javax.swing.Timer t = new javax.swing.Timer(1500, ev -> copyBtn.setText("Copy Name"));
 					t.setRepeats(false);
 					t.start();
 				});
-				add(qhBtn);
+				add(copyBtn);
 				add(Box.createVerticalStrut(4));
 			}
-			JButton wikiBtn = styledButton("Wiki", ColorScheme.LIGHT_GRAY_COLOR,
-				SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+			JButton wikiBtn = styledButton("Wiki", new Color(30, 190, 255),
+				new Color(10, 50, 70), new Color(20, 80, 110), new Color(30, 130, 180));
 			wikiBtn.addActionListener(e -> wikiAction.run());
 			add(wikiBtn);
 		}
