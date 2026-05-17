@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +35,7 @@ import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -91,11 +94,18 @@ public class GIMProgressTrackerPlugin extends Plugin
 	@Inject
 	private ItemManager itemManager;
 
+	@Inject
+	private ClientThread clientThread;
+
 	private GIMProgressTrackerPanel panel;
 	private NavigationButton navButton;
 	private WorldMapPoint mapPoint;
 	private Runnable trackerListener;
 	private BufferedImage mapPointIcon;
+
+	// Item names resolved on the client thread and cached so the EDT can render
+	// item rows without touching client APIs.
+	private final ConcurrentHashMap<Integer, String> itemNameCache = new ConcurrentHashMap<>();
 
 	// All three containers are cached so checkItemStatus can be called from any
 	// thread without touching the client API (which requires the client thread).
@@ -109,7 +119,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 		mapPointIcon = buildMapPointIcon(config.highlightColor());
 
 		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
-			this::isQuestHelperInstalled, this::openQuestGuide, itemManager, this::checkItemStatus);
+			this::isQuestHelperInstalled, this::openQuestGuide, itemManager, this::checkItemStatus,
+			id -> itemNameCache.getOrDefault(id, "Item #" + id));
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
@@ -202,12 +213,59 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 	private void onTrackerChanged()
 	{
+		scheduleItemNameCaching();
 		if (panel != null)
 		{
 			panel.refresh();
 		}
 		refreshWorldMapPoint();
 		maybeAutoExport();
+	}
+
+	private void scheduleItemNameCaching()
+	{
+		Optional<StepEntry> stepOpt = tracker.getCurrentStep();
+		if (!stepOpt.isPresent())
+		{
+			return;
+		}
+		List<RequiredItem> items = stepOpt.get().getStep().getRequiredItems();
+		if (items.isEmpty())
+		{
+			return;
+		}
+		boolean allCached = items.stream().allMatch(i -> itemNameCache.containsKey(i.getItemId()));
+		if (allCached)
+		{
+			return;
+		}
+		clientThread.invoke(() ->
+		{
+			boolean anyNew = false;
+			for (RequiredItem item : items)
+			{
+				if (!itemNameCache.containsKey(item.getItemId()))
+				{
+					try
+					{
+						net.runelite.api.ItemComposition comp = itemManager.getItemComposition(item.getItemId());
+						String name = comp.getName();
+						if (name != null && !name.equals("null") && !name.isEmpty())
+						{
+							itemNameCache.put(item.getItemId(), name);
+							anyNew = true;
+						}
+					}
+					catch (Exception ignored)
+					{
+					}
+				}
+			}
+			if (anyNew && panel != null)
+			{
+				panel.refresh();
+			}
+		});
 	}
 
 	private void loadGuideFromConfig()
