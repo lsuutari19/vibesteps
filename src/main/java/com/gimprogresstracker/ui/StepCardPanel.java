@@ -41,7 +41,7 @@ class StepCardPanel extends JPanel
 	private static final Color SECONDARY_BTN_HOVER = ColorScheme.DARK_GRAY_HOVER_COLOR;
 
 	StepCardPanel(StepEntry entry, ProgressTracker tracker,
-		String questName, String questButtonLabel, Runnable questAction, ItemManager itemManager,
+		String questName, Runnable wikiAction, Runnable questHelperAction, ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
 		boolean descriptionExpanded, Runnable onDescriptionToggled)
 	{
@@ -99,7 +99,7 @@ class StepCardPanel extends JPanel
 			add(locLabel);
 		}
 
-		if (questName != null && questAction != null)
+		if (questName != null && wikiAction != null)
 		{
 			add(Box.createVerticalStrut(10));
 			add(sectionHeader("QUEST"));
@@ -110,10 +110,25 @@ class StepCardPanel extends JPanel
 			qnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			add(qnLabel);
 			add(Box.createVerticalStrut(4));
-			JButton qhBtn = styledButton(questButtonLabel, new Color(100, 200, 220),
-				new Color(28, 50, 58), new Color(40, 72, 84), new Color(60, 120, 140));
-			qhBtn.addActionListener(e -> questAction.run());
-			add(qhBtn);
+			if (questHelperAction != null)
+			{
+				JButton qhBtn = styledButton("Open in Quest Helper", new Color(100, 200, 220),
+					new Color(28, 50, 58), new Color(40, 72, 84), new Color(60, 120, 140));
+				qhBtn.addActionListener(e ->
+				{
+					questHelperAction.run();
+					qhBtn.setText("Copied!");
+					javax.swing.Timer t = new javax.swing.Timer(1500, ev -> qhBtn.setText("Open in Quest Helper"));
+					t.setRepeats(false);
+					t.start();
+				});
+				add(qhBtn);
+				add(Box.createVerticalStrut(4));
+			}
+			JButton wikiBtn = styledButton("Open in Wiki", ColorScheme.LIGHT_GRAY_COLOR,
+				SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+			wikiBtn.addActionListener(e -> wikiAction.run());
+			add(wikiBtn);
 		}
 
 		add(Box.createVerticalStrut(12));
