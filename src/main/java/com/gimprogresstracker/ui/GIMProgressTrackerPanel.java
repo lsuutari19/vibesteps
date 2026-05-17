@@ -29,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.gimprogresstracker.util.QuestDetector;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
@@ -44,11 +45,12 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Runnable onResetRequested;
 	private final Supplier<Boolean> questHelperInstalled;
 	private final Consumer<String> openQuestGuide;
+	private final ItemManager itemManager;
 
 	private final JPanel contentPanel = new JPanel();
 
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
-		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide)
+		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -56,6 +58,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.onResetRequested = onResetRequested;
 		this.questHelperInstalled = questHelperInstalled;
 		this.openQuestGuide = openQuestGuide;
+		this.itemManager = itemManager;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -299,7 +302,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			questAction = () -> openQuestGuide.accept(finalQuestName);
 		}
 
-		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction);
+		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction, itemManager);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
 	}

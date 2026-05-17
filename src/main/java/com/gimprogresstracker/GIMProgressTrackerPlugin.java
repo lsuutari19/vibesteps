@@ -28,6 +28,7 @@ import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
 import net.runelite.client.plugins.Plugin;
@@ -81,6 +82,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 	@Inject
 	private PluginManager pluginManager;
 
+	@Inject
+	private ItemManager itemManager;
+
 	private GIMProgressTrackerPanel panel;
 	private NavigationButton navButton;
 	private WorldMapPoint mapPoint;
@@ -93,7 +97,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 		mapPointIcon = buildMapPointIcon(config.highlightColor());
 
 		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
-			this::isQuestHelperInstalled, this::openQuestGuide);
+			this::isQuestHelperInstalled, this::openQuestGuide, itemManager);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
