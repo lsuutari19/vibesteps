@@ -496,6 +496,305 @@ _QUEST_ACTION_WORDS = (
     "quest", "story", "storyline",
 )
 
+# Normalized item name (lowercase) → OSRS item ID.
+# Covers the items that appear most often in GIM progression guides.
+ITEM_IDS: dict = {
+    # ── Currency ────────────────────────────────────────────────────────────────
+    "gp": 995, "coins": 995, "gold": 995, "coin": 995,
+    # ── Runes ───────────────────────────────────────────────────────────────────
+    "air rune": 556,  "air runes": 556,
+    "water rune": 555, "water runes": 555,
+    "earth rune": 557, "earth runes": 557,
+    "fire rune": 554,  "fire runes": 554,
+    "mind rune": 558,  "mind runes": 558,
+    "chaos rune": 562, "chaos runes": 562,
+    "death rune": 560, "death runes": 560,
+    "nature rune": 561,"nature runes": 561,
+    "law rune": 563,   "law runes": 563,
+    "soul rune": 566,  "soul runes": 566,
+    "blood rune": 565, "blood runes": 565,
+    "cosmic rune": 564,"cosmic runes": 564,
+    "astral rune": 9075, "astral runes": 9075,
+    "mud rune": 4698,  "mud runes": 4698,
+    "pure essence": 7936, "rune essence": 1436,
+    # ── Logs ────────────────────────────────────────────────────────────────────
+    "logs": 1511, "log": 1511,
+    "oak logs": 1521, "oak log": 1521,
+    "willow logs": 1519, "willow log": 1519,
+    "teak logs": 6333, "teak log": 6333,
+    "maple logs": 1517, "maple log": 1517,
+    "yew logs": 1515, "yew log": 1515,
+    "magic logs": 1513, "magic log": 1513,
+    # ── Bars ────────────────────────────────────────────────────────────────────
+    "bronze bar": 2349,
+    "iron bar": 2351,
+    "steel bar": 2353,
+    "mithril bar": 2359,
+    "adamantite bar": 2361,
+    "runite bar": 2363,
+    "gold bar": 2357, "gold bars": 2357,
+    "silver bar": 2355,
+    # ── Tools ───────────────────────────────────────────────────────────────────
+    "hammer": 2347,
+    "chisel": 1755,
+    "saw": 8794,
+    "tinderbox": 590,
+    "knife": 946,
+    "spade": 952,
+    "rope": 954,
+    "bucket": 1925, "empty bucket": 1925,
+    "pot": 1931,
+    "jug": 1935,
+    "needle": 1733,
+    "thread": 1734,
+    "shears": 1735,
+    "glassblowing pipe": 1785,
+    "pestle and mortar": 233, "pestle/mortar": 233,
+    "lockpick": 1523,
+    "swamp tar": 1939,
+    "bronze wire": 1794,
+    "lantern lens": 4540,
+    "candle": 33,
+    # ── Fishing ─────────────────────────────────────────────────────────────────
+    "fishing rod": 307,
+    "fly fishing rod": 309,
+    "small fishing net": 303,
+    "lobster pot": 301,
+    "feather": 314, "feathers": 314,
+    "fishing bait": 313, "bait": 313,
+    # ── Pickaxes ────────────────────────────────────────────────────────────────
+    "bronze pickaxe": 1265,
+    "iron pickaxe": 1267,
+    "steel pickaxe": 1269,
+    "mithril pickaxe": 1271,
+    "adamant pickaxe": 1273, "addy pickaxe": 1273,
+    "rune pickaxe": 1275,
+    "dragon pickaxe": 11920,
+    # ── Axes ────────────────────────────────────────────────────────────────────
+    "bronze axe": 1351,
+    "iron axe": 1349,
+    "steel axe": 1353,
+    "mithril axe": 1355,
+    "adamant axe": 1357, "addy axe": 1357,
+    "rune axe": 1359,
+    "magic axe": 6739,
+    # ── Staves ──────────────────────────────────────────────────────────────────
+    "staff of air": 1381, "air staff": 1381,
+    "staff of water": 1383, "water staff": 1383,
+    "staff of earth": 1385, "earth staff": 1385,
+    "staff of fire": 1387, "fire staff": 1387,
+    "iban staff": 1409,
+    "dramen staff": 772,
+    "dramen branch": 771,
+    # ── Swords & scimitars ───────────────────────────────────────────────────────
+    "bronze sword": 1277,
+    "iron sword": 1279,
+    "steel sword": 1281,
+    "mithril sword": 1285,
+    "adamant sword": 1287, "addy sword": 1287,
+    "rune sword": 1289,
+    "iron scimitar": 1323,
+    "steel scimitar": 1325,
+    "mithril scimitar": 1329,
+    "adamant scimitar": 1331,
+    "rune scimitar": 1333,
+    # ── Arrows ──────────────────────────────────────────────────────────────────
+    "bronze arrow": 882, "bronze arrows": 882,
+    "iron arrow": 884, "iron arrows": 884,
+    "steel arrow": 886, "steel arrows": 886,
+    # ── Armour ──────────────────────────────────────────────────────────────────
+    "iron chainbody": 1101,
+    "bronze chainbody": 1103,
+    "rune platelegs": 1079,
+    "berserker helm": 3751,
+    "granite body": 10568,
+    "leather gloves": 1059,
+    "leather boots": 1061,
+    # ── Nails & construction ─────────────────────────────────────────────────────
+    "steel nail": 1539, "steel nails": 1539,
+    "iron nail": 4820, "iron nails": 4820,
+    "bronze nail": 4819, "bronze nails": 4819,
+    "mithril nail": 4822, "mithril nails": 4822,
+    "plank": 960, "planks": 960,
+    "oak plank": 8778, "oak planks": 8778,
+    "teak plank": 8780, "teak planks": 8780,
+    "mahogany plank": 8782, "mahogany planks": 8782,
+    # ── Crafting ────────────────────────────────────────────────────────────────
+    "soft clay": 1761,
+    "molten glass": 1775,
+    "soda ash": 1781,
+    "bucket of sand": 1783,
+    "uncut sapphire": 1623, "sapphire": 1607,
+    "uncut emerald": 1621, "emerald": 1605,
+    "uncut ruby": 1619, "ruby": 1603,
+    "uncut diamond": 1617, "diamond": 1601,
+    "gold ring": 1635,
+    "tiara mould": 5523,
+    "necklace mould": 1597,
+    "sickle mould": 2976,
+    "silk": 950,
+    "woad leaves": 1793,
+    "vial of water": 227,
+    "empty vial": 229, "vial": 229,
+    "pestle and mortar": 233,
+    # ── Farming ─────────────────────────────────────────────────────────────────
+    "seed dibber": 5343,
+    "rake": 5341,
+    "watering can": 5340,
+    "plant pot": 5352,
+    "gardening trowel": 5325, "trowel": 5325,
+    "compost": 6032,
+    "supercompost": 6034,
+    "ultracompost": 21483,
+    "magic secateurs": 7409,
+    "barley seed": 5305, "barley seeds": 5305,
+    "cabbage seed": 5324, "cabbage seeds": 5324,
+    "onion seed": 5319, "onion seeds": 5319,
+    "marigold seed": 5096,
+    "harralander seed": 5294, "harralander seeds": 5294,
+    # ── Food ────────────────────────────────────────────────────────────────────
+    "swordfish": 373, "raw swordfish": 371,
+    "lobster": 379, "raw lobster": 377,
+    "salmon": 329, "raw salmon": 331,
+    "trout": 333, "raw trout": 335,
+    "cod": 339, "raw cod": 341,
+    "chicken": 2140, "raw chicken": 2138,
+    "bread": 2309,
+    "cabbage": 1965,
+    "onion": 1957,
+    "potato": 1942,
+    "garlic": 1332,
+    "redberries": 1951,
+    "white berries": 239,
+    "jangerberry": 247,
+    "cadava berry": 753, "cadava berries": 753,
+    "ugthanki dung": 4261,
+    # ── Potions ─────────────────────────────────────────────────────────────────
+    "prayer potion": 2434, "prayer potions": 2434,
+    "prayer pot": 2434, "prayer pots": 2434,
+    "energy potion": 3008, "energy potions": 3008,
+    "super attack": 2436,
+    "super strength": 2440,
+    "super defence": 2442,
+    "antipoison": 2446, "antipoisons": 2446,
+    "antidote++": 5952,
+    "superantipoison": 2448,
+    "guam leaf": 249,
+    "marrentill": 207,
+    "tarromin": 205,
+    "harralander": 255,
+    "marrentill potion(unf)": 97,
+    # ── Drinks ──────────────────────────────────────────────────────────────────
+    "beer": 1917,
+    "asgarnian ale": 1905,
+    "wizard's mind bomb": 1907,
+    "vodka": 1993,
+    # ── Jewellery & teleports ────────────────────────────────────────────────────
+    "games necklace": 3853,
+    "amulet of magic": 1727,
+    "amulet of accuracy": 4071,
+    "necklace of passage": 21149,
+    "ring of charos": 4202, "ring of charos(a)": 4202,
+    "digsite pendant": 11194,
+    "chronicle": 23360,
+    "ghostspeak amulet": 552,
+    "catspeak amulet": 2693,
+    "dueling ring": 2552,
+    "barcrawl card": 1491,
+    "poh tab": 8013,
+    "commorb": 6809,
+    # ── Misc quest / skilling items ──────────────────────────────────────────────
+    "waterskin": 1823, "waterskins": 1823,
+    "pie dish": 2313,
+    "dragon bones": 536,
+    "bones": 526,
+    "bucket of sap": 4687,
+    "scorpion cage": 4006,
+    "key": 983,
+    "package": 2516,
+    "iron bar": 2351,
+    "lyre": 3691,
+    "brooch": 4041,
+    "diary": 4046,
+}
+
+_SKIP_ITEMS = frozenset({
+    "tbd", "n/a", "none", "etc", "etc.", "cash stack",
+    "melee gear", "range gear", "mage gear", "standard rex gear",
+    "food", "high healing food", "teleport",
+})
+
+
+def _split_items(text: str) -> list:
+    """Split by comma while respecting parentheses depth."""
+    parts, current, depth = [], [], 0
+    for ch in text:
+        if ch == '(':
+            depth += 1
+            current.append(ch)
+        elif ch == ')':
+            depth -= 1
+            current.append(ch)
+        elif ch == ',' and depth == 0:
+            parts.append(''.join(current))
+            current = []
+        else:
+            current.append(ch)
+    if current:
+        parts.append(''.join(current))
+    return parts
+
+
+def _strip_note_parens(text: str) -> str:
+    """Strip parenthetical notes but keep short item-name modifiers like (a), (unf), (4)."""
+    import re as _re
+    def _replace(m):
+        content = m.group(1)
+        # Keep if short and only alphanumeric/+- (item modifiers)
+        if _re.match(r'^[a-z0-9+\-]{1,6}$', content, _re.IGNORECASE):
+            return m.group(0)
+        return ''
+    return _re.sub(r'\(([^)]*)\)', _replace, text)
+
+
+def _parse_qty_and_name(raw: str) -> tuple:
+    """Return (quantity, normalized_name) from a single item token."""
+    import re as _re
+    raw = _strip_note_parens(raw).strip().rstrip('.')
+    # Match optional leading number with optional k/m suffix
+    m = _re.match(r'^([\d.,]+)\s*([km])?\s+(.+)$', raw, _re.IGNORECASE)
+    if m:
+        try:
+            qty = float(m.group(1).replace(',', ''))
+        except ValueError:
+            qty = 1.0
+        suffix = (m.group(2) or '').lower()
+        if suffix == 'k':
+            qty *= 1000
+        elif suffix == 'm':
+            qty *= 1_000_000
+        name = m.group(3).strip().lower()
+        return int(qty), name
+    return 1, raw.lower()
+
+
+def parse_items_needed(text: str) -> list:
+    """Parse the metadata.items_needed free-text into [{itemId, quantity}] list."""
+    if not text or text.lower().strip() in ('none', 'tbd', 'n/a', ''):
+        return []
+    results = []
+    for part in _split_items(text):
+        part = part.strip()
+        if not part:
+            continue
+        qty, name = _parse_qty_and_name(part)
+        if name in _SKIP_ITEMS or not name:
+            continue
+        item_id = ITEM_IDS.get(name)
+        if item_id is not None:
+            results.append({"itemId": item_id, "quantity": qty})
+    return results
+
 
 def detect_quest_name(text: str) -> Optional[str]:
     """Return canonical quest name if the description looks like a quest step."""
@@ -625,6 +924,11 @@ def convert_step(src_step: dict, next_id: int) -> Optional[dict]:
     if quest_name:
         out["questName"] = quest_name
 
+    items_text = src_step.get("metadata", {}).get("items_needed", "")
+    items = parse_items_needed(items_text)
+    if items:
+        out["requiredItems"] = items
+
     return out
 
 
@@ -637,7 +941,7 @@ def convert(src: dict) -> Tuple[dict, dict]:
     if src.get("updatedOn"):
         out["version"] = str(src["updatedOn"])
 
-    stats = {"steps": 0, "located": 0, "links": 0, "quests": 0, "dropped_empty": 0}
+    stats = {"steps": 0, "located": 0, "links": 0, "quests": 0, "items": 0, "dropped_empty": 0}
     next_id = 1
 
     for src_chapter in src.get("chapters", []) or []:
@@ -663,6 +967,8 @@ def convert(src: dict) -> Tuple[dict, dict]:
                     stats["links"] += 1
                 if "questName" in step:
                     stats["quests"] += 1
+                if "requiredItems" in step:
+                    stats["items"] += 1
                 next_id += 1
             if section["steps"]:
                 chapter["sections"].append(section)
@@ -719,7 +1025,8 @@ def main() -> int:
     sys.stderr.write(
         "converted {steps} steps "
         "({located} with detected location, {links} with quest-helper link, "
-        "{quests} with quest name, {dropped_empty} empty steps dropped)\n".format(**stats)
+        "{quests} with quest name, {items} with required items, "
+        "{dropped_empty} empty steps dropped)\n".format(**stats)
     )
     return 0
 
