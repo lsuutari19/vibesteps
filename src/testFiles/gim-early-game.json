@@ -1,0 +1,81 @@
+{
+  "guideName": "GIM Early Game Starter",
+  "author": "you",
+  "version": "0.1",
+  "chapters": [
+    {
+      "name": "Tutorial & first hour",
+      "sections": [
+        {
+          "name": "Out of tutorial",
+          "steps": [
+            {
+              "id": 1,
+              "description": "Finish Tutorial Island and arrive in Lumbridge",
+              "location": { "x": 3222, "y": 3218, "plane": 0 }
+            },
+            {
+              "id": 2,
+              "description": "Withdraw 50 coins from the bank for general-store supplies",
+              "location": { "x": 3208, "y": 3220, "plane": 2 }
+            }
+          ]
+        },
+        {
+          "name": "First supplies",
+          "steps": [
+            {
+              "id": 3,
+              "description": "Buy a tinderbox and a small fishing net from the Lumbridge general store",
+              "location": { "x": 3213, "y": 3247, "plane": 0 },
+              "requiredItems": [
+                { "itemId": 590, "quantity": 1 },
+                { "itemId": 303, "quantity": 1 }
+              ],
+              "skipIfBanked": true
+            },
+            {
+              "id": 4,
+              "description": "Catch 25 shrimps at the Lumbridge fishing spot",
+              "location": { "x": 3242, "y": 3151, "plane": 0 },
+              "requiredItems": [{ "itemId": 317, "quantity": 25 }],
+              "skipIfBanked": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Easy quests",
+      "sections": [
+        {
+          "name": "Cook's Assistant",
+          "steps": [
+            {
+              "id": 5,
+              "description": "Talk to the Cook on the ground floor of Lumbridge Castle",
+              "location": { "x": 3207, "y": 3215, "plane": 0 },
+              "questHelperLink": "https://oldschool.runescape.wiki/w/Cook%27s_Assistant"
+            },
+            {
+              "id": 6,
+              "description": "Grab a pot of flour from the windmill north of Lumbridge",
+              "location": { "x": 3166, "y": 3306, "plane": 2 }
+            }
+          ]
+        },
+        {
+          "name": "Romeo & Juliet",
+          "steps": [
+            {
+              "id": 7,
+              "description": "Speak to Romeo in Varrock square",
+              "location": { "x": 3211, "y": 3422, "plane": 0 },
+              "questHelperLink": "https://oldschool.runescape.wiki/w/Romeo_%26_Juliet"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
