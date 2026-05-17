@@ -30,6 +30,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.gimprogresstracker.model.ItemStatus;
+import com.gimprogresstracker.model.Location;
 import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.util.QuestDetector;
 import net.runelite.api.Skill;
@@ -58,6 +59,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Supplier<Boolean> gimBankReady;
 	private final Supplier<Boolean> isGroupIronman;
 	private final Function<Skill, Integer> skillLevel;
+	private final Consumer<Location> onMapClicked;
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -74,7 +76,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
 		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady, Supplier<Boolean> isGroupIronman,
-		Function<Skill, Integer> skillLevel)
+		Function<Skill, Integer> skillLevel, Consumer<Location> onMapClicked)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -90,6 +92,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.gimBankReady = gimBankReady;
 		this.isGroupIronman = isGroupIronman;
 		this.skillLevel = skillLevel;
+		this.onMapClicked = onMapClicked;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -441,7 +444,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			expandedDescriptionStepId = stepId;
 		};
 		StepCardPanel card = new StepCardPanel(current, tracker, questName, wikiAction, questHelperAction,
-			itemManager, itemStatus, itemName, startExpanded, onDescriptionToggled);
+			itemManager, itemStatus, itemName, startExpanded, onDescriptionToggled, onMapClicked);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
 	}

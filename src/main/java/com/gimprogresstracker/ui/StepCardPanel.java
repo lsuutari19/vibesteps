@@ -6,6 +6,7 @@ import com.gimprogresstracker.model.Location;
 import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.model.Step;
 import com.gimprogresstracker.model.StepEntry;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.awt.Color;
 import java.awt.Component;
@@ -43,7 +44,7 @@ class StepCardPanel extends JPanel
 	StepCardPanel(StepEntry entry, ProgressTracker tracker,
 		String questName, Runnable wikiAction, Runnable questHelperAction, ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
-		boolean descriptionExpanded, Runnable onDescriptionToggled)
+		boolean descriptionExpanded, Runnable onDescriptionToggled, Consumer<Location> onMapClicked)
 	{
 		Step step = entry.getStep();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -94,11 +95,27 @@ class StepCardPanel extends JPanel
 			add(Box.createVerticalStrut(10));
 			add(sectionHeader("LOCATION"));
 			add(Box.createVerticalStrut(3));
+
+			JPanel locRow = new JPanel();
+			locRow.setLayout(new BoxLayout(locRow, BoxLayout.X_AXIS));
+			locRow.setOpaque(false);
+			locRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
 			JLabel locLabel = new JLabel(String.format("(%d, %d, %d)", loc.getX(), loc.getY(), loc.getPlane()));
 			locLabel.setFont(FontManager.getRunescapeSmallFont());
 			locLabel.setForeground(Color.WHITE);
-			locLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-			add(locLabel);
+			locRow.add(locLabel);
+
+			locRow.add(Box.createHorizontalStrut(8));
+
+			JButton mapBtn = styledButton("Map", new Color(100, 170, 240),
+				new Color(20, 40, 70), new Color(30, 60, 110), new Color(60, 110, 180));
+			mapBtn.setMaximumSize(mapBtn.getPreferredSize());
+			mapBtn.addActionListener(e -> onMapClicked.accept(loc));
+			locRow.add(mapBtn);
+
+			locRow.add(Box.createHorizontalGlue());
+			add(locRow);
 		}
 
 		if (questName != null && wikiAction != null)

@@ -147,7 +147,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 			() -> !cachedBank.isEmpty(),
 			() -> !cachedGimBank.isEmpty(),
 			() -> isGroupIronman,
-			skill -> cachedSkillLevels.getOrDefault(skill.name(), 1));
+			skill -> cachedSkillLevels.getOrDefault(skill.name(), 1),
+			this::showTeammateMapPoint);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
