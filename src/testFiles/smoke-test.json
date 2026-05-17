@@ -1,0 +1,32 @@
+{
+  "guideName": "Smoke Test",
+  "author": "you",
+  "version": "0.1",
+  "chapters": [
+    {
+      "name": "Lumbridge",
+      "sections": [
+        {
+          "name": "Castle courtyard",
+          "steps": [
+            {
+              "id": 1,
+              "description": "Stand on the centre of Lumbridge Castle courtyard",
+              "location": { "x": 3222, "y": 3218, "plane": 0 }
+            },
+            {
+              "id": 2,
+              "description": "Climb to the second floor of the castle",
+              "location": { "x": 3222, "y": 3218, "plane": 1 }
+            },
+            {
+              "id": 3,
+              "description": "Visit the cooks' guild door for the Cook's Assistant start",
+              "location": { "x": 3207, "y": 3215, "plane": 0 }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
