@@ -40,9 +40,9 @@ import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
 
 @Slf4j
 @PluginDescriptor(
-	name = "VibeSteps GIM",
+	name = "Vibe Steps Progress Tracker",
 	description = "Step-by-step Group Ironman progress tracker with importable guides",
-	tags = {"group", "ironman", "gim", "guide", "tracker", "progress"}
+	tags = {"vibe", "steps", "group", "ironman", "gim", "guide", "tracker", "progress"}
 )
 public class GIMProgressTrackerPlugin extends Plugin
 {
@@ -90,7 +90,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress);
 
 		navButton = NavigationButton.builder()
-			.tooltip("GIM Progress Tracker")
+			.tooltip("Vibe Steps Progress Tracker")
 			.icon(PanelIcons.navIcon())
 			.priority(7)
 			.panel(panel)
@@ -103,11 +103,10 @@ public class GIMProgressTrackerPlugin extends Plugin
 		tracker.addListener(trackerListener);
 
 		// Try to pull a player name immediately in case the client is already logged in.
+		// Fall back to a "default" profile so progress tracking works pre-login (e.g. in the
+		// dev client). Once the real account logs in, setPlayerName will swap to that profile.
 		String name = currentPlayerName();
-		if (name != null)
-		{
-			tracker.setPlayerName(name);
-		}
+		tracker.setPlayerName(name != null ? name : "default");
 
 		// Load the configured guide, if any.
 		loadGuideFromConfig();
@@ -221,7 +220,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 			SwingUtilities.invokeLater(() ->
 				javax.swing.JOptionPane.showMessageDialog(panel,
 					"Could not load guide:\n" + e.getMessage(),
-					"GIM Progress Tracker", javax.swing.JOptionPane.ERROR_MESSAGE));
+					"Vibe Steps Progress Tracker", javax.swing.JOptionPane.ERROR_MESSAGE));
 		}
 	}
 
@@ -253,7 +252,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 			.image(mapPointIcon)
 			.snapToEdge(true)
 			.jumpOnClick(true)
-			.name("GIM step " + currentOpt.get().getStep().getId())
+			.name("Vibe Steps step " + currentOpt.get().getStep().getId())
 			.build();
 		worldMapPointManager.add(mapPoint);
 	}

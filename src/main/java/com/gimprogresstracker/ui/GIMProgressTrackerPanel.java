@@ -103,7 +103,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		wrap.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		wrap.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JLabel title = new JLabel("GIM PROGRESS TRACKER");
+		JLabel title = new JLabel("VIBE STEPS PROGRESS TRACKER");
 		title.setFont(FontManager.getRunescapeBoldFont());
 		title.setForeground(Color.WHITE);
 		title.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -141,7 +141,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 		panel.add(Box.createVerticalStrut(6));
 
-		JLabel l = new JLabel("<html><body style='width: 195px'>"
+		JLabel l = new JLabel("<html><body style='width: 170px'>"
 			+ "Click <b>Import guide…</b> below and pick a guide <code>.json</code> file. "
 			+ "Progress is saved per character."
 			+ "</body></html>");
@@ -159,7 +159,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JLabel name = new JLabel("<html><body style='width: 200px'>" + escapeHtml(guide.getGuideName()) + "</body></html>");
+		JLabel name = new JLabel("<html><body style='width: 180px'>" + escapeHtml(guide.getGuideName()) + "</body></html>");
 		name.setFont(FontManager.getRunescapeBoldFont());
 		name.setForeground(ACCENT);
 		name.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -327,7 +327,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 		String desc = entry.getStep().getDescription();
 		String shown = desc.length() > 110 ? desc.substring(0, 107) + "..." : desc;
-		JLabel d = new JLabel("<html><body style='width: 150px'>" + escapeHtml(shown) + "</body></html>");
+		JLabel d = new JLabel("<html><body style='width: 130px'>" + escapeHtml(shown) + "</body></html>");
 		d.setFont(FontManager.getRunescapeSmallFont());
 		d.setForeground(Color.WHITE);
 		d.setToolTipText(desc);
