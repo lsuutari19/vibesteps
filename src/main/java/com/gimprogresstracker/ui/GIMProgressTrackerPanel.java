@@ -50,7 +50,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
 		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide)
 	{
-		super(false);
+		super(true);
 		this.tracker = tracker;
 		this.onGuideFileChosen = onGuideFileChosen;
 		this.onResetRequested = onResetRequested;
