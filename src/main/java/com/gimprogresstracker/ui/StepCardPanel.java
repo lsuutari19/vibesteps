@@ -42,7 +42,8 @@ class StepCardPanel extends JPanel
 
 	StepCardPanel(StepEntry entry, ProgressTracker tracker,
 		String questName, String questButtonLabel, Runnable questAction, ItemManager itemManager,
-		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName)
+		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
+		boolean descriptionExpanded, Runnable onDescriptionToggled)
 	{
 		Step step = entry.getStep();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -71,7 +72,7 @@ class StepCardPanel extends JPanel
 		add(thinDivider());
 		add(Box.createVerticalStrut(8));
 
-		addDescription(step.getDescription());
+		addDescription(step.getDescription(), descriptionExpanded, onDescriptionToggled);
 
 		if (!step.getRequiredItems().isEmpty())
 		{
@@ -137,29 +138,33 @@ class StepCardPanel extends JPanel
 		}
 	}
 
-	private void addDescription(String text)
+	private void addDescription(String text, boolean initiallyExpanded, Runnable onToggled)
 	{
 		final int THRESHOLD = 280;
-		final JLabel label = new JLabel(htmlWrap(
-			text.length() <= THRESHOLD ? text : text.substring(0, 250) + "…"));
+		if (text.length() <= THRESHOLD)
+		{
+			JLabel label = new JLabel(htmlWrap(text));
+			label.setFont(FontManager.getRunescapeFont());
+			label.setForeground(Color.WHITE);
+			label.setAlignmentX(Component.LEFT_ALIGNMENT);
+			add(label);
+			return;
+		}
+
+		final JLabel label = new JLabel(htmlWrap(initiallyExpanded ? text : text.substring(0, 250) + "…"));
 		label.setFont(FontManager.getRunescapeFont());
 		label.setForeground(Color.WHITE);
 		label.setAlignmentX(Component.LEFT_ALIGNMENT);
 		add(label);
 
-		if (text.length() <= THRESHOLD)
-		{
-			return;
-		}
-
-		final JLabel toggle = new JLabel("▼ Show more");
+		final JLabel toggle = new JLabel(initiallyExpanded ? "▲ Show less" : "▼ Show more");
 		toggle.setFont(FontManager.getRunescapeSmallFont());
 		toggle.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
 		toggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		toggle.setAlignmentX(Component.LEFT_ALIGNMENT);
 		toggle.addMouseListener(new MouseAdapter()
 		{
-			private boolean expanded = false;
+			private boolean expanded = initiallyExpanded;
 
 			@Override
 			public void mouseClicked(MouseEvent e)
@@ -167,6 +172,7 @@ class StepCardPanel extends JPanel
 				expanded = !expanded;
 				label.setText(htmlWrap(expanded ? text : text.substring(0, 250) + "…"));
 				toggle.setText(expanded ? "▲ Show less" : "▼ Show more");
+				onToggled.run();
 				StepCardPanel.this.revalidate();
 				StepCardPanel.this.repaint();
 			}
