@@ -114,6 +114,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 	private NavigationButton navButton;
 	private NavigationButton teammatesNavButton;
 	private WorldMapPoint mapPoint;
+	private WorldMapPoint teammateMapPoint;
 	private Runnable trackerListener;
 	private BufferedImage mapPointIcon;
 
@@ -156,7 +157,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 			.build();
 		clientToolbar.addNavigation(navButton);
 
-		teammatesPanel = new TeammatesPanel(tracker, progressStore, config::sharedFolderPath);
+		teammatesPanel = new TeammatesPanel(tracker, progressStore, config::sharedFolderPath,
+			this::showTeammateMapPoint);
 		teammatesNavButton = NavigationButton.builder()
 			.tooltip("Vibe Steps – Teammates")
 			.icon(PanelIcons.teammatesIcon())
@@ -202,6 +204,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 			trackerListener = null;
 		}
 		clearWorldMapPoint();
+		clearTeammateMapPoint();
 
 		// Persist a final time, then drop in-memory state.
 		tracker.persist();
@@ -412,6 +415,29 @@ public class GIMProgressTrackerPlugin extends Plugin
 		{
 			worldMapPointManager.remove(mapPoint);
 			mapPoint = null;
+		}
+	}
+
+	private void showTeammateMapPoint(Location loc)
+	{
+		clearTeammateMapPoint();
+		WorldPoint wp = new WorldPoint(loc.getX(), loc.getY(), loc.getPlane());
+		teammateMapPoint = WorldMapPoint.builder()
+			.worldPoint(wp)
+			.image(buildMapPointIcon(new Color(60, 140, 230)))
+			.snapToEdge(true)
+			.jumpOnClick(true)
+			.name("Teammate step location")
+			.build();
+		worldMapPointManager.add(teammateMapPoint);
+	}
+
+	private void clearTeammateMapPoint()
+	{
+		if (teammateMapPoint != null)
+		{
+			worldMapPointManager.remove(teammateMapPoint);
+			teammateMapPoint = null;
 		}
 	}
 

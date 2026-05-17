@@ -1,6 +1,7 @@
 package com.gimprogresstracker.ui;
 
 import com.gimprogresstracker.ProgressTracker;
+import com.gimprogresstracker.model.Location;
 import com.gimprogresstracker.model.PlayerProgress;
 import com.gimprogresstracker.model.StepEntry;
 import com.gimprogresstracker.util.PluginPaths;
@@ -22,6 +23,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -41,29 +43,30 @@ public class TeammatesPanel extends PluginPanel
 	private static final Color MUTED = ColorScheme.LIGHT_GRAY_COLOR;
 	private static final Color WARN_COLOR = new Color(220, 160, 40);
 	private static final Color DONE_COLOR = ColorScheme.PROGRESS_COMPLETE_COLOR;
+	private static final Color MAP_BTN_FG = new Color(100, 170, 240);
 
 	private final ProgressTracker tracker;
 	private final ProgressStore progressStore;
 	private final Supplier<String> sharedFolderPath;
+	private final Consumer<Location> onMapClicked;
 
 	private final JPanel content;
 
 	public TeammatesPanel(ProgressTracker tracker, ProgressStore progressStore,
-		Supplier<String> sharedFolderPath)
+		Supplier<String> sharedFolderPath, Consumer<Location> onMapClicked)
 	{
 		super(false);
 		this.tracker = tracker;
 		this.progressStore = progressStore;
 		this.sharedFolderPath = sharedFolderPath;
+		this.onMapClicked = onMapClicked;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
 
-		// Fixed header
 		JPanel header = buildHeader();
 		add(header, BorderLayout.NORTH);
 
-		// Scrollable body
 		content = new JPanel();
 		content.setLayout(new BoxLayout(content, BoxLayout.Y_AXIS));
 		content.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -137,7 +140,6 @@ public class TeammatesPanel extends PluginPanel
 				}
 			}
 
-			// If every file was the local player's own
 			if (content.getComponentCount() <= 1)
 			{
 				content.add(infoLabel("No other teammates found in shared folder.", MUTED));
@@ -163,7 +165,7 @@ public class TeammatesPanel extends PluginPanel
 		}
 		catch (IOException e)
 		{
-			// Treat as empty list; error already surfaced by directory check above
+			// treated as empty; directory existence already checked above
 		}
 		return out;
 	}
@@ -201,28 +203,33 @@ public class TeammatesPanel extends PluginPanel
 		nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		card.add(nameLabel);
 
-		// Last updated
-		String lastUpdated = formatLastUpdated(progress.getLastUpdated());
-		card.add(mutedLabel(lastUpdated));
+		card.add(mutedLabel(formatLastUpdated(progress.getLastUpdated())));
 		card.add(Box.createVerticalStrut(6));
 
-		// Guide check
 		String localGuide = tracker.getGuide() != null ? tracker.getGuide().getGuideName() : null;
 		String theirGuide = progress.getGuideName();
 		boolean guideMismatch = localGuide != null && theirGuide != null && !localGuide.equals(theirGuide);
 
 		if (guideMismatch)
 		{
-			JLabel warn = new JLabel("Guide: " + theirGuide);
-			warn.setFont(FontManager.getRunescapeSmallFont());
-			warn.setForeground(WARN_COLOR);
-			warn.setAlignmentX(Component.LEFT_ALIGNMENT);
-			card.add(warn);
-			JLabel warnNote = new JLabel("(different from your loaded guide)");
-			warnNote.setFont(FontManager.getRunescapeSmallFont());
-			warnNote.setForeground(MUTED);
-			warnNote.setAlignmentX(Component.LEFT_ALIGNMENT);
-			card.add(warnNote);
+			// Show their guide name so you still know what they're working on
+			if (theirGuide != null && !theirGuide.isEmpty())
+			{
+				card.add(mutedLabel("Guide: " + theirGuide));
+				card.add(Box.createVerticalStrut(3));
+			}
+			// Show raw progress counts — we can't compute % without their guide's step list
+			int done = progress.getCompletedStepIds().size() + progress.getSkippedStepIds().size();
+			int todo = progress.getTodoStepIds().size();
+			if (done > 0 || todo > 0)
+			{
+				String stats = done + " steps done" + (todo > 0 ? "  •  " + todo + " todo" : "");
+				JLabel statsLabel = new JLabel(stats);
+				statsLabel.setFont(FontManager.getRunescapeSmallFont());
+				statsLabel.setForeground(DONE_COLOR);
+				statsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+				card.add(statsLabel);
+			}
 		}
 		else
 		{
@@ -258,11 +265,51 @@ public class TeammatesPanel extends PluginPanel
 
 				String tldr = entry.getStep().getTldr();
 				String heading = (tldr != null && !tldr.isEmpty()) ? tldr : "Step " + entry.getStep().getId();
+
+				// Step heading row: TLDR label + optional Map button
+				JPanel stepRow = new JPanel();
+				stepRow.setLayout(new BoxLayout(stepRow, BoxLayout.X_AXIS));
+				stepRow.setOpaque(false);
+				stepRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+				stepRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+
 				JLabel stepLabel = new JLabel(heading);
 				stepLabel.setFont(FontManager.getRunescapeBoldFont());
 				stepLabel.setForeground(Color.WHITE);
-				stepLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-				card.add(stepLabel);
+				stepRow.add(stepLabel);
+
+				Location loc = entry.getStep().getLocation();
+				if (loc != null)
+				{
+					stepRow.add(Box.createHorizontalStrut(6));
+					JButton mapBtn = new JButton("Map");
+					mapBtn.setFont(FontManager.getRunescapeSmallFont());
+					mapBtn.setForeground(MAP_BTN_FG);
+					mapBtn.setBackground(CARD_BG);
+					mapBtn.setBorder(BorderFactory.createLineBorder(MAP_BTN_FG, 1));
+					mapBtn.setFocusPainted(false);
+					mapBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+					mapBtn.setToolTipText("Mark this location on the world map");
+					mapBtn.addMouseListener(new MouseAdapter()
+					{
+						@Override
+						public void mouseEntered(MouseEvent e)
+						{
+							mapBtn.setBackground(new Color(30, 60, 100));
+						}
+
+						@Override
+						public void mouseExited(MouseEvent e)
+						{
+							mapBtn.setBackground(CARD_BG);
+						}
+					});
+					mapBtn.addActionListener(e -> onMapClicked.accept(loc));
+					stepRow.add(mapBtn);
+				}
+
+				stepRow.add(Box.createHorizontalGlue());
+				card.add(stepRow);
 
 				String desc = entry.getStep().getDescription();
 				if (desc != null && !desc.isEmpty())
