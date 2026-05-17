@@ -123,6 +123,23 @@ public class ProgressStore
 		}
 	}
 
+	public PlayerProgress readPlayerProgress(Path file) throws IOException
+	{
+		try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8))
+		{
+			PlayerProgress p = gson.fromJson(reader, PlayerProgress.class);
+			if (p == null)
+			{
+				throw new IOException("Progress file is empty");
+			}
+			return p;
+		}
+		catch (JsonParseException e)
+		{
+			throw new IOException("Malformed progress JSON: " + e.getMessage(), e);
+		}
+	}
+
 	private Path progressFile(String playerName) throws IOException
 	{
 		return PluginPaths.progressDir().resolve(PluginPaths.sanitizeForFilename(playerName) + "_progress.json");

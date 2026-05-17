@@ -193,6 +193,26 @@ public class ProgressTracker
 		return Optional.empty();
 	}
 
+	public Optional<StepEntry> getCurrentStepFor(com.gimprogresstracker.model.PlayerProgress p)
+	{
+		if (p == null || flattened.isEmpty())
+		{
+			return Optional.empty();
+		}
+		java.util.Set<Integer> completed = p.getCompletedStepIds();
+		java.util.Set<Integer> skipped = p.getSkippedStepIds();
+		java.util.Set<Integer> todo = p.getTodoStepIds();
+		for (StepEntry e : flattened)
+		{
+			int id = e.getStep().getId();
+			if (!completed.contains(id) && !skipped.contains(id) && !todo.contains(id))
+			{
+				return Optional.of(e);
+			}
+		}
+		return Optional.empty();
+	}
+
 	public List<StepEntry> getUpcoming(int max)
 	{
 		List<StepEntry> out = new ArrayList<>();

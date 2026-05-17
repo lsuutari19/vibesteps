@@ -47,6 +47,34 @@ public final class PanelIcons
 		return generated();
 	}
 
+	public static BufferedImage teammatesIcon()
+	{
+		BufferedImage img = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = img.createGraphics();
+		try
+		{
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+
+			g.setColor(new Color(30, 80, 160));
+			g.fillRoundRect(0, 0, ICON_SIZE - 1, ICON_SIZE - 1, 8, 8);
+
+			g.setColor(Color.WHITE);
+			Font font = new Font(Font.SANS_SERIF, Font.BOLD, 11);
+			g.setFont(font);
+			String text = "GRP";
+			FontMetrics fm = g.getFontMetrics();
+			int tx = (ICON_SIZE - fm.stringWidth(text)) / 2;
+			int ty = (ICON_SIZE - fm.getHeight()) / 2 + fm.getAscent();
+			g.drawString(text, tx, ty);
+		}
+		finally
+		{
+			g.dispose();
+		}
+		return img;
+	}
+
 	private static BufferedImage generated()
 	{
 		BufferedImage img = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);

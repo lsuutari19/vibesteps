@@ -7,6 +7,7 @@ import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.model.StepEntry;
 import com.gimprogresstracker.ui.GIMProgressTrackerPanel;
 import com.gimprogresstracker.ui.PanelIcons;
+import com.gimprogresstracker.ui.TeammatesPanel;
 import com.gimprogresstracker.util.GuideImporter;
 import com.gimprogresstracker.util.PluginPaths;
 import com.gimprogresstracker.util.ProgressStore;
@@ -109,7 +110,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 	private Notifier notifier;
 
 	private GIMProgressTrackerPanel panel;
+	private TeammatesPanel teammatesPanel;
 	private NavigationButton navButton;
+	private NavigationButton teammatesNavButton;
 	private WorldMapPoint mapPoint;
 	private Runnable trackerListener;
 	private BufferedImage mapPointIcon;
@@ -153,6 +156,15 @@ public class GIMProgressTrackerPlugin extends Plugin
 			.build();
 		clientToolbar.addNavigation(navButton);
 
+		teammatesPanel = new TeammatesPanel(tracker, progressStore, config::sharedFolderPath);
+		teammatesNavButton = NavigationButton.builder()
+			.tooltip("Vibe Steps – Teammates")
+			.icon(PanelIcons.teammatesIcon())
+			.priority(8)
+			.panel(teammatesPanel)
+			.build();
+		clientToolbar.addNavigation(teammatesNavButton);
+
 		overlayManager.add(overlay);
 
 		trackerListener = this::onTrackerChanged;
@@ -176,6 +188,12 @@ public class GIMProgressTrackerPlugin extends Plugin
 			clientToolbar.removeNavigation(navButton);
 			navButton = null;
 		}
+		if (teammatesNavButton != null)
+		{
+			clientToolbar.removeNavigation(teammatesNavButton);
+			teammatesNavButton = null;
+		}
+		teammatesPanel = null;
 		overlayManager.remove(overlay);
 
 		if (trackerListener != null)
