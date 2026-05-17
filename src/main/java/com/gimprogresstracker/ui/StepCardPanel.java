@@ -9,15 +9,18 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
+import net.runelite.api.ItemComposition;
+import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.util.LinkBrowser;
@@ -35,7 +38,7 @@ class StepCardPanel extends JPanel
 	private static final Color SECONDARY_BTN_HOVER = ColorScheme.DARK_GRAY_HOVER_COLOR;
 
 	StepCardPanel(StepEntry entry, ProgressTracker tracker,
-		String questName, String questButtonLabel, Runnable questAction)
+		String questName, String questButtonLabel, Runnable questAction, ItemManager itemManager)
 	{
 		Step step = entry.getStep();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -77,11 +80,8 @@ class StepCardPanel extends JPanel
 			add(Box.createVerticalStrut(3));
 			for (RequiredItem item : step.getRequiredItems())
 			{
-				JLabel line = new JLabel(htmlWrap("•  item " + item.getItemId() + "  ×  " + item.getQuantity()));
-				line.setFont(FontManager.getRunescapeSmallFont());
-				line.setForeground(Color.WHITE);
-				line.setAlignmentX(Component.LEFT_ALIGNMENT);
-				add(line);
+				add(itemRow(item, itemManager));
+				add(Box.createVerticalStrut(2));
 			}
 		}
 
@@ -135,6 +135,50 @@ class StepCardPanel extends JPanel
 			qhButton.addActionListener(e -> LinkBrowser.browse(qh));
 			add(qhButton);
 		}
+	}
+
+	private static JPanel itemRow(RequiredItem item, ItemManager itemManager)
+	{
+		JPanel row = new JPanel();
+		row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+		row.setOpaque(false);
+		row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		BufferedImage icon = itemManager.getImage(item.getItemId());
+		if (icon != null)
+		{
+			Image scaled = icon.getScaledInstance(18, 16, Image.SCALE_SMOOTH);
+			JLabel iconLabel = new JLabel(new ImageIcon(scaled));
+			iconLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+			row.add(iconLabel);
+			row.add(Box.createHorizontalStrut(5));
+		}
+
+		String name = resolveItemName(itemManager, item.getItemId());
+		JLabel nameLabel = new JLabel(name + "  ×" + item.getQuantity());
+		nameLabel.setFont(FontManager.getRunescapeSmallFont());
+		nameLabel.setForeground(Color.WHITE);
+		nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
+		row.add(nameLabel);
+
+		return row;
+	}
+
+	private static String resolveItemName(ItemManager itemManager, int itemId)
+	{
+		try
+		{
+			ItemComposition comp = itemManager.getItemComposition(itemId);
+			String name = comp.getName();
+			if (name != null && !name.equals("null") && !name.isEmpty())
+			{
+				return name;
+			}
+		}
+		catch (Exception ignored)
+		{
+		}
+		return "Item #" + itemId;
 	}
 
 	private static JLabel sectionHeader(String text)
