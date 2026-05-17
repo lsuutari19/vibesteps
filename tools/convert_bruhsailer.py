@@ -864,34 +864,49 @@ def first_link(segments) -> Optional[str]:
 
 
 def detect_location(text: str) -> Optional[Tuple[int, int, int]]:
-    """Last-mention wins (destinations appear after movement verbs).
-    Quest-start NPC locations are preferred over generic city mentions."""
+    """Last-mention wins across all location keywords.
+
+    Previously, any hit in QUEST_LOCATIONS caused an early return, so a
+    passing mention of a quest name (e.g. "Monkey Madness II" as a future
+    goal) could override the step's actual destination (e.g. "wintertodt").
+    Now both dictionaries are scanned together and the keyword whose last
+    occurrence sits furthest right in the text wins.
+
+    Tie-breaking (same position):
+      1. Quest-start location beats a general location.
+      2. Within the same dictionary, the longer keyword wins.
+    """
     if not text:
         return None
     haystack = _norm(text)
 
     best_pos = -1
     best_coords = None
+    best_key_len = 0
+    best_is_quest = False
 
-    # Quest starts — if any quest name appears, use it (last mention).
     for keyword, coords in QUEST_LOCATIONS.items():
         pos = haystack.rfind(keyword)
-        if pos > best_pos:
+        if pos < 0:
+            continue
+        if pos > best_pos or (pos == best_pos and (not best_is_quest or len(keyword) > best_key_len)):
             best_pos = pos
+            best_key_len = len(keyword)
             best_coords = coords
-    if best_coords is not None:
-        return best_coords
+            best_is_quest = True
 
-    # General locations — last mention, tie-break by keyword length.
-    best_key_len = 0
     for keyword, coords in LOCATIONS.items():
         pos = haystack.rfind(keyword)
         if pos < 0:
             continue
-        if pos > best_pos or (pos == best_pos and len(keyword) > best_key_len):
+        # A general location only wins if it appears strictly later than the
+        # current best, or ties at the same position with no quest match yet.
+        if pos > best_pos or (pos == best_pos and not best_is_quest and len(keyword) > best_key_len):
             best_pos = pos
             best_key_len = len(keyword)
             best_coords = coords
+            best_is_quest = False
+
     return best_coords
 
 
