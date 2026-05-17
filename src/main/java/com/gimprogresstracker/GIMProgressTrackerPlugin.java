@@ -120,7 +120,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
 			this::isQuestHelperInstalled, this::openQuestGuide, itemManager, this::checkItemStatus,
-			id -> itemNameCache.getOrDefault(id, "Item #" + id));
+			id -> itemNameCache.getOrDefault(id, "Item #" + id),
+			() -> cachedBankItems.length > 0,
+			() -> cachedGimBankItems.length > 0);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")

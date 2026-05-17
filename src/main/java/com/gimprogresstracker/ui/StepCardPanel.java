@@ -71,11 +71,7 @@ class StepCardPanel extends JPanel
 		add(thinDivider());
 		add(Box.createVerticalStrut(8));
 
-		JLabel description = new JLabel(htmlWrap(step.getDescription()));
-		description.setFont(FontManager.getRunescapeFont());
-		description.setForeground(Color.WHITE);
-		description.setAlignmentX(Component.LEFT_ALIGNMENT);
-		add(description);
+		addDescription(step.getDescription());
 
 		if (!step.getRequiredItems().isEmpty())
 		{
@@ -139,6 +135,56 @@ class StepCardPanel extends JPanel
 			qhButton.addActionListener(e -> LinkBrowser.browse(qh));
 			add(qhButton);
 		}
+	}
+
+	private void addDescription(String text)
+	{
+		final int THRESHOLD = 280;
+		final JLabel label = new JLabel(htmlWrap(
+			text.length() <= THRESHOLD ? text : text.substring(0, 250) + "…"));
+		label.setFont(FontManager.getRunescapeFont());
+		label.setForeground(Color.WHITE);
+		label.setAlignmentX(Component.LEFT_ALIGNMENT);
+		add(label);
+
+		if (text.length() <= THRESHOLD)
+		{
+			return;
+		}
+
+		final JLabel toggle = new JLabel("▼ Show more");
+		toggle.setFont(FontManager.getRunescapeSmallFont());
+		toggle.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+		toggle.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		toggle.setAlignmentX(Component.LEFT_ALIGNMENT);
+		toggle.addMouseListener(new MouseAdapter()
+		{
+			private boolean expanded = false;
+
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				expanded = !expanded;
+				label.setText(htmlWrap(expanded ? text : text.substring(0, 250) + "…"));
+				toggle.setText(expanded ? "▲ Show less" : "▼ Show more");
+				StepCardPanel.this.revalidate();
+				StepCardPanel.this.repaint();
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				toggle.setForeground(Color.WHITE);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				toggle.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+			}
+		});
+		add(Box.createVerticalStrut(2));
+		add(toggle);
 	}
 
 	private static JPanel itemRow(RequiredItem item, ItemManager itemManager,
@@ -244,11 +290,8 @@ class StepCardPanel extends JPanel
 		String escaped = text
 			.replace("&", "&amp;")
 			.replace("<", "&lt;")
-			.replace(">", "&gt;");
-		// 120px is intentionally conservative: PluginPanel(200) - outer padding(16)
-		// - card chrome(24) - scrollbar allowance(~17) = ~143px available.
-		// A smaller wrap width means preferred height is computed generously,
-		// so height caps based on getPreferredSize() will never clip the text.
+			.replace(">", "&gt;")
+			.replace("\n", "<br>");
 		return "<html><body style='width: 120px'>" + escaped + "</body></html>";
 	}
 }
