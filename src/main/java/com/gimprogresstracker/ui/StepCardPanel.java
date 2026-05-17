@@ -110,10 +110,15 @@ class StepCardPanel extends JPanel
 			qnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			add(qnLabel);
 			add(Box.createVerticalStrut(4));
+			JPanel questBtnRow = new JPanel();
+			questBtnRow.setLayout(new BoxLayout(questBtnRow, BoxLayout.X_AXIS));
+			questBtnRow.setOpaque(false);
+			questBtnRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 			if (questHelperAction != null)
 			{
 				JButton copyBtn = styledButton("Copy Name", ColorScheme.LIGHT_GRAY_COLOR,
 					SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+				copyBtn.setMaximumSize(copyBtn.getPreferredSize());
 				copyBtn.addActionListener(e ->
 				{
 					questHelperAction.run();
@@ -122,13 +127,15 @@ class StepCardPanel extends JPanel
 					t.setRepeats(false);
 					t.start();
 				});
-				add(copyBtn);
-				add(Box.createVerticalStrut(4));
+				questBtnRow.add(copyBtn);
+				questBtnRow.add(Box.createHorizontalStrut(4));
 			}
 			JButton wikiBtn = styledButton("Wiki", new Color(30, 190, 255),
 				new Color(10, 50, 70), new Color(20, 80, 110), new Color(30, 130, 180));
+			wikiBtn.setMaximumSize(wikiBtn.getPreferredSize());
 			wikiBtn.addActionListener(e -> wikiAction.run());
-			add(wikiBtn);
+			questBtnRow.add(wikiBtn);
+			add(questBtnRow);
 		}
 
 		add(Box.createVerticalStrut(12));
