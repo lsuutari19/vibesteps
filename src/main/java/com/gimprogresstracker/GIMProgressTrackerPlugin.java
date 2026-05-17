@@ -148,7 +148,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 			() -> !cachedGimBank.isEmpty(),
 			() -> isGroupIronman,
 			skill -> cachedSkillLevels.getOrDefault(skill.name(), 1),
-			this::showTeammateMapPoint);
+			this::openWorldMapAt);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
@@ -417,6 +417,15 @@ public class GIMProgressTrackerPlugin extends Plugin
 			worldMapPointManager.remove(mapPoint);
 			mapPoint = null;
 		}
+	}
+
+	private void openWorldMapAt(Location loc)
+	{
+		// Ensure the orange step marker exists, then jump the world map to the location.
+		// Script 2925 (worldmap_overlay_jumptomapposition) centers the world map on the given
+		// tile and opens the world map interface if it is not already open.
+		refreshWorldMapPoint();
+		clientThread.invoke(() -> client.runScript(2925, loc.getX(), loc.getY(), loc.getPlane()));
 	}
 
 	private void showTeammateMapPoint(Location loc)
