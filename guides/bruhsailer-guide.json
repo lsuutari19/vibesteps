@@ -25,7 +25,21 @@
                 "y": 3239,
                 "plane": 0
               },
-              "questName": "X Marks the Spot"
+              "questName": "X Marks the Spot",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 232
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 3,
@@ -35,7 +49,17 @@
                 "y": 3208,
                 "plane": 0
               },
-              "questName": "Misthalin Mystery"
+              "questName": "Misthalin Mystery",
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 4,
@@ -44,7 +68,33 @@
                 "x": 2662,
                 "y": 3305,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1351,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1059,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 5,
@@ -54,7 +104,17 @@
                 "y": 3273,
                 "plane": 0
               },
-              "questName": "Hazeel Cult"
+              "questName": "Hazeel Cult",
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 6,
@@ -64,7 +124,17 @@
                 "y": 3273,
                 "plane": 0
               },
-              "questName": "Hazeel Cult"
+              "questName": "Hazeel Cult",
+              "requiredItems": [
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 7,
@@ -73,7 +143,13 @@
                 "x": 1633,
                 "y": 3974,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 781
+                }
+              ]
             },
             {
               "id": 8,
@@ -83,7 +159,25 @@
                 "y": 3398,
                 "plane": 0
               },
-              "questName": "Sheep Herder"
+              "questName": "Sheep Herder",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 100
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 9,
@@ -93,7 +187,17 @@
                 "y": 3279,
                 "plane": 0
               },
-              "questName": "Tribal Totem"
+              "questName": "Tribal Totem",
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 10,
@@ -103,7 +207,21 @@
                 "y": 3208,
                 "plane": 0
               },
-              "questName": "The Restless Ghost"
+              "questName": "The Restless Ghost",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 780
+                },
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 11,
@@ -113,7 +231,17 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Black Knights' Fortress"
+              "questName": "Black Knights' Fortress",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 3445
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 12,
@@ -123,7 +251,17 @@
                 "y": 3424,
                 "plane": 0
               },
-              "questName": "Children of the Sun"
+              "questName": "Children of the Sun",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 101
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 13,
@@ -133,7 +271,29 @@
                 "y": 3424,
                 "plane": 0
               },
-              "questName": "Shield of Arrav"
+              "questName": "Shield of Arrav",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 1204
+                },
+                {
+                  "itemId": 983,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2516,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 14,
@@ -143,7 +303,21 @@
                 "y": 3424,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man I"
+              "questName": "Rag and Bone Man I",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 3650
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 15,
@@ -153,7 +327,29 @@
                 "y": 3380,
                 "plane": 0
               },
-              "questName": "Witch's Potion"
+              "questName": "Witch's Potion",
+              "requiredItems": [
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 86
+                },
+                {
+                  "itemId": 8013,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1957,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 16,
@@ -162,7 +358,17 @@
                 "x": 2167,
                 "y": 2975,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 17,
@@ -173,7 +379,37 @@
                 "plane": 0
               },
               "questHelperLink": "https://oldschool.runescape.wiki/w/Clue_hunter_garb#/media/File:Crack_the_Clue!_-_Week_2_map.png",
-              "questName": "Client of Kourend"
+              "questName": "Client of Kourend",
+              "requiredItems": [
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 1501
+                },
+                {
+                  "itemId": 8013,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1917,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1059,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 18,
@@ -183,7 +419,17 @@
                 "y": 3500,
                 "plane": 0
               },
-              "questName": "Icthlarin's Little Helper"
+              "questName": "Icthlarin's Little Helper",
+              "requiredItems": [
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                }
+              ]
             }
           ]
         },
@@ -197,7 +443,37 @@
                 "x": 3093,
                 "y": 3243,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 1545
+                },
+                {
+                  "itemId": 1265,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8013,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1951,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 1793,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 2313,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 20,
@@ -208,7 +484,25 @@
                 "plane": 0
               },
               "questHelperLink": "https://imgur.com/a/bdU88Xo",
-              "questName": "The Knight's Sword"
+              "questName": "The Knight's Sword",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 95672
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2313,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1951,
+                  "quantity": 3
+                }
+              ]
             },
             {
               "id": 21,
@@ -219,7 +513,29 @@
                 "plane": 0
               },
               "questHelperLink": "https://oldschool.runescape.wiki/w/Chest_(Aldarin_Villas)",
-              "questName": "The Queen of Thieves"
+              "questName": "The Queen of Thieves",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 8812
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 558,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 22,
@@ -229,7 +545,41 @@
                 "y": 3450,
                 "plane": 0
               },
-              "questName": "The Knight's Sword"
+              "questName": "The Knight's Sword",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 5856
+                },
+                {
+                  "itemId": 1781,
+                  "quantity": 7
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8013,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 558,
+                  "quantity": 1200
+                },
+                {
+                  "itemId": 2138,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1265,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1059,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 23,
@@ -239,7 +589,25 @@
                 "y": 2956,
                 "plane": 0
               },
-              "questName": "The Knight's Sword"
+              "questName": "The Knight's Sword",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 7500
+                },
+                {
+                  "itemId": 1265,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8013,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 24,
@@ -249,7 +617,61 @@
                 "y": 3109,
                 "plane": 0
               },
-              "questName": "The Restless Ghost"
+              "questName": "The Restless Ghost",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 12200
+                },
+                {
+                  "itemId": 1735,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1521,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1059,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 50
+                },
+                {
+                  "itemId": 1823,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 1265,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 25,
@@ -258,7 +680,21 @@
                 "x": 2440,
                 "y": 3083,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 960,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 2349,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 26,
@@ -268,7 +704,37 @@
                 "y": 3178,
                 "plane": 0
               },
-              "questName": "Prince Ali Rescue"
+              "questName": "Prince Ali Rescue",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 15600
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 307,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 309,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1332,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 27,
@@ -278,7 +744,45 @@
                 "y": 3934,
                 "plane": 0
               },
-              "questName": "Below Ice Mountain"
+              "questName": "Below Ice Mountain",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 10000
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1597,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2976,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1607,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2357,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 28,
@@ -288,7 +792,25 @@
                 "y": 3567,
                 "plane": 0
               },
-              "questName": "Waterfall Quest"
+              "questName": "Waterfall Quest",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 9
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 29,
@@ -298,7 +820,21 @@
                 "y": 3170,
                 "plane": 0
               },
-              "questName": "Tree Gnome Village"
+              "questName": "Tree Gnome Village",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 30,
@@ -308,7 +844,17 @@
                 "y": 3494,
                 "plane": 0
               },
-              "questName": "The Grand Tree"
+              "questName": "The Grand Tree",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 562
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 31,
@@ -318,7 +864,37 @@
                 "y": 3525,
                 "plane": 0
               },
-              "questName": "Waterfall Quest"
+              "questName": "Waterfall Quest",
+              "requiredItems": [
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 333,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6333,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 32,
@@ -328,7 +904,17 @@
                 "y": 3593,
                 "plane": 0
               },
-              "questName": "In Aid of the Myreque"
+              "questName": "In Aid of the Myreque",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 2546
+                },
+                {
+                  "itemId": 8013,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 33,
@@ -338,7 +924,13 @@
                 "y": 3974,
                 "plane": 0
               },
-              "questHelperLink": "https://www.youtube.com/watch?v=6wuG8IvxHbM"
+              "questHelperLink": "https://www.youtube.com/watch?v=6wuG8IvxHbM",
+              "requiredItems": [
+                {
+                  "itemId": 8013,
+                  "quantity": 1
+                }
+              ]
             }
           ]
         },
@@ -352,7 +944,17 @@
                 "x": 3104,
                 "y": 3934,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 784932
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 35,
@@ -361,7 +963,49 @@
                 "x": 3293,
                 "y": 3174,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 561,
+                  "quantity": 1650
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 600
+                },
+                {
+                  "itemId": 564,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 492
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 309,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 10
+                }
+              ]
             },
             {
               "id": 36,
@@ -371,7 +1015,53 @@
                 "y": 3489,
                 "plane": 0
               },
-              "questName": "Darkness of Hallowvale"
+              "questName": "Darkness of Hallowvale",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 4840
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 558,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 4
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 333,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 303,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 37,
@@ -381,7 +1071,21 @@
                 "y": 3088,
                 "plane": 0
               },
-              "questName": "The Dig Site"
+              "questName": "The Dig Site",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 4
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 38,
@@ -391,7 +1095,33 @@
                 "y": 3434,
                 "plane": 0
               },
-              "questHelperLink": "https://youtu.be/yWmvm8ukssU?t=523"
+              "questHelperLink": "https://youtu.be/yWmvm8ukssU?t=523",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 26
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 39,
@@ -401,7 +1131,49 @@
                 "y": 3088,
                 "plane": 0
               },
-              "questName": "Below Ice Mountain"
+              "questName": "Below Ice Mountain",
+              "requiredItems": [
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1059,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1061,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 229,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 40,
@@ -411,7 +1183,41 @@
                 "y": 3484,
                 "plane": 0
               },
-              "questName": "Elemental Workshop II"
+              "questName": "Elemental Workshop II",
+              "requiredItems": [
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1265,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 41,
@@ -420,7 +1226,33 @@
                 "x": 3314,
                 "y": 3360,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 10000
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 42,
@@ -430,7 +1262,41 @@
                 "y": 3214,
                 "plane": 0
               },
-              "questName": "Cook's Assistant"
+              "questName": "Cook's Assistant",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 815
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2355,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2357,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 1597,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 43,
@@ -440,7 +1306,77 @@
                 "y": 3659,
                 "plane": 0
               },
-              "questName": "The Fremennik Trials"
+              "questName": "The Fremennik Trials",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 51012
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1265,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1917,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1059,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 558,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 44,
@@ -450,7 +1386,29 @@
                 "y": 3380,
                 "plane": 0
               },
-              "questName": "Below Ice Mountain"
+              "questName": "Below Ice Mountain",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 5334
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 45,
@@ -460,7 +1418,29 @@
                 "y": 3088,
                 "plane": 0
               },
-              "questName": "The Golem"
+              "questName": "The Golem",
+              "requiredItems": [
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 229,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 46,
@@ -470,7 +1450,49 @@
                 "y": 3659,
                 "plane": 0
               },
-              "questName": "Mountain Daughter"
+              "questName": "Mountain Daughter",
+              "requiredItems": [
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2309,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 313,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 995,
+                  "quantity": 200
+                }
+              ]
             },
             {
               "id": 47,
@@ -480,7 +1502,37 @@
                 "y": 3422,
                 "plane": 0
               },
-              "questName": "Prince Ali Rescue"
+              "questName": "Prince Ali Rescue",
+              "requiredItems": [
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 526,
+                  "quantity": 25
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1951,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1793,
+                  "quantity": 8
+                }
+              ]
             },
             {
               "id": 48,
@@ -490,7 +1542,21 @@
                 "y": 10166,
                 "plane": 0
               },
-              "questName": "Merlin's Crystal"
+              "questName": "Merlin's Crystal",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 25103
+                },
+                {
+                  "itemId": 2309,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2351,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 49,
@@ -500,7 +1566,17 @@
                 "y": 3879,
                 "plane": 0
               },
-              "questName": "Merlin's Crystal"
+              "questName": "Merlin's Crystal",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 17010
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 50,
@@ -510,7 +1586,37 @@
                 "y": 3077,
                 "plane": 0
               },
-              "questName": "Shadow of the Storm"
+              "questName": "Shadow of the Storm",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 200
+                },
+                {
+                  "itemId": 1273,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2349,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 303,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 229,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 51,
@@ -519,7 +1625,25 @@
                 "x": 3164,
                 "y": 2909,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 80000
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6333,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 52,
@@ -528,7 +1652,21 @@
                 "x": 3079,
                 "y": 3508,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 1781,
+                  "quantity": 1600
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1785,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 53,
@@ -538,7 +1676,41 @@
                 "y": 3339,
                 "plane": 0
               },
-              "questName": "Elemental Workshop II"
+              "questName": "Elemental Workshop II",
+              "requiredItems": [
+                {
+                  "itemId": 11194,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7936,
+                  "quantity": 50
+                },
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 54,
@@ -548,7 +1720,57 @@
                 "y": 3339,
                 "plane": 0
               },
-              "questName": "Shades of Mort'ton"
+              "questName": "Shades of Mort'ton",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 5241
+                },
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 2355,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 329,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 55,
@@ -558,7 +1780,25 @@
                 "y": 3484,
                 "plane": 0
               },
-              "questName": "Elemental Workshop II"
+              "questName": "Elemental Workshop II",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 8968
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 56,
@@ -568,7 +1808,29 @@
                 "y": 3879,
                 "plane": 0
               },
-              "questName": "Bone Voyage"
+              "questName": "Bone Voyage",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 30000
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 11194,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 57,
@@ -578,7 +1840,45 @@
                 "y": 3538,
                 "plane": 0
               },
-              "questName": "Bone Voyage"
+              "questName": "Bone Voyage",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 1615
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2309,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 58,
@@ -588,7 +1888,65 @@
                 "y": 3538,
                 "plane": 0
               },
-              "questName": "The Fremennik Trials"
+              "questName": "The Fremennik Trials",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 20000
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8778,
+                  "quantity": 4
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 329,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5523,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 771,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3691,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 59,
@@ -598,7 +1956,49 @@
                 "y": 3169,
                 "plane": 0
               },
-              "questName": "Lost City"
+              "questName": "Lost City",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 176
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1523,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 60,
@@ -608,7 +2008,45 @@
                 "y": 3538,
                 "plane": 0
               },
-              "questName": "Holy Grail"
+              "questName": "Holy Grail",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 6297
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 307,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 313,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1332,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 61,
@@ -617,7 +2055,21 @@
                 "x": 2920,
                 "y": 3538,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 6293
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 62,
@@ -626,7 +2078,17 @@
                 "x": 2920,
                 "y": 3538,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 63,
@@ -636,7 +2098,73 @@
                 "y": 3879,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 10500
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5305,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6032,
+                  "quantity": 4
+                },
+                {
+                  "itemId": 5341,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4041,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4046,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 11194,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1521,
+                  "quantity": 4
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2351,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 97,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 753,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 64,
@@ -646,7 +2174,81 @@
                 "y": 6105,
                 "plane": 0
               },
-              "questName": "Song of the Elves"
+              "questName": "Song of the Elves",
+              "requiredItems": [
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8778,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 4
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5305,
+                  "quantity": 40
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 8778,
+                  "quantity": 8
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 20
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2351,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 2
+                }
+              ]
             }
           ]
         },
@@ -661,7 +2263,29 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 120
+                },
+                {
+                  "itemId": 2309,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 333,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 2351,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1905,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 66,
@@ -671,7 +2295,25 @@
                 "y": 3538,
                 "plane": 0
               },
-              "questName": "Shadow of the Storm"
+              "questName": "Shadow of the Storm",
+              "requiredItems": [
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 67,
@@ -680,7 +2322,33 @@
                 "x": 3222,
                 "y": 3218,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4041,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 68,
@@ -690,7 +2358,33 @@
                 "y": 3508,
                 "plane": 0
               },
-              "questName": "Shades of Mort'ton"
+              "questName": "Shades of Mort'ton",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 69,
@@ -700,7 +2394,29 @@
                 "y": 3538,
                 "plane": 0
               },
-              "questName": "Shadow of the Storm"
+              "questName": "Shadow of the Storm",
+              "requiredItems": [
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 333,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 70,
@@ -710,7 +2426,61 @@
                 "y": 3494,
                 "plane": 0
               },
-              "questName": "Recipe for Disaster"
+              "questName": "Recipe for Disaster",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 7500
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5341,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21483,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 333,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 71,
@@ -720,7 +2490,77 @@
                 "y": 3659,
                 "plane": 0
               },
-              "questName": "Mountain Daughter"
+              "questName": "Mountain Daughter",
+              "requiredItems": [
+                {
+                  "itemId": 5341,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2351,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1939,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1517,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 558,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 72,
@@ -730,7 +2570,45 @@
                 "y": 3494,
                 "plane": 0
               },
-              "questName": "The Grand Tree"
+              "questName": "The Grand Tree",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 6693
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 73,
@@ -740,7 +2618,49 @@
                 "y": 3974,
                 "plane": 0
               },
-              "questName": "The Tale of the Righteous"
+              "questName": "The Tale of the Righteous",
+              "requiredItems": [
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 100
+                }
+              ]
             },
             {
               "id": 74,
@@ -750,7 +2670,21 @@
                 "y": 3538,
                 "plane": 0
               },
-              "questName": "Holy Grail"
+              "questName": "Holy Grail",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 225
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 75,
@@ -759,7 +2693,13 @@
                 "x": 2167,
                 "y": 2975,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 76,
@@ -769,7 +2709,21 @@
                 "y": 3500,
                 "plane": 0
               },
-              "questName": "The Eyes of Glouphrie"
+              "questName": "The Eyes of Glouphrie",
+              "requiredItems": [
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 77,
@@ -779,7 +2733,17 @@
                 "y": 3424,
                 "plane": 0
               },
-              "questName": "Garden of Tranquillity"
+              "questName": "Garden of Tranquillity",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 78,
@@ -789,7 +2753,113 @@
                 "y": 3300,
                 "plane": 0
               },
-              "questName": "My Arm's Big Adventure"
+              "questName": "My Arm's Big Adventure",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 11716
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5096,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5294,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5341,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 309,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 20
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 1965,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5325,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5352,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5324,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 5319,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 6032,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1101,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5340,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 371,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2138,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 79,
@@ -799,7 +2869,81 @@
                 "y": 3508,
                 "plane": 0
               },
-              "questName": "Black Knights' Fortress"
+              "questName": "Black Knights' Fortress",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 1454
+                },
+                {
+                  "itemId": 309,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2349,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1101,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1965,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 329,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5352,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5340,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 301,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 950,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 80,
@@ -809,7 +2953,33 @@
                 "y": 3540,
                 "plane": 0
               },
-              "questName": "Garden of Tranquillity"
+              "questName": "Garden of Tranquillity",
+              "requiredItems": [
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 307,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7936,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 81,
@@ -818,7 +2988,53 @@
                 "x": 2461,
                 "y": 3449,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 40000
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 329,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 82,
@@ -828,7 +3044,69 @@
                 "y": 3300,
                 "plane": 0
               },
-              "questHelperLink": "https://oldschool.runescape.wiki/w/Gout_tuber/Strategies"
+              "questHelperLink": "https://oldschool.runescape.wiki/w/Gout_tuber/Strategies",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 5203
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6032,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 5294,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 5340,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5341,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 83,
@@ -837,7 +3115,17 @@
                 "x": 1948,
                 "y": 4957,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 22150
+                },
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 84,
@@ -847,7 +3135,21 @@
                 "y": 3360,
                 "plane": 0
               },
-              "questName": "Garden of Tranquillity"
+              "questName": "Garden of Tranquillity",
+              "requiredItems": [
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 85,
@@ -857,7 +3159,57 @@
                 "y": 3449,
                 "plane": 0
               },
-              "questName": "Icthlarin's Little Helper"
+              "questName": "Icthlarin's Little Helper",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 100
+                },
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4687,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4698,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1517,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1521,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 86,
@@ -867,7 +3219,49 @@
                 "y": 3673,
                 "plane": 0
               },
-              "questName": "Eadgar's Ruse"
+              "questName": "Eadgar's Ruse",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 6834
+                },
+                {
+                  "itemId": 5340,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6032,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 87,
@@ -876,7 +3270,33 @@
                 "x": 3168,
                 "y": 2981,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 50
+                },
+                {
+                  "itemId": 1351,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1265,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7936,
+                  "quantity": 25
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 329,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 88,
@@ -886,7 +3306,13 @@
                 "y": 3163,
                 "plane": 0
               },
-              "questName": "Shades of Mort'ton"
+              "questName": "Shades of Mort'ton",
+              "requiredItems": [
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 89,
@@ -896,7 +3322,57 @@
                 "y": 3493,
                 "plane": 0
               },
-              "questName": "Ghosts Ahoy"
+              "questName": "Ghosts Ahoy",
+              "requiredItems": [
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7936,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 558,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1727,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 329,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 90,
@@ -906,7 +3382,25 @@
                 "y": 3360,
                 "plane": 0
               },
-              "questName": "Enlightened Journey"
+              "questName": "Enlightened Journey",
+              "requiredItems": [
+                {
+                  "itemId": 7409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 950,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 10
+                }
+              ]
             },
             {
               "id": 91,
@@ -915,7 +3409,13 @@
                 "x": 1500,
                 "y": 3624,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 1523,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 92,
@@ -925,7 +3425,89 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "My Arm's Big Adventure"
+              "questName": "My Arm's Big Adventure",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 143
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4071,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2357,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 536,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 249,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 227,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6034,
+                  "quantity": 8
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5341,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4261,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 247,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 93,
@@ -935,7 +3517,37 @@
                 "y": 3170,
                 "plane": 0
               },
-              "questName": "Making Friends with My Arm"
+              "questName": "Making Friends with My Arm",
+              "requiredItems": [
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1785,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21483,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 94,
@@ -945,7 +3557,49 @@
                 "y": 3508,
                 "plane": 0
               },
-              "questName": "Dragon Slayer I"
+              "questName": "Dragon Slayer I",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 2000
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 90
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 1511,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 1515,
+                  "quantity": 11
+                },
+                {
+                  "itemId": 1519,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 558,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 95,
@@ -955,7 +3609,101 @@
                 "y": 2981,
                 "plane": 0
               },
-              "questName": "Desert Treasure I"
+              "questName": "Desert Treasure I",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 650
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 33,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1523,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1513,
+                  "quantity": 12
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 6
+                },
+                {
+                  "itemId": 565,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 526,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2355,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1332,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 303,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 96,
@@ -965,7 +3713,25 @@
                 "y": 9872,
                 "plane": 0
               },
-              "questName": "Prince Ali Rescue"
+              "questName": "Prince Ali Rescue",
+              "requiredItems": [
+                {
+                  "itemId": 1761,
+                  "quantity": 108
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 108
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 216
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 97,
@@ -975,7 +3741,29 @@
                 "y": 3499,
                 "plane": 0
               },
-              "questName": "Twilight's Promise"
+              "questName": "Twilight's Promise",
+              "requiredItems": [
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 995,
+                  "quantity": 247500
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 564,
+                  "quantity": 4770
+                }
+              ]
             },
             {
               "id": 98,
@@ -985,7 +3773,33 @@
                 "y": 3095,
                 "plane": 0
               },
-              "questName": "The Hand in the Sand"
+              "questName": "The Hand in the Sand",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 150
+                },
+                {
+                  "itemId": 1951,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 239,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4540,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                }
+              ]
             }
           ]
         }
@@ -1014,7 +3828,37 @@
                 "y": 3216,
                 "plane": 0
               },
-              "questName": "Family Crest"
+              "questName": "Family Crest",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 300000
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2446,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1521,
+                  "quantity": 15
+                },
+                {
+                  "itemId": 11194,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 101,
@@ -1024,7 +3868,29 @@
                 "y": 3305,
                 "plane": 0
               },
-              "questHelperLink": "https://www.youtube.com/watch?v=GFH6-oJrJ0o"
+              "questHelperLink": "https://www.youtube.com/watch?v=GFH6-oJrJ0o",
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6333,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 102,
@@ -1034,7 +3900,29 @@
                 "y": 3974,
                 "plane": 0
               },
-              "questHelperLink": "https://www.youtube.com/watch?v=GA987x97AKQ"
+              "questHelperLink": "https://www.youtube.com/watch?v=GA987x97AKQ",
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6333,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 103,
@@ -1044,7 +3932,21 @@
                 "y": 3508,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 104,
@@ -1063,7 +3965,29 @@
                 "y": 3314,
                 "plane": 0
               },
-              "questName": "Underground Pass"
+              "questName": "Underground Pass",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 200000
+                },
+                {
+                  "itemId": 886,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 106,
@@ -1073,7 +3997,25 @@
                 "y": 3713,
                 "plane": 0
               },
-              "questName": "Between a Rock..."
+              "questName": "Between a Rock...",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 995,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 107,
@@ -1082,7 +4024,33 @@
                 "x": 1715,
                 "y": 3733,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8782,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 995,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 108,
@@ -1092,7 +4060,41 @@
                 "y": 3713,
                 "plane": 0
               },
-              "questName": "Between a Rock..."
+              "questName": "Between a Rock...",
+              "requiredItems": [
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 109,
@@ -1103,7 +4105,37 @@
                 "plane": 0
               },
               "questHelperLink": "https://osrsportal.com/shooting-stars-tracker",
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 110,
@@ -1113,7 +4145,25 @@
                 "y": 3424,
                 "plane": 0
               },
-              "questName": "Black Knights' Fortress"
+              "questName": "Black Knights' Fortress",
+              "requiredItems": [
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 111,
@@ -1123,7 +4173,49 @@
                 "y": 3475,
                 "plane": 0
               },
-              "questName": "One Small Favour"
+              "questName": "One Small Favour",
+              "requiredItems": [
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1794,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 112,
@@ -1133,7 +4225,13 @@
                 "y": 3475,
                 "plane": 0
               },
-              "questName": "One Small Favour"
+              "questName": "One Small Favour",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 1330
+                }
+              ]
             },
             {
               "id": 113,
@@ -1142,7 +4240,45 @@
                 "x": 2770,
                 "y": 3475,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 255,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 227,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 307,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1523,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1597,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2355,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 564,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7936,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 114,
@@ -1151,7 +4287,29 @@
                 "x": 3222,
                 "y": 3218,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1523,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 115,
@@ -1161,7 +4319,53 @@
                 "y": 3713,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 4540,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2357,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 116,
@@ -1172,7 +4376,73 @@
                 "plane": 0
               },
               "questHelperLink": "https://www.youtube.com/watch?v=hPQ-6aZdydI",
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 2357,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1823,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 33,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1521,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1519,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1517,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 117,
@@ -1182,7 +4452,69 @@
                 "y": 2891,
                 "plane": 0
               },
-              "questName": "Spirits of the Elid"
+              "questName": "Spirits of the Elid",
+              "requiredItems": [
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1823,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1515,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 227,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 303,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 886,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 118,
@@ -1192,7 +4524,65 @@
                 "y": 2781,
                 "plane": 0
               },
-              "questName": "Icthlarin's Little Helper"
+              "questName": "Icthlarin's Little Helper",
+              "requiredItems": [
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1519,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4687,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1823,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2446,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 11194,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1491,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1521,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 995,
+                  "quantity": 3500
+                }
+              ]
             },
             {
               "id": 119,
@@ -1202,7 +4592,53 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 313,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4006,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6809,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 120,
@@ -1212,7 +4648,25 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 121,
@@ -1222,7 +4676,25 @@
                 "y": 3475,
                 "plane": 0
               },
-              "questName": "One Small Favour"
+              "questName": "One Small Favour",
+              "requiredItems": [
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6809,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7936,
+                  "quantity": 20
+                },
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 122,
@@ -1232,7 +4704,37 @@
                 "y": 3353,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6809,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 123,
@@ -1242,7 +4744,37 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 526,
+                  "quantity": 8
+                },
+                {
+                  "itemId": 2355,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 124,
@@ -1252,7 +4784,85 @@
                 "y": 3489,
                 "plane": 0
               },
-              "questName": "In Search of the Myreque"
+              "questName": "In Search of the Myreque",
+              "requiredItems": [
+                {
+                  "itemId": 1539,
+                  "quantity": 263
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 17
+                },
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1925,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 329,
+                  "quantity": 15
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1332,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 255,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 227,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 303,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 125,
@@ -1261,7 +4871,53 @@
                 "x": 3679,
                 "y": 3493,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 950,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 126,
@@ -1271,7 +4927,33 @@
                 "y": 3493,
                 "plane": 0
               },
-              "questName": "Animal Magnetism"
+              "questName": "Animal Magnetism",
+              "requiredItems": [
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1385,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1355,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 127,
@@ -1281,7 +4963,49 @@
                 "y": 3174,
                 "plane": 0
               },
-              "questName": "Scorpion Catcher"
+              "questName": "Scorpion Catcher",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2446,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4006,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 128,
@@ -1291,7 +5015,57 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Mourning's End Part II"
+              "questName": "Mourning's End Part II",
+              "requiredItems": [
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2446,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2357,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1523,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1521,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 129,
@@ -1301,7 +5075,37 @@
                 "y": 3232,
                 "plane": 0
               },
-              "questName": "Shades of Mort'ton"
+              "questName": "Shades of Mort'ton",
+              "requiredItems": [
+                {
+                  "itemId": 1409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 130,
@@ -1311,7 +5115,25 @@
                 "y": 3540,
                 "plane": 0
               },
-              "questName": "Heroes' Quest"
+              "questName": "Heroes' Quest",
+              "requiredItems": [
+                {
+                  "itemId": 1409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 23360,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 131,
@@ -1321,7 +5143,17 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Big Chompy Bird Hunting"
+              "questName": "Big Chompy Bird Hunting",
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 780000
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 132,
@@ -1386,7 +5218,33 @@
                 "x": 2657,
                 "y": 3676,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 561,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2357,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3751,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 140,
@@ -1395,7 +5253,17 @@
                 "x": 2540,
                 "y": 3568,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 1289,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3751,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 141,
@@ -1405,7 +5273,101 @@
                 "y": 3314,
                 "plane": 0
               },
-              "questName": "The Fremennik Exiles"
+              "questName": "The Fremennik Exiles",
+              "requiredItems": [
+                {
+                  "itemId": 2357,
+                  "quantity": 1100
+                },
+                {
+                  "itemId": 561,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 10568,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1079,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3751,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1727,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2446,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1277,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 886,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 60
+                },
+                {
+                  "itemId": 1939,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4006,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 142,
@@ -1416,7 +5378,41 @@
                 "plane": 0
               },
               "questHelperLink": "https://www.youtube.com/watch?v=OORAXLhdZAg",
-              "questName": "The Slug Menace"
+              "questName": "The Slug Menace",
+              "requiredItems": [
+                {
+                  "itemId": 6809,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 7936,
+                  "quantity": 20
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 143,
@@ -1427,7 +5423,41 @@
                 "plane": 0
               },
               "questHelperLink": "https://oldschool.runescape.wiki/w/Flower_Girl",
-              "questName": "Throne of Miscellania"
+              "questName": "Throne of Miscellania",
+              "requiredItems": [
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2351,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1635,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 144,
@@ -1437,7 +5467,25 @@
                 "y": 3232,
                 "plane": 0
               },
-              "questName": "Shades of Mort'ton"
+              "questName": "Shades of Mort'ton",
+              "requiredItems": [
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                }
+              ]
             }
           ]
         },
@@ -1461,7 +5509,53 @@
                 "y": 3805,
                 "plane": 0
               },
-              "questName": "The Fremennik Isles"
+              "questName": "The Fremennik Isles",
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4819,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2355,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 564,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 147,
@@ -1471,7 +5565,33 @@
                 "y": 3692,
                 "plane": 0
               },
-              "questName": "Lunar Diplomacy"
+              "questName": "Lunar Diplomacy",
+              "requiredItems": [
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 148,
@@ -1480,7 +5600,21 @@
                 "x": 3087,
                 "y": 3499,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 7936,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 149,
@@ -1490,7 +5624,77 @@
                 "y": 3692,
                 "plane": 0
               },
-              "questName": "Lunar Diplomacy"
+              "questName": "Lunar Diplomacy",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1733,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1734,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 564,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 9075,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 150,
@@ -1500,7 +5704,41 @@
                 "y": 3475,
                 "plane": 0
               },
-              "questName": "One Small Favour"
+              "questName": "One Small Favour",
+              "requiredItems": [
+                {
+                  "itemId": 255,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 207,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4006,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 151,
@@ -1510,7 +5748,49 @@
                 "y": 3305,
                 "plane": 0
               },
-              "questName": "Ratcatchers"
+              "questName": "Ratcatchers",
+              "requiredItems": [
+                {
+                  "itemId": 4540,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 8778,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 10
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 152,
@@ -1520,7 +5800,53 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Making Friends with My Arm"
+              "questName": "Making Friends with My Arm",
+              "requiredItems": [
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2446,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 303,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 153,
@@ -1530,7 +5856,33 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 1409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 233,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 154,
@@ -1539,7 +5891,13 @@
                 "x": 2926,
                 "y": 3144,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 155,
@@ -1549,7 +5907,13 @@
                 "y": 3475,
                 "plane": 0
               },
-              "questName": "One Small Favour"
+              "questName": "One Small Favour",
+              "requiredItems": [
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 156,
@@ -1559,7 +5923,45 @@
                 "y": 3499,
                 "plane": 0
               },
-              "questName": "A Tail of Two Cats"
+              "questName": "A Tail of Two Cats",
+              "requiredItems": [
+                {
+                  "itemId": 1823,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2446,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 157,
@@ -1568,7 +5970,33 @@
                 "x": 3230,
                 "y": 3204,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1755,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 158,
@@ -1577,7 +6005,37 @@
                 "x": 3087,
                 "y": 3499,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 3853,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 229,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 207,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 159,
@@ -1587,7 +6045,45 @@
                 "y": 3713,
                 "plane": 0
               },
-              "questName": "Between a Rock..."
+              "questName": "Between a Rock...",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 950,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2353,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1931,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 160,
@@ -1597,7 +6093,33 @@
                 "y": 3499,
                 "plane": 0
               },
-              "questName": "A Tail of Two Cats"
+              "questName": "A Tail of Two Cats",
+              "requiredItems": [
+                {
+                  "itemId": 227,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 161,
@@ -1607,7 +6129,45 @@
                 "y": 3650,
                 "plane": 0
               },
-              "questName": "One Small Favour"
+              "questName": "One Small Favour",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 3008,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1761,
+                  "quantity": 2
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 162,
@@ -1617,7 +6177,25 @@
                 "y": 3499,
                 "plane": 0
               },
-              "questName": "A Tail of Two Cats"
+              "questName": "A Tail of Two Cats",
+              "requiredItems": [
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 163,
@@ -1627,7 +6205,21 @@
                 "y": 3218,
                 "plane": 0
               },
-              "questName": "Cold War"
+              "questName": "Cold War",
+              "requiredItems": [
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 164,
@@ -1636,7 +6228,13 @@
                 "x": 3230,
                 "y": 3204,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 165,
@@ -1646,7 +6244,65 @@
                 "y": 3475,
                 "plane": 0
               },
-              "questName": "One Small Favour"
+              "questName": "One Small Favour",
+              "requiredItems": [
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1939,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 8782,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 952,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1383,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 556,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 557,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 166,
@@ -1656,7 +6312,25 @@
                 "y": 3217,
                 "plane": 0
               },
-              "questName": "Ratcatchers"
+              "questName": "Ratcatchers",
+              "requiredItems": [
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1823,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2693,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 167,
@@ -1666,7 +6340,25 @@
                 "y": 3713,
                 "plane": 0
               },
-              "questName": "Between a Rock..."
+              "questName": "Between a Rock...",
+              "requiredItems": [
+                {
+                  "itemId": 2357,
+                  "quantity": 3
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 168,
@@ -1686,7 +6378,65 @@
                 "y": 10302,
                 "plane": 0
               },
-              "questName": "Making Friends with My Arm"
+              "questName": "Making Friends with My Arm",
+              "requiredItems": [
+                {
+                  "itemId": 565,
+                  "quantity": 5
+                },
+                {
+                  "itemId": 1275,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 590,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 373,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1939,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21149,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 170,
@@ -1695,7 +6445,21 @@
                 "x": 2501,
                 "y": 3488,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6333,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 171,
@@ -1715,7 +6479,13 @@
                 "y": 3214,
                 "plane": 0
               },
-              "questName": "Recipe for Disaster"
+              "questName": "Recipe for Disaster",
+              "requiredItems": [
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 173,
@@ -1726,7 +6496,17 @@
                 "plane": 0
               },
               "questHelperLink": "https://oldschool.runescape.wiki/w/Defence%3F_What_Defence%3F",
-              "questName": "His Faithful Servants"
+              "questName": "His Faithful Servants",
+              "requiredItems": [
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1775,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 174,
@@ -1744,7 +6524,13 @@
                 "x": 3210,
                 "y": 3424,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 526,
+                  "quantity": 1400
+                }
+              ]
             },
             {
               "id": 176,
@@ -1753,7 +6539,37 @@
                 "x": 3493,
                 "y": 3489,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 995,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 561,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1517,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1539,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 314,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 177,
@@ -1763,7 +6579,33 @@
                 "y": 3489,
                 "plane": 0
               },
-              "questName": "Darkness of Hallowvale"
+              "questName": "Darkness of Hallowvale",
+              "requiredItems": [
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 954,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 178,
@@ -1797,7 +6639,29 @@
                 "x": 3590,
                 "y": 3337,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 946,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 6333,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 561,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 182,
@@ -1817,7 +6681,25 @@
                 "x": 3655,
                 "y": 9882,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 8780,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1387,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 561,
+                  "quantity": 1
+                }
+              ]
             }
           ]
         },
@@ -1831,7 +6713,13 @@
                 "x": 2757,
                 "y": 3178,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 185,
@@ -1926,7 +6814,25 @@
                 "y": 3204,
                 "plane": 0
               },
-              "questName": "Rag and Bone Man II"
+              "questName": "Rag and Bone Man II",
+              "requiredItems": [
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 566,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 772,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 195,
@@ -1944,7 +6850,49 @@
                 "x": 2965,
                 "y": 3380,
                 "plane": 0
-              }
+              },
+              "requiredItems": [
+                {
+                  "itemId": 1059,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1409,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 560,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 555,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2552,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 197,
@@ -1954,7 +6902,57 @@
                 "y": 3461,
                 "plane": 0
               },
-              "questName": "The Great Brain Robbery"
+              "questName": "The Great Brain Robbery",
+              "requiredItems": [
+                {
+                  "itemId": 2434,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 960,
+                  "quantity": 18
+                },
+                {
+                  "itemId": 2347,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 4202,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 562,
+                  "quantity": 15
+                },
+                {
+                  "itemId": 563,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 554,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1381,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 1359,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 21483,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5341,
+                  "quantity": 1
+                },
+                {
+                  "itemId": 5343,
+                  "quantity": 1
+                }
+              ]
             },
             {
               "id": 198,
