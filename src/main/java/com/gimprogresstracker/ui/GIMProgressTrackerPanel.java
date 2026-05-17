@@ -53,13 +53,14 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Function<Integer, String> itemName;
 	private final Supplier<Boolean> bankReady;
 	private final Supplier<Boolean> gimBankReady;
+	private final Supplier<Boolean> isGroupIronman;
 
 	private final JPanel contentPanel = new JPanel();
 
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
 		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
-		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady)
+		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady, Supplier<Boolean> isGroupIronman)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -72,6 +73,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.itemName = itemName;
 		this.bankReady = bankReady;
 		this.gimBankReady = gimBankReady;
+		this.isGroupIronman = isGroupIronman;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -279,7 +281,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private JPanel setupTips()
 	{
 		boolean needBank = !bankReady.get();
-		boolean needGim = !gimBankReady.get();
+		boolean needGim = isGroupIronman.get() && !gimBankReady.get();
 		boolean needQH = !questHelperInstalled.get();
 
 		if (!needBank && !needGim && !needQH)
