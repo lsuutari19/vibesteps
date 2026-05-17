@@ -57,6 +57,9 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
 import net.runelite.client.Notifier;
+import net.runelite.api.MenuAction;
+import net.runelite.api.gameval.InterfaceID;
+import net.runelite.api.widgets.Widget;
 import net.runelite.client.util.LinkBrowser;
 
 @Slf4j
@@ -421,12 +424,19 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 	private void openWorldMapAt(Location loc)
 	{
-		// Ensure the orange step marker exists, then jump the world map to the location.
-		// Script 2925 (worldmap_overlay_jumptomapposition) centers the world map on the given
-		// tile and opens the world map interface if it is not already open.
 		refreshWorldMapPoint();
-		// Script 2925 signature: 3 ints (x, y, plane) + 2 strings (label, tooltip).
-		clientThread.invoke(() -> client.runScript(2925, loc.getX(), loc.getY(), loc.getPlane(), "", ""));
+		WorldPoint wp = new WorldPoint(loc.getX(), loc.getY(), loc.getPlane());
+		clientThread.invoke(() ->
+		{
+			// Center the world map on the step tile.
+			client.getWorldMap().setWorldMapPositionTarget(wp);
+			// Open the world map if it is not already visible.
+			Widget mapRoot = client.getWidget(InterfaceID.Worldmap.UNIVERSE);
+			if (mapRoot == null || mapRoot.isHidden())
+			{
+				client.menuAction(1, InterfaceID.Orbs.ORB_WORLDMAP, MenuAction.CC_OP, -1, -1, "", "");
+			}
+		});
 	}
 
 	private void showTeammateMapPoint(Location loc)
