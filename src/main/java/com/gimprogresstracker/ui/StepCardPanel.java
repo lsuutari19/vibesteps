@@ -34,7 +34,8 @@ class StepCardPanel extends JPanel
 	private static final Color SECONDARY_BTN_BG = ColorScheme.DARK_GRAY_COLOR;
 	private static final Color SECONDARY_BTN_HOVER = ColorScheme.DARK_GRAY_HOVER_COLOR;
 
-	StepCardPanel(StepEntry entry, ProgressTracker tracker)
+	StepCardPanel(StepEntry entry, ProgressTracker tracker,
+		String questName, String questButtonLabel, Runnable questAction)
 	{
 		Step step = entry.getStep();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -95,6 +96,23 @@ class StepCardPanel extends JPanel
 			locLabel.setForeground(Color.WHITE);
 			locLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			add(locLabel);
+		}
+
+		if (questName != null && questAction != null)
+		{
+			add(Box.createVerticalStrut(10));
+			add(sectionHeader("QUEST"));
+			add(Box.createVerticalStrut(3));
+			JLabel qnLabel = new JLabel(htmlWrap(questName));
+			qnLabel.setFont(FontManager.getRunescapeSmallFont());
+			qnLabel.setForeground(Color.WHITE);
+			qnLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			add(qnLabel);
+			add(Box.createVerticalStrut(4));
+			JButton qhBtn = styledButton(questButtonLabel, new Color(100, 200, 220),
+				new Color(28, 50, 58), new Color(40, 72, 84), new Color(60, 120, 140));
+			qhBtn.addActionListener(e -> questAction.run());
+			add(qhBtn);
 		}
 
 		add(Box.createVerticalStrut(12));

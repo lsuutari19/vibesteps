@@ -13,6 +13,7 @@ public class Step
 	private List<RequiredItem> requiredItems;
 	private boolean skipIfBanked;
 	private String questHelperLink;
+	private String questName;
 
 	public List<RequiredItem> getRequiredItems()
 	{
