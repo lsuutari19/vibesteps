@@ -1,10 +1,12 @@
 package com.gimprogresstracker.ui;
 
 import com.gimprogresstracker.ProgressTracker;
+import com.gimprogresstracker.model.ItemStatus;
 import com.gimprogresstracker.model.Location;
 import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.model.Step;
 import com.gimprogresstracker.model.StepEntry;
+import java.util.function.Function;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -38,7 +40,8 @@ class StepCardPanel extends JPanel
 	private static final Color SECONDARY_BTN_HOVER = ColorScheme.DARK_GRAY_HOVER_COLOR;
 
 	StepCardPanel(StepEntry entry, ProgressTracker tracker,
-		String questName, String questButtonLabel, Runnable questAction, ItemManager itemManager)
+		String questName, String questButtonLabel, Runnable questAction, ItemManager itemManager,
+		Function<RequiredItem, ItemStatus> itemStatus)
 	{
 		Step step = entry.getStep();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -80,7 +83,7 @@ class StepCardPanel extends JPanel
 			add(Box.createVerticalStrut(3));
 			for (RequiredItem item : step.getRequiredItems())
 			{
-				add(itemRow(item, itemManager));
+				add(itemRow(item, itemManager, itemStatus));
 				add(Box.createVerticalStrut(2));
 			}
 		}
@@ -137,7 +140,8 @@ class StepCardPanel extends JPanel
 		}
 	}
 
-	private static JPanel itemRow(RequiredItem item, ItemManager itemManager)
+	private static JPanel itemRow(RequiredItem item, ItemManager itemManager,
+		Function<RequiredItem, ItemStatus> itemStatus)
 	{
 		JPanel row = new JPanel();
 		row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
@@ -154,10 +158,25 @@ class StepCardPanel extends JPanel
 			row.add(Box.createHorizontalStrut(5));
 		}
 
+		ItemStatus status = itemStatus.apply(item);
+		Color nameColor;
+		switch (status)
+		{
+			case IN_INVENTORY:
+				nameColor = ColorScheme.PROGRESS_COMPLETE_COLOR;
+				break;
+			case IN_BANK:
+				nameColor = Color.WHITE;
+				break;
+			default:
+				nameColor = new Color(220, 50, 50);
+				break;
+		}
+
 		String name = resolveItemName(itemManager, item.getItemId());
 		JLabel nameLabel = new JLabel(name + "  ×" + item.getQuantity());
 		nameLabel.setFont(FontManager.getRunescapeSmallFont());
-		nameLabel.setForeground(Color.WHITE);
+		nameLabel.setForeground(nameColor);
 		nameLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
 		row.add(nameLabel);
 

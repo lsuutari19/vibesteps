@@ -1,7 +1,9 @@
 package com.gimprogresstracker;
 
 import com.gimprogresstracker.model.Guide;
+import com.gimprogresstracker.model.ItemStatus;
 import com.gimprogresstracker.model.Location;
+import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.model.StepEntry;
 import com.gimprogresstracker.ui.GIMProgressTrackerPanel;
 import com.gimprogresstracker.ui.PanelIcons;
@@ -24,9 +26,13 @@ import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
+import net.runelite.api.InventoryID;
+import net.runelite.api.Item;
+import net.runelite.api.ItemContainer;
 import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.eventbus.Subscribe;
@@ -91,13 +97,17 @@ public class GIMProgressTrackerPlugin extends Plugin
 	private Runnable trackerListener;
 	private BufferedImage mapPointIcon;
 
+	// Bank contents are cleared from the client when the bank interface closes,
+	// so we cache the last-seen snapshot here.
+	private volatile Item[] cachedBankItems = new Item[0];
+
 	@Override
 	protected void startUp() throws Exception
 	{
 		mapPointIcon = buildMapPointIcon(config.highlightColor());
 
 		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
-			this::isQuestHelperInstalled, this::openQuestGuide, itemManager);
+			this::isQuestHelperInstalled, this::openQuestGuide, itemManager, this::checkItemStatus);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
@@ -306,6 +316,62 @@ public class GIMProgressTrackerPlugin extends Plugin
 		{
 			log.debug("Failed to export progress to shared folder", e);
 		}
+	}
+
+	@Subscribe
+	public void onItemContainerChanged(ItemContainerChanged event)
+	{
+		int id = event.getContainerId();
+		if (id == InventoryID.BANK.getId())
+		{
+			Item[] items = event.getItemContainer().getItems();
+			cachedBankItems = items != null ? items : new Item[0];
+		}
+		if (id == InventoryID.INVENTORY.getId() || id == InventoryID.BANK.getId())
+		{
+			if (panel != null)
+			{
+				panel.refresh();
+			}
+		}
+	}
+
+	private ItemStatus checkItemStatus(RequiredItem required)
+	{
+		int itemId = required.getItemId();
+		int needed = required.getQuantity();
+
+		ItemContainer inv = client.getItemContainer(InventoryID.INVENTORY);
+		if (inv != null)
+		{
+			int count = 0;
+			for (Item item : inv.getItems())
+			{
+				if (item.getId() == itemId)
+				{
+					count += item.getQuantity();
+				}
+			}
+			if (count >= needed)
+			{
+				return ItemStatus.IN_INVENTORY;
+			}
+		}
+
+		int bankCount = 0;
+		for (Item item : cachedBankItems)
+		{
+			if (item.getId() != -1 && itemManager.canonicalize(item.getId()) == itemId)
+			{
+				bankCount += item.getQuantity();
+			}
+		}
+		if (bankCount >= needed)
+		{
+			return ItemStatus.IN_BANK;
+		}
+
+		return ItemStatus.NOT_FOUND;
 	}
 
 	private boolean isQuestHelperInstalled()
