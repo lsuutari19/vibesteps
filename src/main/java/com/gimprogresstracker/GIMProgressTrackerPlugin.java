@@ -97,8 +97,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 	private Runnable trackerListener;
 	private BufferedImage mapPointIcon;
 
-	// Bank contents are cleared from the client when the bank interface closes,
-	// so we cache the last-seen snapshot here.
+	// All three containers are cached so checkItemStatus can be called from any
+	// thread without touching the client API (which requires the client thread).
+	private volatile Item[] cachedInventoryItems = new Item[0];
 	private volatile Item[] cachedBankItems = new Item[0];
 	private volatile Item[] cachedGimBankItems = new Item[0];
 
@@ -323,6 +324,11 @@ public class GIMProgressTrackerPlugin extends Plugin
 	public void onItemContainerChanged(ItemContainerChanged event)
 	{
 		int id = event.getContainerId();
+		if (id == InventoryID.INVENTORY.getId())
+		{
+			Item[] items = event.getItemContainer().getItems();
+			cachedInventoryItems = items != null ? items : new Item[0];
+		}
 		if (id == InventoryID.BANK.getId())
 		{
 			Item[] items = event.getItemContainer().getItems();
@@ -348,21 +354,17 @@ public class GIMProgressTrackerPlugin extends Plugin
 		int itemId = required.getItemId();
 		int needed = required.getQuantity();
 
-		ItemContainer inv = client.getItemContainer(InventoryID.INVENTORY);
-		if (inv != null)
+		int invCount = 0;
+		for (Item item : cachedInventoryItems)
 		{
-			int count = 0;
-			for (Item item : inv.getItems())
+			if (item.getId() == itemId)
 			{
-				if (item.getId() == itemId)
-				{
-					count += item.getQuantity();
-				}
+				invCount += item.getQuantity();
 			}
-			if (count >= needed)
-			{
-				return ItemStatus.IN_INVENTORY;
-			}
+		}
+		if (invCount >= needed)
+		{
+			return ItemStatus.IN_INVENTORY;
 		}
 
 		int bankCount = 0;
