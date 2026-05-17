@@ -148,7 +148,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 		panel.add(Box.createVerticalStrut(6));
 
-		JLabel l = new JLabel("<html><body style='width: 170px'>"
+		JLabel l = new JLabel("<html><body style='width: 120px'>"
 			+ "Click <b>Import guide…</b> below and pick a guide <code>.json</code> file. "
 			+ "Progress is saved per character."
 			+ "</body></html>");
@@ -166,7 +166,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JLabel name = new JLabel("<html><body style='width: 180px'>" + escapeHtml(guide.getGuideName()) + "</body></html>");
+		JLabel name = new JLabel("<html><body style='width: 150px'>" + escapeHtml(guide.getGuideName()) + "</body></html>");
 		name.setFont(FontManager.getRunescapeBoldFont());
 		name.setForeground(ACCENT);
 		name.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -301,7 +301,6 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
-		card.setMaximumSize(new Dimension(Integer.MAX_VALUE, card.getPreferredSize().height));
 		return card;
 	}
 
@@ -349,14 +348,11 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		row.add(id, BorderLayout.WEST);
 
 		String desc = entry.getStep().getDescription();
-		String shown = desc.length() > 110 ? desc.substring(0, 107) + "..." : desc;
-		JLabel d = new JLabel("<html><body style='width: 130px'>" + escapeHtml(shown) + "</body></html>");
+		JLabel d = new JLabel("<html><body style='width: 100px'>" + escapeHtml(desc) + "</body></html>");
 		d.setFont(FontManager.getRunescapeSmallFont());
 		d.setForeground(Color.WHITE);
-		d.setToolTipText(desc);
 		row.add(d, BorderLayout.CENTER);
 
-		row.setMaximumSize(new Dimension(Integer.MAX_VALUE, row.getPreferredSize().height));
 		return row;
 	}
 
