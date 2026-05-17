@@ -425,7 +425,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 		// Script 2925 (worldmap_overlay_jumptomapposition) centers the world map on the given
 		// tile and opens the world map interface if it is not already open.
 		refreshWorldMapPoint();
-		clientThread.invoke(() -> client.runScript(2925, loc.getX(), loc.getY(), loc.getPlane()));
+		// Script 2925 signature: 3 ints (x, y, plane) + 2 strings (label, tooltip).
+		clientThread.invoke(() -> client.runScript(2925, loc.getX(), loc.getY(), loc.getPlane(), "", ""));
 	}
 
 	private void showTeammateMapPoint(Location loc)
