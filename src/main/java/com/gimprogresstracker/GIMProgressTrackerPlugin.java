@@ -32,6 +32,7 @@ import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
+import net.runelite.api.Skill;
 import net.runelite.api.Varbits;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
@@ -40,6 +41,7 @@ import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.ItemContainerChanged;
+import net.runelite.api.events.StatChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
@@ -121,8 +123,13 @@ public class GIMProgressTrackerPlugin extends Plugin
 	// Pre-canonicalized item ID → quantity maps, built on the client thread so
 	// checkItemStatus can do pure map lookups from any thread (including the EDT).
 	private volatile Map<Integer, Integer> cachedInventory = Collections.emptyMap();
+	private volatile Map<Integer, Integer> cachedEquipment = Collections.emptyMap();
 	private volatile Map<Integer, Integer> cachedBank = Collections.emptyMap();
 	private volatile Map<Integer, Integer> cachedGimBank = Collections.emptyMap();
+
+	// Skill name → real level, updated on login and StatChanged. Keyed by Skill.name()
+	// so the EDT can read it without touching the client API.
+	private final ConcurrentHashMap<String, Integer> cachedSkillLevels = new ConcurrentHashMap<>();
 
 	@Override
 	protected void startUp() throws Exception
@@ -135,7 +142,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 			id -> itemNameCache.getOrDefault(id, "Item #" + id),
 			() -> !cachedBank.isEmpty(),
 			() -> !cachedGimBank.isEmpty(),
-			() -> isGroupIronman);
+			() -> isGroupIronman,
+			skill -> cachedSkillLevels.getOrDefault(skill.name(), 1));
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
@@ -202,7 +210,32 @@ public class GIMProgressTrackerPlugin extends Plugin
 			// Varbit 1777 (ACCOUNT_TYPE): 4=Group Ironman, 5=Hardcore Group Ironman, 6=Unranked Group Ironman
 			int acctType = client.getVarbitValue(Varbits.ACCOUNT_TYPE);
 			isGroupIronman = acctType == 4 || acctType == 5 || acctType == 6;
+			cacheAllSkillLevels();
 		}
+	}
+
+	@Subscribe
+	public void onStatChanged(StatChanged event)
+	{
+		Skill skill = event.getSkill();
+		if (skill != null && skill != Skill.OVERALL)
+		{
+			cachedSkillLevels.put(skill.name(), event.getLevel());
+		}
+	}
+
+	private void cacheAllSkillLevels()
+	{
+		clientThread.invoke(() ->
+		{
+			for (Skill skill : Skill.values())
+			{
+				if (skill != Skill.OVERALL)
+				{
+					cachedSkillLevels.put(skill.name(), client.getRealSkillLevel(skill));
+				}
+			}
+		});
 	}
 
 	@Subscribe
@@ -406,6 +439,11 @@ public class GIMProgressTrackerPlugin extends Plugin
 			cachedInventory = buildItemMap(event.getItemContainer().getItems());
 			relevant = true;
 		}
+		if (id == InventoryID.EQUIPMENT.getId())
+		{
+			cachedEquipment = buildItemMap(event.getItemContainer().getItems());
+			relevant = true;
+		}
 		if (id == InventoryID.BANK.getId())
 		{
 			cachedBank = buildItemMap(event.getItemContainer().getItems());
@@ -448,6 +486,10 @@ public class GIMProgressTrackerPlugin extends Plugin
 		if (cachedInventory.getOrDefault(itemId, 0) >= needed)
 		{
 			return ItemStatus.IN_INVENTORY;
+		}
+		if (cachedEquipment.getOrDefault(itemId, 0) >= needed)
+		{
+			return ItemStatus.IN_EQUIPMENT;
 		}
 		if (cachedBank.getOrDefault(itemId, 0) >= needed)
 		{

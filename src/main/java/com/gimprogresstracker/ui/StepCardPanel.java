@@ -62,7 +62,9 @@ class StepCardPanel extends JPanel
 
 		add(Box.createVerticalStrut(6));
 
-		JLabel title = new JLabel("Step " + step.getId());
+		String tldr = step.getTldr();
+		String titleText = (tldr != null && !tldr.isEmpty()) ? tldr : "Step " + step.getId();
+		JLabel title = new JLabel(titleText);
 		title.setFont(FontManager.getRunescapeBoldFont());
 		title.setForeground(ACCENT);
 		title.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -146,9 +148,30 @@ class StepCardPanel extends JPanel
 
 		add(Box.createVerticalStrut(4));
 
-		JButton skip = styledButton("Skip", ColorScheme.LIGHT_GRAY_COLOR, SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+		JPanel navRow = new JPanel();
+		navRow.setLayout(new BoxLayout(navRow, BoxLayout.X_AXIS));
+		navRow.setOpaque(false);
+		navRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JButton back = styledButton("← Back", ColorScheme.LIGHT_GRAY_COLOR, SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+		back.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
+		back.addActionListener(e -> tracker.moveToPreviousStep());
+		navRow.add(back);
+
+		navRow.add(Box.createHorizontalStrut(4));
+
+		JButton skip = styledButton("Skip →", ColorScheme.LIGHT_GRAY_COLOR, SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+		skip.setMaximumSize(new Dimension(Integer.MAX_VALUE, 28));
 		skip.addActionListener(e -> tracker.markSkipped(step.getId()));
-		add(skip);
+		navRow.add(skip);
+
+		add(navRow);
+
+		add(Box.createVerticalStrut(4));
+
+		JButton todo = styledButton("Move to TO-DO", ColorScheme.LIGHT_GRAY_COLOR, SECONDARY_BTN_BG, SECONDARY_BTN_HOVER, ColorScheme.MEDIUM_GRAY_COLOR);
+		todo.addActionListener(e -> tracker.markTodo(step.getId()));
+		add(todo);
 
 		String qh = step.getQuestHelperLink();
 		if (qh != null && !qh.isEmpty())
@@ -238,6 +261,7 @@ class StepCardPanel extends JPanel
 		switch (status)
 		{
 			case IN_INVENTORY:
+			case IN_EQUIPMENT:
 				nameColor = ColorScheme.PROGRESS_COMPLETE_COLOR;
 				break;
 			case IN_BANK:

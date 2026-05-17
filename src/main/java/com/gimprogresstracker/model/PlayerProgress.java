@@ -11,6 +11,7 @@ public class PlayerProgress
 	private String guideName;
 	private Set<Integer> completedStepIds = new LinkedHashSet<>();
 	private Set<Integer> skippedStepIds = new LinkedHashSet<>();
+	private Set<Integer> todoStepIds = new LinkedHashSet<>();
 	private String lastUpdated;
 
 	public Set<Integer> getCompletedStepIds()
@@ -29,5 +30,14 @@ public class PlayerProgress
 			skippedStepIds = new LinkedHashSet<>();
 		}
 		return skippedStepIds;
+	}
+
+	public Set<Integer> getTodoStepIds()
+	{
+		if (todoStepIds == null)
+		{
+			todoStepIds = new LinkedHashSet<>();
+		}
+		return todoStepIds;
 	}
 }

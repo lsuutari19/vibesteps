@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -25,13 +26,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import com.gimprogresstracker.model.ItemStatus;
 import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.util.QuestDetector;
+import net.runelite.api.Skill;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -40,6 +41,7 @@ import net.runelite.client.ui.PluginPanel;
 public class GIMProgressTrackerPanel extends PluginPanel
 {
 	private static final Color ACCENT = ColorScheme.BRAND_ORANGE;
+	private static final Color TODO_COLOR = new Color(70, 120, 200);
 	private static final Color BTN_BG = ColorScheme.DARK_GRAY_COLOR;
 	private static final Color BTN_HOVER = ColorScheme.DARK_GRAY_HOVER_COLOR;
 
@@ -55,6 +57,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Supplier<Boolean> bankReady;
 	private final Supplier<Boolean> gimBankReady;
 	private final Supplier<Boolean> isGroupIronman;
+	private final Function<Skill, Integer> skillLevel;
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -63,11 +66,15 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private boolean descriptionExpanded = false;
 	private int expandedDescriptionStepId = -1;
 
+	// AFK suggestion state persists across refreshes triggered by inventory events.
+	private AfkTaskSuggester.AfkTask currentAfkTask = null;
+
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
 		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestHelper, Consumer<String> openWikiGuide,
 		ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
-		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady, Supplier<Boolean> isGroupIronman)
+		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady, Supplier<Boolean> isGroupIronman,
+		Function<Skill, Integer> skillLevel)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -82,6 +89,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.bankReady = bankReady;
 		this.gimBankReady = gimBankReady;
 		this.isGroupIronman = isGroupIronman;
+		this.skillLevel = skillLevel;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -126,6 +134,16 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			contentPanel.add(currentStepSection());
 			contentPanel.add(Box.createVerticalStrut(12));
 			contentPanel.add(upcomingSection());
+
+			List<StepEntry> todos = tracker.getTodoSteps();
+			if (!todos.isEmpty())
+			{
+				contentPanel.add(Box.createVerticalStrut(12));
+				contentPanel.add(todoSection(todos));
+			}
+
+			contentPanel.add(Box.createVerticalStrut(12));
+			contentPanel.add(afkSection());
 		}
 
 		contentPanel.add(Box.createVerticalStrut(14));
@@ -242,6 +260,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		int total = tracker.getTotalCount();
 		int completed = tracker.getCompletedCount();
 		int skipped = tracker.getSkippedCount();
+		int todo = tracker.getTodoCount();
 		int done = completed + skipped;
 		int pct = total == 0 ? 0 : (int) Math.round(done * 100.0 / total);
 
@@ -262,28 +281,58 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 		panel.add(topRow);
 		panel.add(Box.createVerticalStrut(6));
-
-		JProgressBar bar = new JProgressBar(0, Math.max(total, 1));
-		bar.setValue(done);
-		bar.setStringPainted(false);
-		bar.setForeground(ACCENT);
-		bar.setBackground(ColorScheme.DARK_GRAY_COLOR);
-		bar.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
-		bar.setMaximumSize(new Dimension(Integer.MAX_VALUE, 10));
-		bar.setPreferredSize(new Dimension(0, 10));
-		bar.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.add(bar);
-
+		panel.add(segmentedProgressBar(total, done, todo));
 		panel.add(Box.createVerticalStrut(6));
 
-		int remaining = Math.max(total - done, 0);
-		JLabel stats = new JLabel(String.format("%d done  •  %d skipped  •  %d left", completed, skipped, remaining));
+		int remaining = Math.max(total - done - todo, 0);
+		String statsText = String.format("%d done  •  %d todo  •  %d left", done, todo, remaining);
+		JLabel stats = new JLabel(statsText);
 		stats.setFont(FontManager.getRunescapeSmallFont());
 		stats.setForeground(Color.WHITE);
 		stats.setAlignmentX(Component.LEFT_ALIGNMENT);
 		panel.add(stats);
 
 		return panel;
+	}
+
+	private JPanel segmentedProgressBar(int total, int done, int todo)
+	{
+		return new JPanel()
+		{
+			{
+				setMaximumSize(new Dimension(Integer.MAX_VALUE, 10));
+				setPreferredSize(new Dimension(0, 10));
+				setAlignmentX(Component.LEFT_ALIGNMENT);
+				setOpaque(false);
+			}
+
+			@Override
+			protected void paintComponent(Graphics g)
+			{
+				int w = getWidth();
+				int h = getHeight();
+				g.setColor(ColorScheme.DARK_GRAY_COLOR);
+				g.fillRect(0, 0, w, h);
+
+				int safeTotal = Math.max(total, 1);
+				int doneW = (int) Math.round(done * (double) w / safeTotal);
+				int todoW = (int) Math.round(todo * (double) w / safeTotal);
+
+				if (doneW > 0)
+				{
+					g.setColor(ACCENT);
+					g.fillRect(0, 0, doneW, h);
+				}
+				if (todoW > 0)
+				{
+					g.setColor(TODO_COLOR);
+					g.fillRect(doneW, 0, todoW, h);
+				}
+
+				g.setColor(ColorScheme.MEDIUM_GRAY_COLOR);
+				g.drawRect(0, 0, w - 1, h - 1);
+			}
+		};
 	}
 
 	private JPanel setupTips()
@@ -399,7 +448,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 	private JPanel upcomingSection()
 	{
-		List<StepEntry> upcoming = tracker.getUpcoming(5);
+		List<StepEntry> upcoming = tracker.getUpcoming(3);
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -419,8 +468,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 		for (StepEntry e : upcoming)
 		{
-			JPanel row = upcomingRow(e);
-			panel.add(row);
+			panel.add(upcomingRow(e));
 			panel.add(Box.createVerticalStrut(4));
 		}
 		return panel;
@@ -440,13 +488,175 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		id.setForeground(ACCENT);
 		row.add(id, BorderLayout.WEST);
 
-		String desc = entry.getStep().getDescription();
-		JLabel d = new JLabel("<html><body style='width: 100px'>" + escapeHtml(desc) + "</body></html>");
+		String tldr = entry.getStep().getTldr();
+		String label = (tldr != null && !tldr.isEmpty()) ? escapeHtml(tldr)
+			: "<html><body style='width: 100px'>" + escapeHtml(shorten(entry.getStep().getDescription(), 60)) + "</body></html>";
+		JLabel d = new JLabel(label);
 		d.setFont(FontManager.getRunescapeSmallFont());
 		d.setForeground(Color.WHITE);
 		row.add(d, BorderLayout.CENTER);
 
 		return row;
+	}
+
+	private JPanel todoSection(List<StepEntry> todos)
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel header = new JLabel("TO-DO LATER");
+		header.setFont(FontManager.getRunescapeSmallFont());
+		header.setForeground(TODO_COLOR);
+		header.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.add(header);
+		panel.add(Box.createVerticalStrut(6));
+
+		for (StepEntry e : todos)
+		{
+			panel.add(todoRow(e));
+			panel.add(Box.createVerticalStrut(4));
+		}
+		return panel;
+	}
+
+	private JPanel todoRow(StepEntry entry)
+	{
+		JPanel row = new JPanel(new BorderLayout(8, 0));
+		row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		row.setBorder(BorderFactory.createCompoundBorder(
+			new MatteBorder(0, 2, 0, 0, TODO_COLOR),
+			BorderFactory.createEmptyBorder(4, 8, 4, 6)));
+		row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JPanel left = new JPanel();
+		left.setLayout(new BoxLayout(left, BoxLayout.Y_AXIS));
+		left.setOpaque(false);
+
+		JLabel id = new JLabel("#" + entry.getStep().getId());
+		id.setFont(FontManager.getRunescapeSmallFont());
+		id.setForeground(TODO_COLOR);
+		left.add(id);
+
+		String tldr = entry.getStep().getTldr();
+		String labelText = (tldr != null && !tldr.isEmpty()) ? escapeHtml(tldr)
+			: escapeHtml(shorten(entry.getStep().getDescription(), 40));
+		JLabel d = new JLabel("<html><body style='width: 80px'>" + labelText + "</body></html>");
+		d.setFont(FontManager.getRunescapeSmallFont());
+		d.setForeground(Color.WHITE);
+		left.add(d);
+
+		row.add(left, BorderLayout.CENTER);
+
+		JButton activate = new JButton("Activate");
+		activate.setFont(FontManager.getRunescapeSmallFont());
+		activate.setForeground(Color.WHITE);
+		activate.setBackground(new Color(40, 60, 100));
+		activate.setOpaque(true);
+		activate.setContentAreaFilled(true);
+		activate.setFocusPainted(false);
+		activate.setRolloverEnabled(false);
+		activate.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(TODO_COLOR),
+			BorderFactory.createEmptyBorder(3, 6, 3, 6)));
+		activate.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		activate.addActionListener(e -> tracker.unmark(entry.getStep().getId()));
+		activate.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				activate.setBackground(new Color(60, 90, 150));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				activate.setBackground(new Color(40, 60, 100));
+			}
+		});
+		row.add(activate, BorderLayout.EAST);
+
+		return row;
+	}
+
+	private JPanel afkSection()
+	{
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		panel.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR),
+			BorderFactory.createEmptyBorder(8, 10, 8, 10)));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel header = new JLabel("AFK SUGGESTION");
+		header.setFont(FontManager.getRunescapeSmallFont());
+		header.setForeground(new Color(140, 190, 140));
+		header.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.add(header);
+
+		if (currentAfkTask == null)
+		{
+			panel.add(Box.createVerticalStrut(6));
+			JButton suggest = styledButton("Suggest AFK task", ColorScheme.LIGHT_GRAY_COLOR);
+			suggest.addActionListener(e ->
+			{
+				currentAfkTask = AfkTaskSuggester.suggest(skillLevel, null);
+				refresh();
+			});
+			panel.add(suggest);
+		}
+		else
+		{
+			panel.add(Box.createVerticalStrut(6));
+
+			JLabel taskTitle = new JLabel(currentAfkTask.title);
+			taskTitle.setFont(FontManager.getRunescapeBoldFont());
+			taskTitle.setForeground(new Color(140, 210, 140));
+			taskTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
+			panel.add(taskTitle);
+
+			panel.add(Box.createVerticalStrut(3));
+
+			JLabel detail = new JLabel("<html><body style='width: 120px'>" + escapeHtml(currentAfkTask.detail) + "</body></html>");
+			detail.setFont(FontManager.getRunescapeSmallFont());
+			detail.setForeground(Color.WHITE);
+			detail.setAlignmentX(Component.LEFT_ALIGNMENT);
+			panel.add(detail);
+
+			panel.add(Box.createVerticalStrut(8));
+
+			JPanel btnRow = new JPanel();
+			btnRow.setLayout(new BoxLayout(btnRow, BoxLayout.X_AXIS));
+			btnRow.setOpaque(false);
+			btnRow.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+			JButton regen = styledButton("Regenerate", ColorScheme.LIGHT_GRAY_COLOR);
+			regen.setMaximumSize(regen.getPreferredSize());
+			regen.addActionListener(e ->
+			{
+				currentAfkTask = AfkTaskSuggester.suggest(skillLevel, currentAfkTask);
+				refresh();
+			});
+			btnRow.add(regen);
+
+			btnRow.add(Box.createHorizontalStrut(4));
+
+			JButton dismiss = styledButton("Dismiss", ColorScheme.LIGHT_GRAY_COLOR);
+			dismiss.setMaximumSize(dismiss.getPreferredSize());
+			dismiss.addActionListener(e ->
+			{
+				currentAfkTask = null;
+				refresh();
+			});
+			btnRow.add(dismiss);
+
+			panel.add(btnRow);
+		}
+
+		return panel;
 	}
 
 	private JPanel buttonRow()
@@ -466,7 +676,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			JButton reset = styledButton("Reset progress", ColorScheme.LIGHT_GRAY_COLOR);
 			reset.addActionListener(e -> {
 				int choice = JOptionPane.showConfirmDialog(this,
-					"Clear all completed and skipped steps for this guide?",
+					"Clear all completed, skipped, and to-do steps for this guide?",
 					"Reset progress", JOptionPane.OK_CANCEL_OPTION);
 				if (choice == JOptionPane.OK_OPTION)
 				{
@@ -532,5 +742,14 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private static String escapeHtml(String s)
 	{
 		return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+	}
+
+	private static String shorten(String s, int max)
+	{
+		if (s == null)
+		{
+			return "";
+		}
+		return s.length() <= max ? s : s.substring(0, max) + "…";
 	}
 }

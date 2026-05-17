@@ -149,9 +149,36 @@ public class ProgressTracker
 		return progress != null && progress.getSkippedStepIds().contains(stepId);
 	}
 
+	public boolean isTodo(int stepId)
+	{
+		return progress != null && progress.getTodoStepIds().contains(stepId);
+	}
+
 	public boolean isResolved(int stepId)
 	{
-		return isCompleted(stepId) || isSkipped(stepId);
+		return isCompleted(stepId) || isSkipped(stepId) || isTodo(stepId);
+	}
+
+	public int getTodoCount()
+	{
+		return progress == null ? 0 : progress.getTodoStepIds().size();
+	}
+
+	public List<StepEntry> getTodoSteps()
+	{
+		if (progress == null)
+		{
+			return Collections.emptyList();
+		}
+		List<StepEntry> out = new ArrayList<>();
+		for (StepEntry e : flattened)
+		{
+			if (isTodo(e.getStep().getId()))
+			{
+				out.add(e);
+			}
+		}
+		return out;
 	}
 
 	public Optional<StepEntry> getCurrentStep()
@@ -201,6 +228,7 @@ public class ProgressTracker
 			return;
 		}
 		progress.getSkippedStepIds().remove(stepId);
+		progress.getTodoStepIds().remove(stepId);
 		if (progress.getCompletedStepIds().add(stepId))
 		{
 			persist();
@@ -215,7 +243,56 @@ public class ProgressTracker
 			return;
 		}
 		progress.getCompletedStepIds().remove(stepId);
+		progress.getTodoStepIds().remove(stepId);
 		if (progress.getSkippedStepIds().add(stepId))
+		{
+			persist();
+			fire();
+		}
+	}
+
+	public void moveToPreviousStep()
+	{
+		if (progress == null)
+		{
+			return;
+		}
+		// Find the current step's position in the flattened list.
+		int currentIndex = flattened.size();
+		Optional<StepEntry> current = getCurrentStep();
+		if (current.isPresent())
+		{
+			int currentId = current.get().getStep().getId();
+			for (int i = 0; i < flattened.size(); i++)
+			{
+				if (flattened.get(i).getStep().getId() == currentId)
+				{
+					currentIndex = i;
+					break;
+				}
+			}
+		}
+		// Walk backwards and unmark the nearest completed or skipped step.
+		for (int i = currentIndex - 1; i >= 0; i--)
+		{
+			int stepId = flattened.get(i).getStep().getId();
+			if (isCompleted(stepId) || isSkipped(stepId))
+			{
+				unmark(stepId);
+				return;
+			}
+		}
+	}
+
+	public void markTodo(int stepId)
+	{
+		if (progress == null)
+		{
+			return;
+		}
+		progress.getCompletedStepIds().remove(stepId);
+		progress.getSkippedStepIds().remove(stepId);
+		if (progress.getTodoStepIds().add(stepId))
 		{
 			persist();
 			fire();
@@ -230,6 +307,7 @@ public class ProgressTracker
 		}
 		boolean changed = progress.getCompletedStepIds().remove(stepId);
 		changed |= progress.getSkippedStepIds().remove(stepId);
+		changed |= progress.getTodoStepIds().remove(stepId);
 		if (changed)
 		{
 			persist();
@@ -245,6 +323,7 @@ public class ProgressTracker
 		}
 		progress.getCompletedStepIds().clear();
 		progress.getSkippedStepIds().clear();
+		progress.getTodoStepIds().clear();
 		persist();
 		fire();
 	}

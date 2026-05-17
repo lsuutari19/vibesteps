@@ -8,6 +8,7 @@ import lombok.Data;
 public class Step
 {
 	private int id;
+	private String tldr;
 	private String description;
 	private Location location;
 	private List<RequiredItem> requiredItems;
