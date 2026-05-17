@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 import javax.swing.SwingUtilities;
 import lombok.extern.slf4j.Slf4j;
+import net.runelite.api.AccountType;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
 import net.runelite.api.InventoryID;
@@ -107,6 +108,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 	// item rows without touching client APIs.
 	private final ConcurrentHashMap<Integer, String> itemNameCache = new ConcurrentHashMap<>();
 
+	private volatile boolean isGroupIronman = false;
+
 	// All three containers are cached so checkItemStatus can be called from any
 	// thread without touching the client API (which requires the client thread).
 	private volatile Item[] cachedInventoryItems = new Item[0];
@@ -122,7 +125,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 			this::isQuestHelperInstalled, this::openQuestGuide, itemManager, this::checkItemStatus,
 			id -> itemNameCache.getOrDefault(id, "Item #" + id),
 			() -> cachedBankItems.length > 0,
-			() -> cachedGimBankItems.length > 0);
+			() -> cachedGimBankItems.length > 0,
+			() -> isGroupIronman);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
@@ -186,6 +190,10 @@ public class GIMProgressTrackerPlugin extends Plugin
 			{
 				tracker.setPlayerName(name);
 			}
+			AccountType type = client.getAccountType();
+			isGroupIronman = type == AccountType.GROUP_IRONMAN
+				|| type == AccountType.HARDCORE_GROUP_IRONMAN
+				|| type == AccountType.UNRANKED_GROUP_IRONMAN;
 		}
 	}
 
