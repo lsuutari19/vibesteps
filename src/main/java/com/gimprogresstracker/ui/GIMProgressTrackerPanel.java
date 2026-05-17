@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -28,6 +29,8 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import com.gimprogresstracker.model.ItemStatus;
+import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.util.QuestDetector;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
@@ -46,11 +49,13 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Supplier<Boolean> questHelperInstalled;
 	private final Consumer<String> openQuestGuide;
 	private final ItemManager itemManager;
+	private final Function<RequiredItem, ItemStatus> itemStatus;
 
 	private final JPanel contentPanel = new JPanel();
 
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
-		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager)
+		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager,
+		Function<RequiredItem, ItemStatus> itemStatus)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -59,6 +64,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.questHelperInstalled = questHelperInstalled;
 		this.openQuestGuide = openQuestGuide;
 		this.itemManager = itemManager;
+		this.itemStatus = itemStatus;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -302,7 +308,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			questAction = () -> openQuestGuide.accept(finalQuestName);
 		}
 
-		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction, itemManager);
+		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction, itemManager, itemStatus);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
 	}
