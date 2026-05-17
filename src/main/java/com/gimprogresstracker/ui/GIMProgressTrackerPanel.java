@@ -466,15 +466,15 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		panel.add(header);
 		panel.add(Box.createVerticalStrut(6));
 
-		for (StepEntry e : upcoming)
+		for (int i = 0; i < upcoming.size(); i++)
 		{
-			panel.add(upcomingRow(e));
+			panel.add(upcomingRow(upcoming.get(i), i == 0));
 			panel.add(Box.createVerticalStrut(4));
 		}
 		return panel;
 	}
 
-	private JPanel upcomingRow(StepEntry entry)
+	private JPanel upcomingRow(StepEntry entry, boolean showDescription)
 	{
 		JPanel row = new JPanel(new BorderLayout(8, 0));
 		row.setBackground(ColorScheme.DARKER_GRAY_COLOR);
@@ -488,10 +488,20 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		id.setForeground(ACCENT);
 		row.add(id, BorderLayout.WEST);
 
-		String tldr = entry.getStep().getTldr();
-		String label = (tldr != null && !tldr.isEmpty()) ? escapeHtml(tldr)
-			: "<html><body style='width: 100px'>" + escapeHtml(shorten(entry.getStep().getDescription(), 60)) + "</body></html>";
-		JLabel d = new JLabel(label);
+		String labelText;
+		if (showDescription)
+		{
+			labelText = "<html><body style='width: 120px'>"
+				+ escapeHtml(firstWords(entry.getStep().getDescription(), 50)) + "</body></html>";
+		}
+		else
+		{
+			String tldr = entry.getStep().getTldr();
+			labelText = (tldr != null && !tldr.isEmpty())
+				? escapeHtml(tldr)
+				: "<html><body style='width: 100px'>" + escapeHtml(shorten(entry.getStep().getDescription(), 40)) + "</body></html>";
+		}
+		JLabel d = new JLabel(labelText);
 		d.setFont(FontManager.getRunescapeSmallFont());
 		d.setForeground(Color.WHITE);
 		row.add(d, BorderLayout.CENTER);
@@ -751,5 +761,28 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			return "";
 		}
 		return s.length() <= max ? s : s.substring(0, max) + "…";
+	}
+
+	private static String firstWords(String s, int wordCount)
+	{
+		if (s == null)
+		{
+			return "";
+		}
+		String[] words = s.split("\\s+");
+		if (words.length <= wordCount)
+		{
+			return s;
+		}
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < wordCount; i++)
+		{
+			if (i > 0)
+			{
+				sb.append(' ');
+			}
+			sb.append(words[i]);
+		}
+		return sb.append("…").toString();
 	}
 }
