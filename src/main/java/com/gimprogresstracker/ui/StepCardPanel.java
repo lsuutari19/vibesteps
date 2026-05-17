@@ -195,6 +195,10 @@ class StepCardPanel extends JPanel
 			.replace("&", "&amp;")
 			.replace("<", "&lt;")
 			.replace(">", "&gt;");
-		return "<html><body style='width: 170px'>" + escaped + "</body></html>";
+		// 120px is intentionally conservative: PluginPanel(200) - outer padding(16)
+		// - card chrome(24) - scrollbar allowance(~17) = ~143px available.
+		// A smaller wrap width means preferred height is computed generously,
+		// so height caps based on getPreferredSize() will never clip the text.
+		return "<html><body style='width: 120px'>" + escaped + "</body></html>";
 	}
 }
