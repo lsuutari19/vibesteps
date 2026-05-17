@@ -23,7 +23,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.MatteBorder;
-import net.runelite.api.ItemComposition;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
@@ -43,7 +42,7 @@ class StepCardPanel extends JPanel
 
 	StepCardPanel(StepEntry entry, ProgressTracker tracker,
 		String questName, String questButtonLabel, Runnable questAction, ItemManager itemManager,
-		Function<RequiredItem, ItemStatus> itemStatus)
+		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName)
 	{
 		Step step = entry.getStep();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -85,7 +84,7 @@ class StepCardPanel extends JPanel
 			add(Box.createVerticalStrut(3));
 			for (RequiredItem item : step.getRequiredItems())
 			{
-				add(itemRow(item, itemManager, itemStatus));
+				add(itemRow(item, itemManager, itemStatus, itemName));
 				add(Box.createVerticalStrut(2));
 			}
 		}
@@ -143,7 +142,7 @@ class StepCardPanel extends JPanel
 	}
 
 	private static JPanel itemRow(RequiredItem item, ItemManager itemManager,
-		Function<RequiredItem, ItemStatus> itemStatus)
+		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName)
 	{
 		JPanel row = new JPanel();
 		row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
@@ -178,7 +177,7 @@ class StepCardPanel extends JPanel
 				break;
 		}
 
-		String name = resolveItemName(itemManager, item.getItemId());
+		String name = itemName.apply(item.getItemId());
 		JLabel nameLabel = new JLabel(name + "  ×" + item.getQuantity());
 		nameLabel.setFont(FontManager.getRunescapeSmallFont());
 		nameLabel.setForeground(nameColor);
@@ -186,23 +185,6 @@ class StepCardPanel extends JPanel
 		row.add(nameLabel);
 
 		return row;
-	}
-
-	private static String resolveItemName(ItemManager itemManager, int itemId)
-	{
-		try
-		{
-			ItemComposition comp = itemManager.getItemComposition(itemId);
-			String name = comp.getName();
-			if (name != null && !name.equals("null") && !name.isEmpty())
-			{
-				return name;
-			}
-		}
-		catch (Exception ignored)
-		{
-		}
-		return "Item #" + itemId;
 	}
 
 	private static JLabel sectionHeader(String text)

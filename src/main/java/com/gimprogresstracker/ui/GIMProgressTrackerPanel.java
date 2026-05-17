@@ -50,12 +50,13 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Consumer<String> openQuestGuide;
 	private final ItemManager itemManager;
 	private final Function<RequiredItem, ItemStatus> itemStatus;
+	private final Function<Integer, String> itemName;
 
 	private final JPanel contentPanel = new JPanel();
 
 	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
 		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestGuide, ItemManager itemManager,
-		Function<RequiredItem, ItemStatus> itemStatus)
+		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -65,6 +66,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.openQuestGuide = openQuestGuide;
 		this.itemManager = itemManager;
 		this.itemStatus = itemStatus;
+		this.itemName = itemName;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -308,7 +310,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			questAction = () -> openQuestGuide.accept(finalQuestName);
 		}
 
-		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction, itemManager, itemStatus);
+		StepCardPanel card = new StepCardPanel(current, tracker, questName, questBtnLabel, questAction, itemManager, itemStatus, itemName);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
 	}
