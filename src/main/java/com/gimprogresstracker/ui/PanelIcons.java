@@ -10,7 +10,7 @@ import net.runelite.client.util.ImageUtil;
 
 public final class PanelIcons
 {
-	private static final int ICON_SIZE = 32;
+	private static final int ICON_SIZE = 64;
 
 	private PanelIcons()
 	{
@@ -18,64 +18,53 @@ public final class PanelIcons
 
 	public static BufferedImage navIcon(Class<?> anchor)
 	{
+		return loadOrGenerate(anchor, "/com/gimprogresstracker/icon.png", "VS", new Color(0, 122, 204));
+	}
+
+	public static BufferedImage teammatesIcon()
+	{
+		// Anchor on this class so the resource lookup works whether or not the
+		// caller is in the same package as the PNG.
+		return loadOrGenerate(PanelIcons.class, "/com/gimprogresstracker/teammates-icon.png",
+			"GRP", new Color(30, 80, 160));
+	}
+
+	private static BufferedImage loadOrGenerate(Class<?> anchor, String resourcePath, String fallbackText, Color fallbackColor)
+	{
 		try
 		{
-			BufferedImage raw = ImageUtil.loadImageResource(anchor, "/com/gimprogresstracker/icon.png");
+			BufferedImage raw = ImageUtil.loadImageResource(anchor, resourcePath);
 			if (raw != null)
 			{
-				// Scale to the standard nav-icon size regardless of source resolution.
-				BufferedImage scaled = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
-				Graphics2D g = scaled.createGraphics();
-				try
-				{
-					g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-						RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-					g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-						RenderingHints.VALUE_ANTIALIAS_ON);
-					g.drawImage(raw, 0, 0, ICON_SIZE, ICON_SIZE, null);
-				}
-				finally
-				{
-					g.dispose();
-				}
-				return scaled;
+				return scale(raw, ICON_SIZE);
 			}
 		}
 		catch (Exception ignored)
 		{
 		}
-		return generated();
+		return generated(fallbackText, fallbackColor);
 	}
 
-	public static BufferedImage teammatesIcon()
+	private static BufferedImage scale(BufferedImage src, int size)
 	{
-		BufferedImage img = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g = img.createGraphics();
+		BufferedImage scaled = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = scaled.createGraphics();
 		try
 		{
-			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-
-			g.setColor(new Color(30, 80, 160));
-			g.fillRoundRect(0, 0, ICON_SIZE - 1, ICON_SIZE - 1, 8, 8);
-
-			g.setColor(Color.WHITE);
-			Font font = new Font(Font.SANS_SERIF, Font.BOLD, 11);
-			g.setFont(font);
-			String text = "GRP";
-			FontMetrics fm = g.getFontMetrics();
-			int tx = (ICON_SIZE - fm.stringWidth(text)) / 2;
-			int ty = (ICON_SIZE - fm.getHeight()) / 2 + fm.getAscent();
-			g.drawString(text, tx, ty);
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+				RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_ON);
+			g.drawImage(src, 0, 0, size, size, null);
 		}
 		finally
 		{
 			g.dispose();
 		}
-		return img;
+		return scaled;
 	}
 
-	private static BufferedImage generated()
+	private static BufferedImage generated(String text, Color background)
 	{
 		BufferedImage img = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
@@ -84,13 +73,12 @@ public final class PanelIcons
 			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-			g.setColor(new Color(0, 122, 204));
-			g.fillRoundRect(0, 0, ICON_SIZE - 1, ICON_SIZE - 1, 8, 8);
+			g.setColor(background);
+			g.fillRoundRect(0, 0, ICON_SIZE - 1, ICON_SIZE - 1, 12, 12);
 
 			g.setColor(Color.WHITE);
-			Font font = new Font(Font.SANS_SERIF, Font.BOLD, 13);
+			Font font = new Font(Font.SANS_SERIF, Font.BOLD, 24);
 			g.setFont(font);
-			String text = "VS";
 			FontMetrics fm = g.getFontMetrics();
 			int tx = (ICON_SIZE - fm.stringWidth(text)) / 2;
 			int ty = (ICON_SIZE - fm.getHeight()) / 2 + fm.getAscent();
