@@ -7,6 +7,8 @@ import com.gimprogresstracker.model.Step;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -32,6 +34,27 @@ public class GuideImporter
 	public Guide loadFromFile(Path path) throws IOException
 	{
 		try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8))
+		{
+			return parse(reader);
+		}
+	}
+
+	public Guide loadFromResource(String resourcePath) throws IOException
+	{
+		InputStream stream = GuideImporter.class.getResourceAsStream(resourcePath);
+		if (stream == null)
+		{
+			throw new IOException("Bundled guide resource not found: " + resourcePath);
+		}
+		try (Reader reader = new InputStreamReader(stream, StandardCharsets.UTF_8))
+		{
+			return parse(reader);
+		}
+	}
+
+	private Guide parse(Reader reader) throws IOException
+	{
+		try
 		{
 			Guide guide = gson.fromJson(reader, Guide.class);
 			if (guide == null)

@@ -46,8 +46,10 @@ import net.runelite.api.events.StatChanged;
 import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
+import net.runelite.client.eventbus.EventBus;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.events.ConfigChanged;
+import net.runelite.client.events.PluginMessage;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.plugins.PluginManager;
@@ -111,6 +113,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 	@Inject
 	private Notifier notifier;
+
+	@Inject
+	private EventBus eventBus;
 
 	private GIMProgressTrackerPanel panel;
 	private TeammatesPanel teammatesPanel;
@@ -209,6 +214,10 @@ public class GIMProgressTrackerPlugin extends Plugin
 		}
 		clearWorldMapPoint();
 		clearTeammateMapPoint();
+		if (config.useShortestPath())
+		{
+			clearShortestPath();
+		}
 
 		// Persist a final time, then drop in-memory state.
 		tracker.persist();
@@ -282,6 +291,26 @@ public class GIMProgressTrackerPlugin extends Plugin
 			case "showWorldMapArrow":
 				refreshWorldMapPoint();
 				break;
+			case "useShortestPath":
+				if (config.useShortestPath())
+				{
+					if (!isShortestPathInstalled())
+					{
+						configManager.setConfiguration(GIMProgressTrackerConfig.GROUP, "useShortestPath", false);
+						SwingUtilities.invokeLater(() ->
+							javax.swing.JOptionPane.showMessageDialog(panel,
+								"The Shortest Path plugin must be installed and enabled before this toggle can be turned on.\n"
+									+ "Install it from the Plugin Hub, enable it, then re-enable this option.",
+								"Vibe Steps Progress Tracker", javax.swing.JOptionPane.WARNING_MESSAGE));
+						break;
+					}
+					maybeSendShortestPathTarget();
+				}
+				else
+				{
+					clearShortestPath();
+				}
+				break;
 			default:
 				// other keys are read on demand by the overlay / panel; no action needed
 		}
@@ -295,6 +324,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 			panel.refresh();
 		}
 		refreshWorldMapPoint();
+		maybeSendShortestPathTarget();
 		maybeAutoExport();
 	}
 
@@ -344,14 +374,31 @@ public class GIMProgressTrackerPlugin extends Plugin
 		});
 	}
 
+	private static final String DEFAULT_GUIDE_RESOURCE = "/guides/bruhsailer-guide.json";
+
 	private void loadGuideFromConfig()
 	{
 		String pathStr = config.guideFilePath();
 		if (pathStr == null || pathStr.trim().isEmpty())
 		{
+			loadDefaultGuide();
 			return;
 		}
 		loadGuideFromFile(Paths.get(pathStr.trim()));
+	}
+
+	private void loadDefaultGuide()
+	{
+		try
+		{
+			Guide guide = guideImporter.loadFromResource(DEFAULT_GUIDE_RESOURCE);
+			tracker.setGuide(guide);
+			log.debug("Loaded bundled default guide '{}'", guide.getGuideName());
+		}
+		catch (IOException e)
+		{
+			log.warn("Failed to load bundled default guide: {}", e.getMessage());
+		}
 	}
 
 	private void loadGuideFromFile(Path file)
@@ -592,6 +639,51 @@ public class GIMProgressTrackerPlugin extends Plugin
 		return pluginManager.getPlugins().stream()
 			.anyMatch(p -> "QuestHelperPlugin".equals(p.getClass().getSimpleName())
 				&& pluginManager.isPluginEnabled(p));
+	}
+
+	// --- Shortest Path integration (experimental) ---------------------------
+	// Sends the current step's destination tile to the Shortest Path plugin via
+	// its inter-plugin PluginMessage API. Shortest Path auto-clears its own path
+	// when the player reaches the tile, so we only need to push a new target
+	// when our step advances and clear when the feature is disabled.
+
+	private static final String SHORTEST_PATH_NAMESPACE = "shortestpath";
+	private static final String SHORTEST_PATH_MSG_PATH = "path";
+	private static final String SHORTEST_PATH_MSG_CLEAR = "clear";
+	private static final String SHORTEST_PATH_KEY_TARGET = "target";
+
+	private boolean isShortestPathInstalled()
+	{
+		return pluginManager.getPlugins().stream()
+			.anyMatch(p -> "ShortestPathPlugin".equals(p.getClass().getSimpleName())
+				&& pluginManager.isPluginEnabled(p));
+	}
+
+	private void maybeSendShortestPathTarget()
+	{
+		if (!config.useShortestPath() || !isShortestPathInstalled())
+		{
+			return;
+		}
+		Optional<StepEntry> currentOpt = tracker.getCurrentStep();
+		Location loc = currentOpt.map(s -> s.getStep().getLocation()).orElse(null);
+		if (loc == null)
+		{
+			clearShortestPath();
+			return;
+		}
+		Map<String, Object> data = new HashMap<>();
+		data.put(SHORTEST_PATH_KEY_TARGET, new WorldPoint(loc.getX(), loc.getY(), loc.getPlane()));
+		eventBus.post(new PluginMessage(SHORTEST_PATH_NAMESPACE, SHORTEST_PATH_MSG_PATH, data));
+	}
+
+	private void clearShortestPath()
+	{
+		if (!isShortestPathInstalled())
+		{
+			return;
+		}
+		eventBus.post(new PluginMessage(SHORTEST_PATH_NAMESPACE, SHORTEST_PATH_MSG_CLEAR));
 	}
 
 	private void openWikiForQuest(String questName)

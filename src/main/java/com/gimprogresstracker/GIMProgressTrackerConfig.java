@@ -34,6 +34,14 @@ public interface GIMProgressTrackerConfig extends Config
 	)
 	String syncSection = "sync";
 
+	@ConfigSection(
+		name = "Developer (experimental)",
+		description = "Experimental features that are not fully tested. Use at your own risk.",
+		position = 3,
+		closedByDefault = true
+	)
+	String developerSection = "developer";
+
 	@ConfigItem(
 		keyName = "guideFilePath",
 		name = "Guide file path",
@@ -95,18 +103,6 @@ public interface GIMProgressTrackerConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "useShortestPath",
-		name = "Use Shortest Path plugin",
-		description = "When the Shortest Path plugin is installed, send the current step's destination to it (Phase 2)",
-		position = 0,
-		section = integrationsSection
-	)
-	default boolean useShortestPath()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		keyName = "autoSkipBanked",
 		name = "Auto-skip banked items",
 		description = "Automatically mark a step skippable when its required items are present in the group storage (Phase 2)",
@@ -114,6 +110,19 @@ public interface GIMProgressTrackerConfig extends Config
 		section = integrationsSection
 	)
 	default boolean autoSkipBanked()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "useShortestPath",
+		name = "Shortest path to next step (experimental)",
+		description = "Send the current step's destination to the Shortest Path plugin. The path clears when you arrive and reappears on the next step. Works with any of Shortest Path's display styles.",
+		warning = "Experimental and not fully tested. Requires the Shortest Path plugin from the Plugin Hub. Writes to that plugin via its inter-plugin messaging API.",
+		position = 0,
+		section = developerSection
+	)
+	default boolean useShortestPath()
 	{
 		return false;
 	}

@@ -32,6 +32,12 @@ processResources {
 	from('src/main/java') {
 		include '**/*.png'
 	}
+	// Bundle the default guide so the plugin can fall back to it when the user
+	// has not imported one of their own yet.
+	from('guides') {
+		include 'bruhsailer-guide.json'
+		into 'guides'
+	}
 }
 
 group = 'com.gimprogresstracker'
