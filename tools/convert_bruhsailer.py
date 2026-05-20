@@ -25,6 +25,7 @@ The BRUHsailer schema stores step text as an array of rich-text segments
 
 import argparse
 import json
+import re
 import sys
 from typing import Optional, Tuple
 
@@ -40,6 +41,24 @@ def _norm(text: str) -> str:
         .replace("`", "'")   # grave accent used as apostrophe
     )
 
+MOVEMENT_VERBS = (
+    "go to", "head to", "run to", "teleport to", "travel to", "tp to",
+    "head back to", "return to", "make your way to", "walk to",
+    "enter ", "back to ",
+)
+# Phrases that signal the nearby location is a past/conditional/comparative
+# reference, not the step's actual destination
+# ("if you did more wintertodt", "how much wintertodt").
+CONDITIONAL_CUES = (
+    "if you ", "until ", "more ", "once you ", "after you ", "or do ",
+    "later for", "you can also ", "extra ", "depending on", "how much ",
+    "much more ", "less ",
+)
+# "<level>+ <skill> at <location>" → location is a future training goal,
+# not where this step's action happens.
+_SKILL_GOAL_PATTERN = re.compile(
+    r'\d{1,3}\+?\s+\w+(?:\s+\w+){0,2}\s+(?:at|in)\s+$'
+)
 
 # (x, y, plane) — OSRS world coordinates for common landmarks.
 # Lowercase straight-apostrophe keys; longest match wins on position ties.
@@ -118,6 +137,8 @@ LOCATIONS = {
     "mount kebos":            (1244, 3559, 0),
     "ruins of uzer":          (3499, 3088, 0),
     "uzer":                   (3499, 3088, 0),
+    "ruins of unkah":         (3135, 2840, 0),
+    "aldarin":                (1447, 2969, 0),
 
     # ── Guilds & notable buildings ───────────────────────────────────────────────
     "grand exchange":         (3164, 3486, 0),
@@ -181,6 +202,7 @@ LOCATIONS = {
     "pyramid plunder":        (3298, 2781, 0),
     "barrows":                (3565, 3314, 0),
     "zanaris":                (2452, 4473, 0),
+    "tempoross":              (3135, 2840, 0),
 
     # ── Wilderness ───────────────────────────────────────────────────────────────
     "mage arena":             (3104, 3934, 0),
@@ -383,8 +405,11 @@ QUEST_NAMES: dict[str, str] = {
     "eyes of glouphrie":              "The Eyes of Glouphrie",
     "darkness of hallowvale":         "Darkness of Hallowvale",
     "fairy tale iii":                 "Fairy Tale III - Battle at Ork's Rift",
+    "fairytale iii":                  "Fairy Tale III - Battle at Ork's Rift",
     "fairy tale ii":                  "Fairy Tale II - Cure a Queen",
+    "fairytale ii":                   "Fairy Tale II - Cure a Queen",
     "fairy tale i":                   "Fairy Tale I - Growing Pains",
+    "fairytale i":                    "Fairy Tale I - Growing Pains",
     "rum deal":                       "Rum Deal",
     "swan song":                      "Swan Song",
     "recipe for disaster":            "Recipe for Disaster",
@@ -798,20 +823,60 @@ def parse_items_needed(text: str) -> list:
     return results
 
 
+def _find_non_material_pos(hay: str, keyword: str) -> int:
+    """First occurrence of `keyword` in `hay` that is NOT preceded by "for ".
+
+    "for X" patterns in guides almost always mark a material requirement
+    ("1 willow log for Icthlarin's Little Helper") rather than the quest the
+    step is actually instructing the player to do. Returns -1 if every match
+    is preceded by "for ".
+    """
+    start = 0
+    while True:
+        idx = hay.find(keyword, start)
+        if idx < 0:
+            return -1
+        if hay[max(0, idx - 4):idx] != "for ":
+            return idx
+        start = idx + 1
+
+
 def detect_quest_name(text: str) -> Optional[str]:
-    """Return canonical quest name if the description looks like a quest step."""
+    """Return canonical quest name if the description looks like a quest step.
+
+    Scoring per quest keyword:
+      - count of occurrences that are NOT preceded by "for " (material refs).
+        Repetition signals the step's actual quest; a passing mention like
+        "optional: also do Twilight's Promise" loses to a quest discussed
+        across the whole step.
+      - whether at least one occurrence has a quest action word within
+        60 chars before it.
+      - keyword length as final tiebreaker.
+    """
     if not text:
         return None
     hay = _norm(text)
-    if not any(w in hay for w in _QUEST_ACTION_WORDS):
-        return None
-    best_key = ""
-    best_name = None
+    best = None  # (score_tuple, name)
     for keyword, name in QUEST_NAMES.items():
-        if keyword in hay and len(keyword) > len(best_key):
-            best_key = keyword
-            best_name = name
-    return best_name
+        positions = _all_positions(hay, keyword)
+        if not positions:
+            continue
+        non_material = []
+        for p in positions:
+            if hay[max(0, p - 4):p] != "for ":
+                non_material.append(p)
+        if not non_material:
+            continue
+        has_action = any(
+            any(w in hay[max(0, p - 60):p] for w in _QUEST_ACTION_WORDS)
+            for p in non_material
+        )
+        if not has_action:
+            continue
+        score = (len(non_material), len(keyword))
+        if best is None or score > best[0]:
+            best = (score, name)
+    return None if best is None else best[1]
 
 
 def flatten_content(segments) -> str:
@@ -863,51 +928,94 @@ def first_link(segments) -> Optional[str]:
     return candidates[0]
 
 
+def _location_context_score(haystack: str, pos: int) -> int:
+    """Adjustment applied to a location candidate based on the text around it.
+
+    Big positive: preceded by a movement verb ("head to Ardougne").
+    Big negative: preceded by a conditional ("if you did more wintertodt")
+                  or a skill goal ("90+ firemaking at wintertodt").
+    """
+    near = haystack[max(0, pos - 20):pos]
+    wide = haystack[max(0, pos - 50):pos]
+    score = 0
+    if any(v + " " in near or near.endswith(v) for v in MOVEMENT_VERBS):
+        score += 10000
+    if any(cue in wide for cue in CONDITIONAL_CUES):
+        score -= 5000
+    if _SKILL_GOAL_PATTERN.search(wide):
+        score -= 5000
+    return score
+
+
+def _all_positions(haystack: str, keyword: str) -> list:
+    positions = []
+    start = 0
+    while True:
+        i = haystack.find(keyword, start)
+        if i < 0:
+            return positions
+        positions.append(i)
+        start = i + 1
+
+
 def detect_location(text: str) -> Optional[Tuple[int, int, int]]:
-    """Last-mention wins across all location keywords.
+    """Pick the location most likely to be this step's destination.
 
-    Previously, any hit in QUEST_LOCATIONS caused an early return, so a
-    passing mention of a quest name (e.g. "Monkey Madness II" as a future
-    goal) could override the step's actual destination (e.g. "wintertodt").
-    Now both dictionaries are scanned together and the keyword whose last
-    occurrence sits furthest right in the text wins.
+    Scoring per keyword (all occurrences, not just the last):
+      - count of CLEAN occurrences (not preceded by conditional/skill-goal
+        cues) — repetition signals the step's central topic.
+      - +large bonus if any occurrence is preceded by a movement verb
+        ("head to Ardougne").
+      - position of the latest clean occurrence as a final tiebreaker.
 
-    Tie-breaking (same position):
-      1. Quest-start location beats a general location.
-      2. Within the same dictionary, the longer keyword wins.
+    If every occurrence of every keyword is penalised, returns None — better
+    to leave the field unset than mislabel the step.
     """
     if not text:
         return None
     haystack = _norm(text)
 
-    best_pos = -1
-    best_coords = None
-    best_key_len = 0
-    best_is_quest = False
+    best = None  # (score_tuple, coords, key_len)
+
+    def score_keyword(keyword: str) -> Optional[Tuple[int, int, int]]:
+        positions = _all_positions(haystack, keyword)
+        if not positions:
+            return None
+        clean_count = 0
+        latest_clean = -1
+        has_movement = False
+        for p in positions:
+            adj = _location_context_score(haystack, p)
+            near = haystack[max(0, p - 20):p]
+            if any(v in near for v in MOVEMENT_VERBS):
+                has_movement = True
+            if adj >= 0:
+                clean_count += 1
+                if p > latest_clean:
+                    latest_clean = p
+        if clean_count == 0 and not has_movement:
+            return None
+        # Movement verb dominates. Then count of clean mentions. Then position.
+        return (1 if has_movement else 0, clean_count, latest_clean)
+
+    def consider(keyword: str, coords: Tuple[int, int, int], is_quest: bool) -> None:
+        nonlocal best
+        sc = score_keyword(keyword)
+        if sc is None:
+            return
+        # Append quest-bonus + keyword length as final tiebreakers
+        full = sc + (1 if is_quest else 0, len(keyword))
+        if best is None or full > best[0]:
+            best = (full, coords, len(keyword))
 
     for keyword, coords in QUEST_LOCATIONS.items():
-        pos = haystack.rfind(keyword)
-        if pos < 0:
-            continue
-        if pos > best_pos or (pos == best_pos and (not best_is_quest or len(keyword) > best_key_len)):
-            best_pos = pos
-            best_key_len = len(keyword)
-            best_coords = coords
-            best_is_quest = True
-
+        consider(keyword, coords, True)
     for keyword, coords in LOCATIONS.items():
-        pos = haystack.rfind(keyword)
-        if pos < 0:
-            continue
-        # A general location only wins if it appears strictly later than the
-        # current best, or ties at the same position with no quest match yet.
-        if pos > best_pos or (pos == best_pos and not best_is_quest and len(keyword) > best_key_len):
-            best_pos = pos
-            best_key_len = len(keyword)
-            best_coords = coords
-            best_is_quest = False
+        consider(keyword, coords, False)
 
-    return best_coords
+    if best is None:
+        return None
+    return best[1]
 
 
 _TLDR_ARTICLES = frozenset({"a", "an", "the"})

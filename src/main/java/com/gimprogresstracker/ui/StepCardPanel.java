@@ -8,6 +8,7 @@ import com.gimprogresstracker.model.Step;
 import com.gimprogresstracker.model.StepEntry;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -44,7 +45,8 @@ class StepCardPanel extends JPanel
 	StepCardPanel(StepEntry entry, ProgressTracker tracker,
 		String questName, Runnable wikiAction, Runnable questHelperAction, ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
-		boolean descriptionExpanded, Runnable onDescriptionToggled, Consumer<Location> onMapClicked)
+		boolean descriptionExpanded, Runnable onDescriptionToggled, Consumer<Location> onMapClicked,
+		Supplier<Boolean> pathTrackingEnabled, Runnable togglePathTracking)
 	{
 		Step step = entry.getStep();
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -96,23 +98,48 @@ class StepCardPanel extends JPanel
 			add(sectionHeader("LOCATION"));
 			add(Box.createVerticalStrut(3));
 
+			JLabel locLabel = new JLabel(String.format("(%d, %d, %d)", loc.getX(), loc.getY(), loc.getPlane()));
+			locLabel.setFont(FontManager.getRunescapeSmallFont());
+			locLabel.setForeground(Color.WHITE);
+			locLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			add(locLabel);
+			add(Box.createVerticalStrut(4));
+
 			JPanel locRow = new JPanel();
 			locRow.setLayout(new BoxLayout(locRow, BoxLayout.X_AXIS));
 			locRow.setOpaque(false);
 			locRow.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-			JLabel locLabel = new JLabel(String.format("(%d, %d, %d)", loc.getX(), loc.getY(), loc.getPlane()));
-			locLabel.setFont(FontManager.getRunescapeSmallFont());
-			locLabel.setForeground(Color.WHITE);
-			locRow.add(locLabel);
-
-			locRow.add(Box.createHorizontalStrut(8));
+			if (pathTrackingEnabled != null && togglePathTracking != null)
+			{
+				boolean pathOn = Boolean.TRUE.equals(pathTrackingEnabled.get());
+				Color onText   = new Color(120, 230, 140);
+				Color onBase   = new Color(24, 56, 32);
+				Color onHover  = new Color(36, 82, 44);
+				Color onBorder = new Color(60, 130, 70);
+				Color offText  = ColorScheme.LIGHT_GRAY_COLOR;
+				JButton pathBtn = styledButton(pathOn ? "Path: ON" : "Path: OFF",
+					pathOn ? onText : offText,
+					pathOn ? onBase : SECONDARY_BTN_BG,
+					pathOn ? onHover : SECONDARY_BTN_HOVER,
+					pathOn ? onBorder : ColorScheme.MEDIUM_GRAY_COLOR);
+				pathBtn.setToolTipText(
+					"<html>Toggle Shortest Path tracking to this step's tile.<br>"
+						+ "Requires the Shortest Path plugin from the Plugin Hub.</html>");
+				pathBtn.setMaximumSize(pathBtn.getPreferredSize());
+				pathBtn.addActionListener(e -> togglePathTracking.run());
+				locRow.add(pathBtn);
+				locRow.add(Box.createHorizontalStrut(4));
+			}
 
 			JButton mapBtn = styledButton("Map", new Color(100, 170, 240),
 				new Color(20, 40, 70), new Color(30, 60, 110), new Color(60, 110, 180));
 			mapBtn.setMaximumSize(mapBtn.getPreferredSize());
 			mapBtn.addActionListener(e -> onMapClicked.accept(loc));
 			locRow.add(mapBtn);
+
+			locRow.add(Box.createHorizontalStrut(4));
+			locRow.add(mapInfoIcon());
 
 			locRow.add(Box.createHorizontalGlue());
 			add(locRow);
@@ -311,6 +338,16 @@ class StepCardPanel extends JPanel
 		return l;
 	}
 
+	private static JLabel mapInfoIcon()
+	{
+		JLabel info = new JLabel("ⓘ");
+		info.setFont(FontManager.getRunescapeSmallFont());
+		info.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+		info.setToolTipText("Open the world map first — clicking Map will focus it on the current step location.");
+		info.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		return info;
+	}
+
 	private static JPanel thinDivider()
 	{
 		JPanel d = new JPanel();
@@ -361,6 +398,6 @@ class StepCardPanel extends JPanel
 			.replace("<", "&lt;")
 			.replace(">", "&gt;")
 			.replace("\n", "<br>");
-		return "<html><body style='width: 120px'>" + escaped + "</body></html>";
+		return "<html><body style='width: 150px'>" + escaped + "</body></html>";
 	}
 }

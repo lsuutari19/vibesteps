@@ -60,6 +60,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Supplier<Boolean> isGroupIronman;
 	private final Function<Skill, Integer> skillLevel;
 	private final Consumer<Location> onMapClicked;
+	private final Supplier<Boolean> pathTrackingEnabled;
+	private final Runnable togglePathTracking;
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -76,7 +78,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
 		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady, Supplier<Boolean> isGroupIronman,
-		Function<Skill, Integer> skillLevel, Consumer<Location> onMapClicked)
+		Function<Skill, Integer> skillLevel, Consumer<Location> onMapClicked,
+		Supplier<Boolean> pathTrackingEnabled, Runnable togglePathTracking)
 	{
 		super(true);
 		this.tracker = tracker;
@@ -93,6 +96,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.isGroupIronman = isGroupIronman;
 		this.skillLevel = skillLevel;
 		this.onMapClicked = onMapClicked;
+		this.pathTrackingEnabled = pathTrackingEnabled;
+		this.togglePathTracking = togglePathTracking;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -201,7 +206,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 		panel.add(Box.createVerticalStrut(6));
 
-		JLabel l = new JLabel("<html><body style='width: 120px'>"
+		JLabel l = new JLabel("<html><body style='width: 150px'>"
 			+ "Click <b>Import guide…</b> below and pick a guide <code>.json</code> file. "
 			+ "Progress is saved per character."
 			+ "</body></html>");
@@ -219,7 +224,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JLabel name = new JLabel("<html><body style='width: 150px'>" + escapeHtml(guide.getGuideName()) + "</body></html>");
+		JLabel name = new JLabel("<html><body style='width: 180px'>" + escapeHtml(guide.getGuideName()) + "</body></html>");
 		name.setFont(FontManager.getRunescapeBoldFont());
 		name.setForeground(ACCENT);
 		name.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -382,7 +387,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 	private static JLabel tipRow(String text)
 	{
-		JLabel l = new JLabel("<html><body style='width: 130px'>• " + text + "</body></html>");
+		JLabel l = new JLabel("<html><body style='width: 150px'>• " + text + "</body></html>");
 		l.setFont(FontManager.getRunescapeSmallFont());
 		l.setForeground(new Color(170, 190, 210));
 		l.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -444,7 +449,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 			expandedDescriptionStepId = stepId;
 		};
 		StepCardPanel card = new StepCardPanel(current, tracker, questName, wikiAction, questHelperAction,
-			itemManager, itemStatus, itemName, startExpanded, onDescriptionToggled, onMapClicked);
+			itemManager, itemStatus, itemName, startExpanded, onDescriptionToggled, onMapClicked,
+			pathTrackingEnabled, togglePathTracking);
 		card.setAlignmentX(Component.LEFT_ALIGNMENT);
 		return card;
 	}
@@ -491,19 +497,19 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		id.setForeground(ACCENT);
 		row.add(id, BorderLayout.WEST);
 
-		String labelText;
+		String inner;
 		if (showDescription)
 		{
-			labelText = "<html><body style='width: 120px'>"
-				+ escapeHtml(firstWords(entry.getStep().getDescription(), 50)) + "</body></html>";
+			inner = escapeHtml(firstWords(entry.getStep().getDescription(), 50));
 		}
 		else
 		{
 			String tldr = entry.getStep().getTldr();
-			labelText = (tldr != null && !tldr.isEmpty())
+			inner = (tldr != null && !tldr.isEmpty())
 				? escapeHtml(tldr)
-				: "<html><body style='width: 100px'>" + escapeHtml(shorten(entry.getStep().getDescription(), 40)) + "</body></html>";
+				: escapeHtml(shorten(entry.getStep().getDescription(), 40));
 		}
+		String labelText = "<html><body style='width: 150px'>" + inner + "</body></html>";
 		JLabel d = new JLabel(labelText);
 		d.setFont(FontManager.getRunescapeSmallFont());
 		d.setForeground(Color.WHITE);
@@ -555,7 +561,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		String tldr = entry.getStep().getTldr();
 		String labelText = (tldr != null && !tldr.isEmpty()) ? escapeHtml(tldr)
 			: escapeHtml(shorten(entry.getStep().getDescription(), 40));
-		JLabel d = new JLabel("<html><body style='width: 80px'>" + labelText + "</body></html>");
+		JLabel d = new JLabel("<html><body style='width: 115px'>" + labelText + "</body></html>");
 		d.setFont(FontManager.getRunescapeSmallFont());
 		d.setForeground(Color.WHITE);
 		left.add(d);
@@ -633,7 +639,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 			panel.add(Box.createVerticalStrut(3));
 
-			JLabel detail = new JLabel("<html><body style='width: 120px'>" + escapeHtml(currentAfkTask.detail) + "</body></html>");
+			JLabel detail = new JLabel("<html><body style='width: 155px'>" + escapeHtml(currentAfkTask.detail) + "</body></html>");
 			detail.setFont(FontManager.getRunescapeSmallFont());
 			detail.setForeground(Color.WHITE);
 			detail.setAlignmentX(Component.LEFT_ALIGNMENT);

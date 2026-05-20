@@ -41,6 +41,7 @@ import net.runelite.api.Item;
 import net.runelite.api.Player;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.events.GameStateChanged;
+import net.runelite.api.events.GameTick;
 import net.runelite.api.events.ItemContainerChanged;
 import net.runelite.api.events.StatChanged;
 import net.runelite.client.callback.ClientThread;
@@ -59,9 +60,6 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
 import net.runelite.client.Notifier;
-import net.runelite.api.MenuAction;
-import net.runelite.api.gameval.InterfaceID;
-import net.runelite.api.widgets.Widget;
 import net.runelite.client.util.LinkBrowser;
 
 @Slf4j
@@ -139,6 +137,11 @@ public class GIMProgressTrackerPlugin extends Plugin
 	private volatile Map<Integer, Integer> cachedBank = Collections.emptyMap();
 	private volatile Map<Integer, Integer> cachedGimBank = Collections.emptyMap();
 
+	// Last observed player tile, used by the Shortest Path integration to detect
+	// teleports (single-tick position deltas larger than running speed) and resend
+	// the path target so Shortest Path recomputes from the new tile.
+	private WorldPoint lastPlayerLocation = null;
+
 	// Skill name → real level, updated on login and StatChanged. Keyed by Skill.name()
 	// so the EDT can read it without touching the client API.
 	private final ConcurrentHashMap<String, Integer> cachedSkillLevels = new ConcurrentHashMap<>();
@@ -156,7 +159,9 @@ public class GIMProgressTrackerPlugin extends Plugin
 			() -> !cachedGimBank.isEmpty(),
 			() -> isGroupIronman,
 			skill -> cachedSkillLevels.getOrDefault(skill.name(), 1),
-			this::openWorldMapAt);
+			this::openWorldMapAt,
+			this::isPathTrackingEnabled,
+			this::togglePathTracking);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
@@ -246,6 +251,39 @@ public class GIMProgressTrackerPlugin extends Plugin
 			isGroupIronman = acctType == 4 || acctType == 5 || acctType == 6;
 			cacheAllSkillLevels();
 		}
+		else
+		{
+			// Avoid treating the post-relog position as a teleport from wherever we
+			// were last logged out.
+			lastPlayerLocation = null;
+		}
+	}
+
+	@Subscribe
+	public void onGameTick(GameTick event)
+	{
+		if (!config.useShortestPath() || !isShortestPathInstalled())
+		{
+			lastPlayerLocation = null;
+			return;
+		}
+		Player local = client.getLocalPlayer();
+		if (local == null)
+		{
+			lastPlayerLocation = null;
+			return;
+		}
+		WorldPoint current = local.getWorldLocation();
+		WorldPoint previous = lastPlayerLocation;
+		lastPlayerLocation = current;
+		// Resend the path whenever the player tile changes (walk, run, teleport,
+		// stairs/plane). Shortest Path only auto-recomputes when the player goes
+		// off-path, so without this the displayed path "tail" wouldn't shrink as
+		// the player walks toward the target.
+		if (previous != null && !current.equals(previous))
+		{
+			maybeSendShortestPathTarget();
+		}
 	}
 
 	@Subscribe
@@ -309,6 +347,10 @@ public class GIMProgressTrackerPlugin extends Plugin
 				else
 				{
 					clearShortestPath();
+				}
+				if (panel != null)
+				{
+					panel.refresh();
 				}
 				break;
 			default:
@@ -473,17 +515,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 	{
 		refreshWorldMapPoint();
 		WorldPoint wp = new WorldPoint(loc.getX(), loc.getY(), loc.getPlane());
-		clientThread.invoke(() ->
-		{
-			// Center the world map on the step tile.
-			client.getWorldMap().setWorldMapPositionTarget(wp);
-			// Open the world map if it is not already visible.
-			Widget mapRoot = client.getWidget(InterfaceID.Worldmap.UNIVERSE);
-			if (mapRoot == null || mapRoot.isHidden())
-			{
-				client.menuAction(1, InterfaceID.Orbs.ORB_WORLDMAP, MenuAction.CC_OP, -1, -1, "", "");
-			}
-		});
+		clientThread.invoke(() -> client.getWorldMap().setWorldMapPositionTarget(wp));
 	}
 
 	private void showTeammateMapPoint(Location loc)
@@ -601,7 +633,11 @@ public class GIMProgressTrackerPlugin extends Plugin
 		Map<Integer, Integer> map = new HashMap<>();
 		for (Item item : items)
 		{
-			if (item.getId() == -1)
+			// Skip empty bank slots (-1) and placeholders (quantity 0). Placeholders
+			// remain in the personal bank when items get moved to group storage; without
+			// this filter, canonicalize() would still register them and the item would
+			// look "available" with quantity 0 — confusing if we later compare quantities.
+			if (item.getId() == -1 || item.getQuantity() <= 0)
 			{
 				continue;
 			}
@@ -623,13 +659,13 @@ public class GIMProgressTrackerPlugin extends Plugin
 		{
 			return ItemStatus.IN_EQUIPMENT;
 		}
-		if (cachedBank.getOrDefault(itemId, 0) >= needed)
-		{
-			return ItemStatus.IN_BANK;
-		}
 		if (cachedGimBank.getOrDefault(itemId, 0) >= needed)
 		{
 			return ItemStatus.IN_GIM_BANK;
+		}
+		if (cachedBank.getOrDefault(itemId, 0) >= needed)
+		{
+			return ItemStatus.IN_BANK;
 		}
 		return ItemStatus.NOT_FOUND;
 	}
@@ -650,6 +686,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 	private static final String SHORTEST_PATH_NAMESPACE = "shortestpath";
 	private static final String SHORTEST_PATH_MSG_PATH = "path";
 	private static final String SHORTEST_PATH_MSG_CLEAR = "clear";
+	private static final String SHORTEST_PATH_KEY_START = "start";
 	private static final String SHORTEST_PATH_KEY_TARGET = "target";
 
 	private boolean isShortestPathInstalled()
@@ -672,9 +709,22 @@ public class GIMProgressTrackerPlugin extends Plugin
 			clearShortestPath();
 			return;
 		}
-		Map<String, Object> data = new HashMap<>();
-		data.put(SHORTEST_PATH_KEY_TARGET, new WorldPoint(loc.getX(), loc.getY(), loc.getPlane()));
-		eventBus.post(new PluginMessage(SHORTEST_PATH_NAMESPACE, SHORTEST_PATH_MSG_PATH, data));
+		WorldPoint target = new WorldPoint(loc.getX(), loc.getY(), loc.getPlane());
+		// Resolve the player's tile on the client thread and pass it explicitly as "start"
+		// so Shortest Path doesn't have to call client.getLocalPlayer() from whichever
+		// thread it dispatches the PluginMessage on.
+		clientThread.invoke(() ->
+		{
+			Player local = client.getLocalPlayer();
+			if (local == null)
+			{
+				return;
+			}
+			Map<String, Object> data = new HashMap<>();
+			data.put(SHORTEST_PATH_KEY_START, local.getWorldLocation());
+			data.put(SHORTEST_PATH_KEY_TARGET, target);
+			eventBus.post(new PluginMessage(SHORTEST_PATH_NAMESPACE, SHORTEST_PATH_MSG_PATH, data));
+		});
 	}
 
 	private void clearShortestPath()
@@ -683,7 +733,22 @@ public class GIMProgressTrackerPlugin extends Plugin
 		{
 			return;
 		}
-		eventBus.post(new PluginMessage(SHORTEST_PATH_NAMESPACE, SHORTEST_PATH_MSG_CLEAR));
+		clientThread.invoke(() ->
+			eventBus.post(new PluginMessage(SHORTEST_PATH_NAMESPACE, SHORTEST_PATH_MSG_CLEAR)));
+	}
+
+	// Toggle the Shortest Path integration via the same config key the settings
+	// pane writes to. onConfigChanged handles installation check, send/clear,
+	// and the "plugin not installed" warning dialog.
+	public boolean isPathTrackingEnabled()
+	{
+		return config.useShortestPath();
+	}
+
+	public void togglePathTracking()
+	{
+		configManager.setConfiguration(GIMProgressTrackerConfig.GROUP, "useShortestPath",
+			!config.useShortestPath());
 	}
 
 	private void openWikiForQuest(String questName)

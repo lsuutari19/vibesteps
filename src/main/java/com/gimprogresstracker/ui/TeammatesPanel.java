@@ -332,6 +332,9 @@ public class TeammatesPanel extends PluginPanel
 				});
 				mapBtn.addActionListener(e -> onMapClicked.accept(loc));
 				stepRow.add(mapBtn);
+
+				stepRow.add(Box.createHorizontalStrut(4));
+				stepRow.add(mapInfoIcon());
 			}
 
 			stepRow.add(Box.createHorizontalGlue());
@@ -340,13 +343,23 @@ public class TeammatesPanel extends PluginPanel
 		if (desc != null && !desc.isEmpty())
 		{
 			String preview = firstWords(desc, 20);
-			JLabel descLabel = new JLabel("<html><body style='width:190px'>" + preview + "</body></html>");
+			JLabel descLabel = new JLabel("<html><body style='width:175px'>" + preview + "</body></html>");
 			descLabel.setFont(FontManager.getRunescapeSmallFont());
 			descLabel.setForeground(MUTED);
 			descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 			card.add(Box.createVerticalStrut(2));
 			card.add(descLabel);
 		}
+	}
+
+	private static JLabel mapInfoIcon()
+	{
+		JLabel info = new JLabel("ⓘ");
+		info.setFont(FontManager.getRunescapeSmallFont());
+		info.setForeground(MUTED);
+		info.setToolTipText("Open the world map first — clicking Map will focus it on the current step location.");
+		info.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		return info;
 	}
 
 	private JPanel errorCard(String filename, String error)
@@ -367,7 +380,7 @@ public class TeammatesPanel extends PluginPanel
 		name.setAlignmentX(Component.LEFT_ALIGNMENT);
 		card.add(name);
 
-		JLabel errLabel = new JLabel("<html><body style='width:190px'>Could not read: " + error + "</body></html>");
+		JLabel errLabel = new JLabel("<html><body style='width:175px'>Could not read: " + error + "</body></html>");
 		errLabel.setFont(FontManager.getRunescapeSmallFont());
 		errLabel.setForeground(MUTED);
 		errLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
