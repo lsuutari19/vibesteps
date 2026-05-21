@@ -150,4 +150,16 @@ public interface GIMProgressTrackerConfig extends Config
 	{
 		return false;
 	}
+
+	@ConfigItem(
+		keyName = "shareLocation",
+		name = "Share live location",
+		description = "Periodically write your current in-game location to the shared folder so teammates can see where you are",
+		position = 2,
+		section = syncSection
+	)
+	default boolean shareLocation()
+	{
+		return false;
+	}
 }

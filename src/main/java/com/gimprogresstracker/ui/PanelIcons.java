@@ -18,14 +18,12 @@ public final class PanelIcons
 
 	public static BufferedImage navIcon(Class<?> anchor)
 	{
-		return loadOrGenerate(anchor, "/com/gimprogresstracker/icon.png", "VS", new Color(0, 122, 204));
+		return loadOrGenerate(anchor, "/icon.png", "VS", new Color(0, 122, 204));
 	}
 
 	public static BufferedImage teammatesIcon()
 	{
-		// Anchor on this class so the resource lookup works whether or not the
-		// caller is in the same package as the PNG.
-		return loadOrGenerate(PanelIcons.class, "/com/gimprogresstracker/teammates-icon.png",
+		return loadOrGenerate(PanelIcons.class, "/group-member.png",
 			"GRP", new Color(30, 80, 160));
 	}
 

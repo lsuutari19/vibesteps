@@ -4,13 +4,17 @@ import com.gimprogresstracker.model.PlayerProgress;
 import com.gimprogresstracker.model.TeammateProgress;
 import com.google.gson.Gson;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
@@ -137,6 +141,39 @@ public class ProgressStore
 		catch (JsonParseException e)
 		{
 			throw new IOException("Malformed progress JSON: " + e.getMessage(), e);
+		}
+	}
+
+	private static final Type BANK_MAP_TYPE = new TypeToken<Map<Integer, Integer>>()
+	{
+	}.getType();
+
+	public Map<Integer, Integer> loadBankCache(String playerName, String suffix) throws IOException
+	{
+		Path file = PluginPaths.cacheDir()
+			.resolve(PluginPaths.sanitizeForFilename(playerName) + "_" + suffix + ".json");
+		if (!Files.isRegularFile(file))
+		{
+			return Collections.emptyMap();
+		}
+		try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8))
+		{
+			Map<Integer, Integer> result = gson.fromJson(reader, BANK_MAP_TYPE);
+			return result != null ? result : Collections.emptyMap();
+		}
+		catch (JsonParseException e)
+		{
+			throw new IOException("Malformed bank cache: " + e.getMessage(), e);
+		}
+	}
+
+	public void saveBankCache(String playerName, String suffix, Map<Integer, Integer> cache) throws IOException
+	{
+		Path file = PluginPaths.cacheDir()
+			.resolve(PluginPaths.sanitizeForFilename(playerName) + "_" + suffix + ".json");
+		try (Writer writer = Files.newBufferedWriter(file, StandardCharsets.UTF_8))
+		{
+			gson.toJson(cache, BANK_MAP_TYPE, writer);
 		}
 	}
 
