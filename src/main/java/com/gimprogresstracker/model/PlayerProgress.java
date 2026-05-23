@@ -26,6 +26,9 @@ public class PlayerProgress
 	private Location liveLocation;
 	private String liveLocationUpdated;
 
+	// Optional short status message set by the player and visible to teammates.
+	private String status;
+
 	public Set<Integer> getCompletedStepIds()
 	{
 		if (completedStepIds == null)

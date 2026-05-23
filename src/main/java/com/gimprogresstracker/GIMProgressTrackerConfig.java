@@ -20,7 +20,7 @@ public interface GIMProgressTrackerConfig extends Config
 
 	@ConfigSection(
 		name = "Integrations",
-		description = "Optional features that integrate with other plugins or the GIM group",
+		description = "Optional features that integrate with other plugins",
 		position = 1,
 		closedByDefault = true
 	)
@@ -28,7 +28,7 @@ public interface GIMProgressTrackerConfig extends Config
 
 	@ConfigSection(
 		name = "Team sync",
-		description = "Local file-based sync with GIM teammates",
+		description = "Local file-based sync with teammates via a shared folder",
 		position = 2,
 		closedByDefault = true
 	)

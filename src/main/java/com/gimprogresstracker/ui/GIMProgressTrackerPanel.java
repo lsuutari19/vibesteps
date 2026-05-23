@@ -3,6 +3,8 @@ package com.gimprogresstracker.ui;
 import com.gimprogresstracker.ProgressTracker;
 import com.gimprogresstracker.model.Guide;
 import com.gimprogresstracker.model.StepEntry;
+import com.gimprogresstracker.util.GuideImporter;
+import java.util.List;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -26,9 +28,14 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import net.runelite.client.util.LinkBrowser;
 import com.gimprogresstracker.model.ItemStatus;
 import com.gimprogresstracker.model.Location;
 import com.gimprogresstracker.model.RequiredItem;
@@ -37,9 +44,8 @@ import net.runelite.api.Skill;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
-import net.runelite.client.ui.PluginPanel;
 
-public class GIMProgressTrackerPanel extends PluginPanel
+public class GIMProgressTrackerPanel extends JPanel
 {
 	private static final Color ACCENT = ColorScheme.BRAND_ORANGE;
 	private static final Color TODO_COLOR = new Color(70, 120, 200);
@@ -48,6 +54,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 	private final ProgressTracker tracker;
 	private final Consumer<Path> onGuideFileChosen;
+	private final Consumer<GuideImporter.BundledGuide> onBundledGuideSelected;
 	private final Runnable onResetRequested;
 	private final Supplier<Boolean> questHelperInstalled;
 	private final Consumer<String> openQuestHelper;
@@ -62,6 +69,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	private final Consumer<Location> onMapClicked;
 	private final Supplier<Boolean> pathTrackingEnabled;
 	private final Runnable togglePathTracking;
+	private final Supplier<String> loadNotes;
+	private final Consumer<String> saveNotes;
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -73,17 +82,22 @@ public class GIMProgressTrackerPanel extends PluginPanel
 	// AFK suggestion state persists across refreshes triggered by inventory events.
 	private AfkTaskSuggester.AfkTask currentAfkTask = null;
 
-	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen, Runnable onResetRequested,
+	// Notes content cached to survive rebuilds; null = not yet loaded from disk.
+	private String notesContent = null;
+
+	public GIMProgressTrackerPanel(ProgressTracker tracker, Consumer<Path> onGuideFileChosen,
+		Consumer<GuideImporter.BundledGuide> onBundledGuideSelected, Runnable onResetRequested,
 		Supplier<Boolean> questHelperInstalled, Consumer<String> openQuestHelper, Consumer<String> openWikiGuide,
 		ItemManager itemManager,
 		Function<RequiredItem, ItemStatus> itemStatus, Function<Integer, String> itemName,
 		Supplier<Boolean> bankReady, Supplier<Boolean> gimBankReady, Supplier<Boolean> isGroupIronman,
 		Function<Skill, Integer> skillLevel, Consumer<Location> onMapClicked,
-		Supplier<Boolean> pathTrackingEnabled, Runnable togglePathTracking)
+		Supplier<Boolean> pathTrackingEnabled, Runnable togglePathTracking,
+		Supplier<String> loadNotes, Consumer<String> saveNotes)
 	{
-		super(true);
 		this.tracker = tracker;
 		this.onGuideFileChosen = onGuideFileChosen;
+		this.onBundledGuideSelected = onBundledGuideSelected;
 		this.onResetRequested = onResetRequested;
 		this.questHelperInstalled = questHelperInstalled;
 		this.openQuestHelper = openQuestHelper;
@@ -98,6 +112,8 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		this.onMapClicked = onMapClicked;
 		this.pathTrackingEnabled = pathTrackingEnabled;
 		this.togglePathTracking = togglePathTracking;
+		this.loadNotes = loadNotes;
+		this.saveNotes = saveNotes;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -115,17 +131,20 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		SwingUtilities.invokeLater(this::rebuild);
 	}
 
+	public void refreshNotes()
+	{
+		notesContent = null; // force reload from disk on next rebuild
+		SwingUtilities.invokeLater(this::rebuild);
+	}
+
 	private void rebuild()
 	{
 		contentPanel.removeAll();
 
-		contentPanel.add(panelTitle());
-		contentPanel.add(Box.createVerticalStrut(10));
-
 		Guide guide = tracker.getGuide();
 		if (guide == null)
 		{
-			contentPanel.add(noGuideHelp());
+			contentPanel.add(noGuideSelectionPanel());
 		}
 		else
 		{
@@ -152,10 +171,16 @@ public class GIMProgressTrackerPanel extends PluginPanel
 
 			contentPanel.add(Box.createVerticalStrut(12));
 			contentPanel.add(afkSection());
+
+			contentPanel.add(Box.createVerticalStrut(12));
+			contentPanel.add(notesSection());
+
+			contentPanel.add(Box.createVerticalStrut(14));
+			contentPanel.add(buttonRow());
 		}
 
-		contentPanel.add(Box.createVerticalStrut(14));
-		contentPanel.add(buttonRow());
+		contentPanel.add(Box.createVerticalStrut(8));
+		contentPanel.add(githubLink());
 
 		contentPanel.revalidate();
 		contentPanel.repaint();
@@ -186,34 +211,44 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		return wrap;
 	}
 
-	private JPanel noGuideHelp()
+	private JPanel noGuideSelectionPanel()
 	{
 		JPanel panel = new JPanel();
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		panel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		panel.setBorder(BorderFactory.createCompoundBorder(
-			new MatteBorder(0, 3, 0, 0, ACCENT),
-			BorderFactory.createCompoundBorder(
-				BorderFactory.createMatteBorder(1, 0, 1, 1, ColorScheme.MEDIUM_GRAY_COLOR),
-				BorderFactory.createEmptyBorder(10, 10, 10, 10))));
+		panel.setBackground(ColorScheme.DARK_GRAY_COLOR);
 		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-		JLabel header = new JLabel("No guide loaded");
-		header.setFont(FontManager.getRunescapeBoldFont());
-		header.setForeground(ACCENT);
-		header.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.add(header);
+		// Import from file
+		JButton importBtn = styledButton("Import guide…", Color.WHITE);
+		importBtn.addActionListener(e -> chooseGuideFile());
+		panel.add(importBtn);
 
-		panel.add(Box.createVerticalStrut(6));
+		List<GuideImporter.BundledGuide> bundled = GuideImporter.BUNDLED_GUIDES;
+		if (!bundled.isEmpty())
+		{
+			panel.add(Box.createVerticalStrut(12));
 
-		JLabel l = new JLabel("<html><body style='width: 150px'>"
-			+ "Click <b>Import guide…</b> below and pick a guide <code>.json</code> file. "
-			+ "Progress is saved per character."
-			+ "</body></html>");
-		l.setFont(FontManager.getRunescapeFont());
-		l.setForeground(Color.WHITE);
-		l.setAlignmentX(Component.LEFT_ALIGNMENT);
-		panel.add(l);
+			JLabel orLabel = new JLabel("— or start with a bundled guide —");
+			orLabel.setFont(FontManager.getRunescapeSmallFont());
+			orLabel.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+			orLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			panel.add(orLabel);
+
+			panel.add(Box.createVerticalStrut(6));
+
+			for (GuideImporter.BundledGuide guide : bundled)
+			{
+				String label = guide.getDisplayName()
+					+ (guide.getAuthor() != null && !guide.getAuthor().isEmpty()
+						? "  ·  " + guide.getAuthor()
+						: "");
+				JButton btn = styledButton(label, ColorScheme.LIGHT_GRAY_COLOR);
+				btn.addActionListener(e -> onBundledGuideSelected.accept(guide));
+				panel.add(btn);
+				panel.add(Box.createVerticalStrut(4));
+			}
+		}
+
 		return panel;
 	}
 
@@ -509,7 +544,7 @@ public class GIMProgressTrackerPanel extends PluginPanel
 				? escapeHtml(tldr)
 				: escapeHtml(shorten(entry.getStep().getDescription(), 40));
 		}
-		String labelText = "<html><body style='width: 150px'>" + inner + "</body></html>";
+		String labelText = "<html><body style='width: 140px'>" + inner + "</body></html>";
 		JLabel d = new JLabel(labelText);
 		d.setFont(FontManager.getRunescapeSmallFont());
 		d.setForeground(Color.WHITE);
@@ -678,6 +713,102 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		return panel;
 	}
 
+	private JPanel notesSection()
+	{
+		if (notesContent == null)
+		{
+			notesContent = loadNotes.get();
+		}
+
+		JPanel panel = new JPanel();
+		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		panel.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR),
+			BorderFactory.createEmptyBorder(8, 10, 8, 10)));
+		panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		JLabel header = new JLabel("MY NOTES");
+		header.setFont(FontManager.getRunescapeSmallFont());
+		header.setForeground(new Color(160, 190, 220));
+		header.setAlignmentX(Component.LEFT_ALIGNMENT);
+		panel.add(header);
+		panel.add(Box.createVerticalStrut(6));
+
+		JTextArea area = new JTextArea(notesContent, 5, 20);
+		area.setWrapStyleWord(true);
+		area.setLineWrap(true);
+		area.setFont(FontManager.getRunescapeSmallFont());
+		area.setForeground(Color.WHITE);
+		area.setBackground(ColorScheme.DARK_GRAY_COLOR);
+		area.setCaretColor(Color.WHITE);
+		area.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+
+		area.getDocument().addDocumentListener(new DocumentListener()
+		{
+			@Override public void insertUpdate(DocumentEvent e) { save(); }
+			@Override public void removeUpdate(DocumentEvent e) { save(); }
+			@Override public void changedUpdate(DocumentEvent e) { save(); }
+
+			private void save()
+			{
+				notesContent = area.getText();
+				saveNotes.accept(notesContent);
+			}
+		});
+
+		JScrollPane scroll = new JScrollPane(area);
+		scroll.setBorder(BorderFactory.createLineBorder(ColorScheme.MEDIUM_GRAY_COLOR));
+		scroll.setAlignmentX(Component.LEFT_ALIGNMENT);
+		scroll.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+		panel.add(scroll);
+
+		return panel;
+	}
+
+	private JPanel githubLink()
+	{
+		JPanel row = new JPanel();
+		row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+		row.setOpaque(false);
+		row.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+		javax.swing.ImageIcon icon = PanelIcons.githubIcon(14);
+		JLabel iconLabel = new JLabel(icon);
+		iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
+		row.add(iconLabel);
+
+		JLabel link = new JLabel("Support / GitHub");
+		link.setFont(FontManager.getRunescapeSmallFont());
+		link.setForeground(new Color(100, 140, 200));
+		link.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		link.setToolTipText("Open the plugin's GitHub page for support and issue reports");
+		link.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				LinkBrowser.browse("https://github.com/lsuutari19/vibesteps/issues");
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				link.setForeground(new Color(140, 180, 255));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				link.setForeground(new Color(100, 140, 200));
+			}
+		});
+		row.add(link);
+		row.add(Box.createHorizontalGlue());
+
+		return row;
+	}
+
 	private JPanel buttonRow()
 	{
 		JPanel row = new JPanel();
@@ -686,24 +817,22 @@ public class GIMProgressTrackerPanel extends PluginPanel
 		row.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 		JButton importBtn = styledButton("Import guide…", Color.WHITE);
+		importBtn.setToolTipText("Load a different guide from a .json file");
 		importBtn.addActionListener(e -> chooseGuideFile());
 		row.add(importBtn);
 
-		if (tracker.getGuide() != null)
-		{
-			row.add(Box.createVerticalStrut(4));
-			JButton reset = styledButton("Reset progress", ColorScheme.LIGHT_GRAY_COLOR);
-			reset.addActionListener(e -> {
-				int choice = JOptionPane.showConfirmDialog(this,
-					"Clear all completed, skipped, and to-do steps for this guide?",
-					"Reset progress", JOptionPane.OK_CANCEL_OPTION);
-				if (choice == JOptionPane.OK_OPTION)
-				{
-					onResetRequested.run();
-				}
-			});
-			row.add(reset);
-		}
+		row.add(Box.createVerticalStrut(4));
+		JButton reset = styledButton("Reset progress", ColorScheme.LIGHT_GRAY_COLOR);
+		reset.addActionListener(e -> {
+			int choice = JOptionPane.showConfirmDialog(this,
+				"Clear all completed, skipped, and to-do steps for this guide?",
+				"Reset progress", JOptionPane.OK_CANCEL_OPTION);
+			if (choice == JOptionPane.OK_OPTION)
+			{
+				onResetRequested.run();
+			}
+		});
+		row.add(reset);
 
 		return row;
 	}

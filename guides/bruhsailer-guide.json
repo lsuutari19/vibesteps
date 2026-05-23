@@ -696,8 +696,8 @@
               "tldr": "Castle Wars Minigame",
               "description": "Castle Wars minigame teleport. Withdraw 3 planks, 1 bronze bar and one molten glass. Run north, grab an inventory of superantipoisons (84 doses - 21 pots (4)-dose) by hopping, then start and complete the Observatory quest.",
               "location": {
-                "x": 2440,
-                "y": 3083,
+                "x": 2467,
+                "y": 3176,
                 "plane": 0
               },
               "requiredItems": [
@@ -720,8 +720,8 @@
               "tldr": "Use Fishing Trawler",
               "description": "Use the Fishing Trawler minigame to teleport to Port Khazard. Charter a ship Catherby (use the deposit box) or, if that shop is bought out, to Land’s end. Buy 1600 soda ash and 10 buckets of slime, 10/world at a time. If you were at Land’s end, now charter a ship to Catherby. Buy steel arrowtips to round out 46 fletching (if you don’t have that level yet). We recommend buying 250 tips/world to save hopping but if you are low on gp you can buy 100/world instead to save some cash here. Take out a knife from the bank and a light source (grab a candle along the way and light it with a tinderbox if you don’t have any). Grab insect repellant, collect two buckets of wax and ten flax (five for the diary, but we need ten) and speak with Sherlock (diary). Enter the Temple of Ikov and grab some Boots of Lightness, then leave again. Start Merlin’s Crystal up to the step where you need to visit Arhein. Run to Seers, grab the fishing pass and other items for fishing contest from the bank. Spin the flax into ten linen yarn. Continue Fishing Contest to the step where you get the trophy. Fly fish north of Seers bank to 35 fishing, banking the fish. Complete Murder Mystery while training (start the quest, get all relevant clues in the mansion, fish an inv, bank, do the relevant steps in the village, resume the quest etc.). Home teleport to Lumbridge, cross the gate to Al-Kharid (costs 10gp), run south and speak with Hassan to start Prince Ali Rescue, then Osman to resume the quest. Run south and board Ferryman Sathwood’s ferry. Train fishing at mass world Tempoross to level 56. It is most efficient to cook the harpoonfish instead of using them raw. Make sure to only cash in the reward permits after you have hit level 50 fishing - this is a significant boost to your loot!\n  • From here on add steel arrowtips to your headless arrows as you move, to get level 46 fletching.\n  • You can make a fire underneath yourself to tick manipulate cook-fish fly fish (https://streamable.com/90mz74), but beware that you want to bank some trout for quests and salmon for food for later. Note that you need at least 15 cooking for this, so you will need to train some cooking on the side, for example buying raw fish from Gerrant in Port Sarim, to make this work.\n  • If you went all the way to 99 firemaking, and therefore also made at least 99000 gp in excess of the amount you needed at WT, make a detour to Ignatius Vulcan when picking flax and buy the Firemaking cape. This has some uses both as a light source and for defensive stats, but mostly it is just iconic.\n  • Tempoross will also give random amounts of planks, nails, raw fish, gold bars, gems and other loot that will be useful later. None of these are required but all of them will help down the line.\n  • There are several Combat Achievement tasks for Tempoross. It is recommended (but fine if you don’t) to complete as many of the easy and medium tier as you can during this Tempoross grind.\n  • Optionally you can stay for the fish barrel. It is a good item for barbarian fishing and for buying karambwans (Brimhaven POH method https://www.youtube.com/watch?v=zDkz186YgME), some people also use it to fish karambwans (lowering the rate in exchange for longer trips, i.e. making it more afk). Staying for a fish barrel is not recommended.\n  • Solo methods for Tempoross exist, but they are difficult at low level and not recommended.",
               "location": {
-                "x": 2658,
-                "y": 3151,
+                "x": 2797,
+                "y": 3414,
                 "plane": 0
               },
               "questName": "Prince Ali Rescue",

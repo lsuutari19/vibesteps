@@ -13,16 +13,31 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Singleton
 public class GuideImporter
 {
+	@Data
+	public static class BundledGuide
+	{
+		private final String displayName;
+		private final String author;
+		private final String resourcePath;
+	}
+
+	public static final List<BundledGuide> BUNDLED_GUIDES = Collections.unmodifiableList(Arrays.asList(
+		new BundledGuide("BRUHsailer Complete Guide", "BRUHsailer", "/guides/bruhsailer-guide.json")
+	));
 	private final Gson gson;
 
 	@Inject

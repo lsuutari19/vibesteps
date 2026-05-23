@@ -21,6 +21,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -119,8 +120,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 	private GIMProgressTrackerPanel panel;
 	private TeammatesPanel teammatesPanel;
+	private com.gimprogresstracker.ui.VibeStepsPanel combinedPanel;
 	private NavigationButton navButton;
-	private NavigationButton teammatesNavButton;
 	private WorldMapPoint mapPoint;
 	private WorldMapPoint teammateMapPoint;
 	private Runnable trackerListener;
@@ -161,7 +162,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 		mapPointIcon = buildStepMapIcon();
 		teammateMapIcon = buildTeammateMapIcon();
 
-		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
+		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::loadBundledGuide,
+			this::resetProgress,
 			this::isQuestHelperInstalled, this::openQuestHelperForQuest, this::openWikiForQuest,
 			itemManager, this::checkItemStatus,
 			id -> itemNameCache.getOrDefault(id, "Item #" + id),
@@ -171,26 +173,23 @@ public class GIMProgressTrackerPlugin extends Plugin
 			skill -> cachedSkillLevels.getOrDefault(skill.name(), 1),
 			this::openWorldMapAt,
 			this::isPathTrackingEnabled,
-			this::togglePathTracking);
+			this::togglePathTracking,
+			this::loadNotes, this::saveNotes);
+
+		teammatesPanel = new TeammatesPanel(tracker, progressStore, config::sharedFolderPath,
+			this::showTeammateMapPoint, config::shareLocation,
+			enabled -> configManager.setConfiguration(GIMProgressTrackerConfig.GROUP, "shareLocation", enabled),
+			this::getStatus, this::setAndExportStatus);
+
+		combinedPanel = new com.gimprogresstracker.ui.VibeStepsPanel(panel, teammatesPanel);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
 			.icon(PanelIcons.navIcon(GIMProgressTrackerPlugin.class))
 			.priority(7)
-			.panel(panel)
+			.panel(combinedPanel)
 			.build();
 		clientToolbar.addNavigation(navButton);
-
-		teammatesPanel = new TeammatesPanel(tracker, progressStore, config::sharedFolderPath,
-			this::showTeammateMapPoint, config::shareLocation,
-			enabled -> configManager.setConfiguration(GIMProgressTrackerConfig.GROUP, "shareLocation", enabled));
-		teammatesNavButton = NavigationButton.builder()
-			.tooltip("Vibe Steps – Teammates")
-			.icon(PanelIcons.teammatesIcon())
-			.priority(8)
-			.panel(teammatesPanel)
-			.build();
-		clientToolbar.addNavigation(teammatesNavButton);
 
 		overlayManager.add(overlay);
 
@@ -219,11 +218,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 			clientToolbar.removeNavigation(navButton);
 			navButton = null;
 		}
-		if (teammatesNavButton != null)
-		{
-			clientToolbar.removeNavigation(teammatesNavButton);
-			teammatesNavButton = null;
-		}
+		combinedPanel = null;
 		teammatesPanel = null;
 		overlayManager.remove(overlay);
 
@@ -262,6 +257,10 @@ public class GIMProgressTrackerPlugin extends Plugin
 			{
 				tracker.setPlayerName(name);
 				loadBankCaches(name);
+				if (panel != null)
+				{
+					panel.refreshNotes();
+				}
 			}
 			// Varbit 1777 (ACCOUNT_TYPE): 4=Group Ironman, 5=Hardcore Group Ironman, 6=Unranked Group Ironman
 			int acctType = client.getVarbitValue(Varbits.ACCOUNT_TYPE);
@@ -471,23 +470,48 @@ public class GIMProgressTrackerPlugin extends Plugin
 		String pathStr = config.guideFilePath();
 		if (pathStr == null || pathStr.trim().isEmpty())
 		{
-			loadDefaultGuide();
+			// No guide configured — show the selection screen in the panel.
+			return;
+		}
+		if (pathStr.startsWith("bundled:"))
+		{
+			loadBundledGuideByResource(pathStr.substring("bundled:".length()));
 			return;
 		}
 		loadGuideFromFile(Paths.get(pathStr.trim()));
 	}
 
-	private void loadDefaultGuide()
+	private void loadBundledGuideByResource(String resourcePath)
 	{
 		try
 		{
-			Guide guide = guideImporter.loadFromResource(DEFAULT_GUIDE_RESOURCE);
+			Guide guide = guideImporter.loadFromResource(resourcePath);
 			tracker.setGuide(guide);
-			log.debug("Loaded bundled default guide '{}'", guide.getGuideName());
+			log.debug("Loaded bundled guide '{}' from {}", guide.getGuideName(), resourcePath);
 		}
 		catch (IOException e)
 		{
-			log.warn("Failed to load bundled default guide: {}", e.getMessage());
+			log.warn("Failed to load bundled guide {}: {}", resourcePath, e.getMessage());
+		}
+	}
+
+	public void loadBundledGuide(GuideImporter.BundledGuide bundledGuide)
+	{
+		try
+		{
+			Guide guide = guideImporter.loadFromResource(bundledGuide.getResourcePath());
+			tracker.setGuide(guide);
+			configManager.setConfiguration(GIMProgressTrackerConfig.GROUP, "guideFilePath",
+				"bundled:" + bundledGuide.getResourcePath());
+			log.debug("Loaded bundled guide '{}'", guide.getGuideName());
+		}
+		catch (IOException e)
+		{
+			log.warn("Failed to load bundled guide: {}", e.getMessage());
+			SwingUtilities.invokeLater(() ->
+				javax.swing.JOptionPane.showMessageDialog(panel,
+					"Could not load guide:\n" + e.getMessage(),
+					"Vibe Steps Progress Tracker", javax.swing.JOptionPane.ERROR_MESSAGE));
 		}
 	}
 
@@ -960,6 +984,88 @@ public class GIMProgressTrackerPlugin extends Plugin
 		catch (IOException e)
 		{
 			log.debug("Failed to clear live location from shared folder", e);
+		}
+	}
+
+	private String loadNotes()
+	{
+		String playerName = tracker.getPlayerName();
+		if (playerName == null || playerName.isEmpty() || "default".equals(playerName))
+		{
+			return "";
+		}
+		try
+		{
+			Path f = PluginPaths.notesFile(playerName);
+			if (Files.exists(f))
+			{
+				return new String(Files.readAllBytes(f), StandardCharsets.UTF_8);
+			}
+		}
+		catch (IOException e)
+		{
+			log.debug("Could not load notes for {}", playerName, e);
+		}
+		return "";
+	}
+
+	private void saveNotes(String text)
+	{
+		String playerName = tracker.getPlayerName();
+		if (playerName == null || playerName.isEmpty() || "default".equals(playerName))
+		{
+			return;
+		}
+		try
+		{
+			Path f = PluginPaths.notesFile(playerName);
+			Files.write(f, text.getBytes(StandardCharsets.UTF_8));
+		}
+		catch (IOException e)
+		{
+			log.debug("Could not save notes for {}", playerName, e);
+		}
+	}
+
+	private String getStatus()
+	{
+		PlayerProgress progress = tracker.getProgress();
+		return progress != null ? progress.getStatus() : null;
+	}
+
+	private void setAndExportStatus(String status)
+	{
+		PlayerProgress progress = tracker.getProgress();
+		if (progress == null)
+		{
+			return;
+		}
+		progress.setStatus(status == null || status.isEmpty() ? null : status);
+		tracker.persist();
+
+		String folder = config.sharedFolderPath();
+		if (folder == null || folder.trim().isEmpty())
+		{
+			return;
+		}
+		Path dir = Paths.get(folder.trim());
+		if (!Files.isDirectory(dir))
+		{
+			return;
+		}
+		String playerName = progress.getPlayerName();
+		if (playerName == null || playerName.isEmpty())
+		{
+			return;
+		}
+		String fname = PluginPaths.sanitizeForFilename(playerName) + "_progress.json";
+		try
+		{
+			progressStore.exportTo(progress, dir.resolve(fname));
+		}
+		catch (IOException e)
+		{
+			log.debug("Failed to export status to shared folder", e);
 		}
 	}
 
