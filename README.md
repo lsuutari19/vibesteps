@@ -305,6 +305,109 @@ The shared folder feature lets your whole team see each other's progress
 without any server — just a folder you all have access to (Dropbox, OneDrive,
 a network share, etc.). Works for any group of players, not just Group Ironman.
 
+### Setting up the shared folder
+
+You need one folder that every teammate can read **and write to**, that is
+automatically synced to each person's PC. Pick **one** of the options below —
+everyone in the group should use the same service.
+
+The path you enter in the plugin must be the **local synced path on your
+machine**, not a web link. The plugin reads and writes regular files; it
+doesn't talk to any cloud API.
+
+**Quick pick:**
+
+- **Most groups → Dropbox.** Fastest sync, simplest setup, no "keep offline"
+  toggle to remember. The 2 GB free tier is overkill (progress files are
+  a few KB each).
+- **Privacy-conscious groups → Syncthing.** No third-party cloud — files
+  go directly between your machines. More setup, but nothing leaves your
+  group.
+- **Already living in Google / Microsoft → Drive / OneDrive.** Works fine
+  if everyone already uses the service. Watch the "Available offline" /
+  "Always keep on this device" gotcha noted in each section.
+- **LAN parties / shared house → network share.** Niche but works.
+
+#### Option 1 — Dropbox (recommended)
+
+1. One person creates a folder inside their Dropbox folder, e.g.
+   `Dropbox/VibeSteps-Group/`.
+2. Right-click that folder → **Share** → invite each teammate by email,
+   set permission to **Can edit** (not "Can view").
+3. Each teammate accepts the invite. The folder appears under their own
+   Dropbox.
+4. In RuneLite → plugin settings → **Team sync** → **Shared folder path**,
+   paste your local path to the folder, e.g.:
+   - Windows: `C:\Users\<you>\Dropbox\VibeSteps-Group`
+   - macOS: `/Users/<you>/Dropbox/VibeSteps-Group`
+   - Linux: `/home/<you>/Dropbox/VibeSteps-Group`
+
+Dropbox free tier (2 GB) is plenty — progress files are a few KB each.
+
+#### Option 2 — Google Drive
+
+1. One person opens [drive.google.com](https://drive.google.com), clicks
+   **New → Folder**, names it (e.g. `VibeSteps-Group`).
+2. Right-click the folder → **Share** → add each teammate's Google email,
+   set permission to **Editor**.
+3. Each teammate installs **Google Drive for desktop**
+   ([download](https://www.google.com/drive/download/)) and signs in.
+4. In Drive desktop, right-click the shared folder → **Available offline**
+   so it actually downloads (otherwise it's stream-only and the plugin
+   can't read it reliably).
+5. In RuneLite → plugin settings → **Team sync** → **Shared folder path**,
+   paste your local path, typically:
+   - Windows: `G:\My Drive\VibeSteps-Group` (or `C:\Users\<you>\Google Drive\...`
+     depending on your setup)
+   - macOS: `/Users/<you>/Library/CloudStorage/GoogleDrive-<email>/My Drive/VibeSteps-Group`
+
+> **Note:** "Shared with me" folders in Drive sometimes don't sync locally by
+> default. If the folder doesn't show up on your disk, right-click it in the
+> Drive web UI and choose **Add shortcut to Drive → My Drive**, then enable
+> **Available offline** on the shortcut.
+
+#### Option 3 — OneDrive
+
+1. One person creates a folder inside their OneDrive, e.g.
+   `OneDrive/VibeSteps-Group/`.
+2. Right-click the folder → **Share** → enter each teammate's email,
+   make sure **Allow editing** is checked, send.
+3. Each teammate opens the invite, clicks **Add to OneDrive** (or
+   "Add shortcut to OneDrive"), so it syncs to their local disk.
+4. Right-click the folder in File Explorer → **Always keep on this device**
+   so it stays available offline.
+5. In RuneLite → plugin settings → **Team sync** → **Shared folder path**:
+   - Windows: `C:\Users\<you>\OneDrive\VibeSteps-Group`
+   - macOS: `/Users/<you>/Library/CloudStorage/OneDrive-Personal/VibeSteps-Group`
+
+#### Option 4 — Syncthing (recommended for privacy)
+
+Best if your group doesn't want any data on a third-party cloud. Syncthing
+runs on each teammate's PC and syncs a folder between them directly over the
+local network or internet.
+
+1. Everyone installs [Syncthing](https://syncthing.net/downloads/) and
+   launches it. It opens a local web UI at `http://localhost:8384`.
+2. One person creates a folder (e.g. `~/VibeSteps-Group`) and in Syncthing
+   clicks **Add Folder**, points it at that path.
+3. That person clicks **Add Remote Device** for each teammate (each device
+   has a unique device ID — teammates copy theirs from their own
+   Syncthing UI under **Actions → Show ID**).
+4. Each teammate accepts the device + folder invite that pops up in their
+   Syncthing UI. They set the folder path to wherever they want it locally.
+5. In RuneLite → plugin settings → **Team sync** → **Shared folder path**,
+   paste the local path you chose.
+
+Syncthing keeps working even when one teammate is offline — sync resumes
+when they come back online.
+
+#### Option 5 — Network share (LAN only)
+
+If everyone is on the same LAN (uncommon for OSRS groups, but possible):
+share a Windows folder via SMB, or set up an NFS mount on Linux. The plugin
+just needs a path it can read and write — anything that looks like a
+regular folder works.
+
 ### Setup
 
 1. In plugin settings → **Team sync**, set **Shared folder path** to the
@@ -312,6 +415,16 @@ a network share, etc.). Works for any group of players, not just Group Ironman.
 2. Enable **Auto-export progress**. Whenever you mark a step, your progress
    file is written to that folder as `<name>_progress.json`.
 3. Have each teammate do the same, writing to the same folder.
+
+### Troubleshooting
+
+| Symptom | Likely cause | Fix |
+|---|---|---|
+| Teammates panel says "Shared folder not found" | Path typo, or the folder isn't synced yet | Check the path exists in your file manager. Wait for the sync client to finish initial sync. |
+| Teammates panel says "No teammate progress files found" | Folder is empty or only contains your file | Confirm teammates have enabled **Auto-export progress** and have marked at least one step. |
+| Updates take minutes to appear | Sync client is rate-limited or paused (Drive especially) | Make sure the folder is set to **Available offline** / **Always keep on this device**. Resume the sync client if it's paused. |
+| Files appear but show "Could not read" | A teammate's file is being written while you're reading it | Hit **Refresh** — it resolves itself within a second. |
+| One teammate's file never updates | They haven't enabled auto-export, or their sync client is offline | Ask them to check the **Auto-export progress** toggle and that their cloud sync is running. |
 
 ### What gets exported
 
