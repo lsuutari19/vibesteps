@@ -33,6 +33,17 @@ public final class PluginPaths
 		return ensure(baseDir().resolve("teammates"));
 	}
 
+	public static Path cacheDir() throws IOException
+	{
+		return ensure(baseDir().resolve("cache"));
+	}
+
+	public static Path notesFile(String playerName) throws IOException
+	{
+		Path dir = ensure(baseDir().resolve("notes"));
+		return dir.resolve(sanitizeForFilename(playerName) + "_notes.txt");
+	}
+
 	private static Path ensure(Path p) throws IOException
 	{
 		if (!Files.isDirectory(p))

@@ -23,43 +23,64 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
-import net.runelite.client.ui.PluginPanel;
+import net.runelite.client.util.LinkBrowser;
 
-public class TeammatesPanel extends PluginPanel
+public class TeammatesPanel extends JPanel
 {
 	private static final Color CARD_BG = ColorScheme.DARKER_GRAY_COLOR;
 	private static final Color MUTED = ColorScheme.LIGHT_GRAY_COLOR;
 	private static final Color WARN_COLOR = new Color(220, 160, 40);
 	private static final Color DONE_COLOR = ColorScheme.PROGRESS_COMPLETE_COLOR;
 	private static final Color MAP_BTN_FG = new Color(100, 170, 240);
+	private static final Color LIVE_COLOR = new Color(80, 210, 100);
+
+	private static final int STATUS_MAX_LEN = 60;
 
 	private final ProgressTracker tracker;
 	private final ProgressStore progressStore;
 	private final Supplier<String> sharedFolderPath;
 	private final Consumer<Location> onMapClicked;
+	private final BooleanSupplier isShareLocationEnabled;
+	private final Consumer<Boolean> setShareLocation;
+	private final Supplier<String> getStatus;
+	private final Consumer<String> setStatus;
 
 	private final JPanel content;
+	private JCheckBox locationShareToggle;
+	private JTextField statusField;
 
 	public TeammatesPanel(ProgressTracker tracker, ProgressStore progressStore,
-		Supplier<String> sharedFolderPath, Consumer<Location> onMapClicked)
+		Supplier<String> sharedFolderPath, Consumer<Location> onMapClicked,
+		BooleanSupplier isShareLocationEnabled, Consumer<Boolean> setShareLocation,
+		Supplier<String> getStatus, Consumer<String> setStatus)
 	{
-		super(false);
 		this.tracker = tracker;
 		this.progressStore = progressStore;
 		this.sharedFolderPath = sharedFolderPath;
 		this.onMapClicked = onMapClicked;
+		this.isShareLocationEnabled = isShareLocationEnabled;
+		this.setShareLocation = setShareLocation;
+		this.getStatus = getStatus;
+		this.setStatus = setStatus;
 
 		setLayout(new BorderLayout());
 		setBackground(ColorScheme.DARK_GRAY_COLOR);
@@ -77,6 +98,8 @@ public class TeammatesPanel extends PluginPanel
 		scroll.setBorder(BorderFactory.createEmptyBorder());
 		scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		add(scroll, BorderLayout.CENTER);
+
+		add(buildFooter(), BorderLayout.SOUTH);
 
 		rebuild();
 	}
@@ -203,6 +226,17 @@ public class TeammatesPanel extends PluginPanel
 		nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 		card.add(nameLabel);
 
+		String status = progress.getStatus();
+		if (status != null && !status.isEmpty())
+		{
+			JLabel statusLabel = new JLabel("💬 " + status);
+			statusLabel.setFont(FontManager.getRunescapeSmallFont());
+			statusLabel.setForeground(new Color(200, 200, 130));
+			statusLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+			card.add(Box.createVerticalStrut(1));
+			card.add(statusLabel);
+		}
+
 		card.add(mutedLabel(formatLastUpdated(progress.getLastUpdated())));
 		card.add(Box.createVerticalStrut(6));
 
@@ -277,7 +311,88 @@ public class TeammatesPanel extends PluginPanel
 			}
 		}
 
+		Location liveLoc = progress.getLiveLocation();
+		String liveUpdated = progress.getLiveLocationUpdated();
+		if (liveLoc != null && isLiveRecent(liveUpdated))
+		{
+			card.add(Box.createVerticalStrut(4));
+			addLiveLocationRow(card, liveLoc, liveUpdated);
+		}
+
 		return card;
+	}
+
+	private void addLiveLocationRow(JPanel card, Location loc, String updatedIso)
+	{
+		JPanel row = new JPanel();
+		row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+		row.setOpaque(false);
+		row.setAlignmentX(Component.LEFT_ALIGNMENT);
+		row.setMaximumSize(new Dimension(Integer.MAX_VALUE, 24));
+
+		JLabel dot = new JLabel("● ");
+		dot.setFont(FontManager.getRunescapeSmallFont());
+		dot.setForeground(LIVE_COLOR);
+		row.add(dot);
+
+		JLabel liveLabel = new JLabel("Live · " + formatLiveAgo(updatedIso));
+		liveLabel.setFont(FontManager.getRunescapeSmallFont());
+		liveLabel.setForeground(LIVE_COLOR);
+		row.add(liveLabel);
+
+		row.add(Box.createHorizontalStrut(6));
+
+		JButton mapBtn = new JButton("Map");
+		mapBtn.setFont(FontManager.getRunescapeSmallFont());
+		mapBtn.setForeground(MAP_BTN_FG);
+		mapBtn.setBackground(CARD_BG);
+		mapBtn.setBorder(BorderFactory.createLineBorder(MAP_BTN_FG, 1));
+		mapBtn.setFocusPainted(false);
+		mapBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		mapBtn.setToolTipText("Open world map at this teammate's current location");
+		mapBtn.addActionListener(e -> onMapClicked.accept(loc));
+		row.add(mapBtn);
+
+		row.add(Box.createHorizontalGlue());
+		card.add(row);
+	}
+
+	private static boolean isLiveRecent(String iso)
+	{
+		if (iso == null)
+		{
+			return false;
+		}
+		try
+		{
+			return Duration.between(Instant.parse(iso), Instant.now()).toMinutes() < 10;
+		}
+		catch (Exception e)
+		{
+			return false;
+		}
+	}
+
+	private static String formatLiveAgo(String iso)
+	{
+		if (iso == null)
+		{
+			return "";
+		}
+		try
+		{
+			Duration ago = Duration.between(Instant.parse(iso), Instant.now());
+			long secs = ago.getSeconds();
+			if (secs < 60)
+			{
+				return secs + "s ago";
+			}
+			return ago.toMinutes() + "m ago";
+		}
+		catch (Exception e)
+		{
+			return "";
+		}
 	}
 
 	private void addCurrentStepSection(JPanel card, String breadcrumb, String tldr, String desc, Location loc)
@@ -389,19 +504,61 @@ public class TeammatesPanel extends PluginPanel
 		return card;
 	}
 
+	private JPanel buildFooter()
+	{
+		JPanel footer = new JPanel();
+		footer.setLayout(new BoxLayout(footer, BoxLayout.X_AXIS));
+		footer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		footer.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createMatteBorder(1, 0, 0, 0, ColorScheme.DARK_GRAY_COLOR),
+			BorderFactory.createEmptyBorder(6, 10, 6, 10)));
+
+		javax.swing.ImageIcon icon = PanelIcons.githubIcon(14);
+		JLabel iconLabel = new JLabel(icon);
+		iconLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 4));
+		footer.add(iconLabel);
+
+		JLabel link = new JLabel("Support / GitHub");
+		link.setFont(FontManager.getRunescapeSmallFont());
+		link.setForeground(new Color(100, 140, 200));
+		link.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		link.setToolTipText("Open the plugin's GitHub page for support and issue reports");
+		link.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent e)
+			{
+				LinkBrowser.browse("https://github.com/lsuutari19/vibesteps/issues");
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e)
+			{
+				link.setForeground(new Color(140, 180, 255));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e)
+			{
+				link.setForeground(new Color(100, 140, 200));
+			}
+		});
+		footer.add(link);
+		footer.add(Box.createHorizontalGlue());
+
+		return footer;
+	}
+
 	private JPanel buildHeader()
 	{
-		JPanel header = new JPanel(new BorderLayout());
-		header.setBackground(ColorScheme.DARKER_GRAY_COLOR);
-		header.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(0, 0, 1, 0, ColorScheme.DARK_GRAY_COLOR),
-			BorderFactory.createEmptyBorder(8, 10, 8, 10)
-		));
+		JPanel outer = new JPanel();
+		outer.setLayout(new BoxLayout(outer, BoxLayout.Y_AXIS));
+		outer.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		outer.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, ColorScheme.DARK_GRAY_COLOR));
 
-		JLabel title = new JLabel("Teammates");
-		title.setFont(FontManager.getRunescapeBoldFont());
-		title.setForeground(Color.WHITE);
-		header.add(title, BorderLayout.WEST);
+		JPanel titleRow = new JPanel(new BorderLayout());
+		titleRow.setOpaque(false);
+		titleRow.setBorder(BorderFactory.createEmptyBorder(6, 10, 4, 10));
 
 		JButton refresh = new JButton("Refresh");
 		refresh.setFont(FontManager.getRunescapeSmallFont());
@@ -425,9 +582,169 @@ public class TeammatesPanel extends PluginPanel
 			}
 		});
 		refresh.addActionListener(e -> rebuild());
-		header.add(refresh, BorderLayout.EAST);
+		titleRow.add(refresh, BorderLayout.EAST);
+		outer.add(titleRow);
 
-		return header;
+		JPanel toggleRow = new JPanel(new BorderLayout());
+		toggleRow.setOpaque(false);
+		toggleRow.setBorder(BorderFactory.createEmptyBorder(2, 10, 8, 10));
+
+		locationShareToggle = new JCheckBox("Share my location");
+		locationShareToggle.setFont(FontManager.getRunescapeSmallFont());
+		locationShareToggle.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+		locationShareToggle.setBackground(ColorScheme.DARKER_GRAY_COLOR);
+		locationShareToggle.setFocusPainted(false);
+		boolean hasFolder = hasSharedFolder();
+		locationShareToggle.setEnabled(hasFolder);
+		locationShareToggle.setSelected(hasFolder && isShareLocationEnabled.getAsBoolean());
+		locationShareToggle.setToolTipText(hasFolder
+			? "Periodically write your location to the shared folder"
+			: "Configure a shared folder first");
+		locationShareToggle.addActionListener(e -> setShareLocation.accept(locationShareToggle.isSelected()));
+		toggleRow.add(locationShareToggle, BorderLayout.WEST);
+
+		JLabel locationInfoIcon = new JLabel(" ⓘ");
+		locationInfoIcon.setFont(FontManager.getRunescapeSmallFont());
+		locationInfoIcon.setForeground(MUTED);
+		locationInfoIcon.setToolTipText("<html><body style='width:200px'>"
+			+ "Your location is written only to the shared folder you have configured. "
+			+ "It is never sent to any external server. "
+			+ "Only people who have access to that folder can see your location."
+			+ "</body></html>");
+		locationInfoIcon.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		toggleRow.add(locationInfoIcon, BorderLayout.CENTER);
+		outer.add(toggleRow);
+
+		JPanel statusRow = new JPanel(new BorderLayout());
+		statusRow.setOpaque(false);
+		statusRow.setBorder(BorderFactory.createEmptyBorder(2, 10, 8, 10));
+
+		statusField = new JTextField();
+		statusField.setFont(FontManager.getRunescapeSmallFont());
+		statusField.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+		statusField.setBackground(ColorScheme.DARKER_GRAY_COLOR.darker());
+		statusField.setCaretColor(ColorScheme.LIGHT_GRAY_COLOR);
+		statusField.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(ColorScheme.DARK_GRAY_COLOR.brighter(), 1),
+			BorderFactory.createEmptyBorder(2, 4, 2, 4)
+		));
+		statusField.setToolTipText("Set an optional status visible to your teammates (max " + STATUS_MAX_LEN + " chars)");
+		String currentStatus = getStatus.get();
+		if (currentStatus != null && !currentStatus.isEmpty())
+		{
+			statusField.setText(currentStatus);
+		}
+		else
+		{
+			statusField.setText("Set a status…");
+			statusField.setForeground(MUTED);
+		}
+		statusField.addFocusListener(new java.awt.event.FocusAdapter()
+		{
+			@Override
+			public void focusGained(java.awt.event.FocusEvent e)
+			{
+				if ("Set a status…".equals(statusField.getText()))
+				{
+					statusField.setText("");
+					statusField.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+				}
+			}
+
+			@Override
+			public void focusLost(java.awt.event.FocusEvent e)
+			{
+				String text = statusField.getText().trim();
+				if (text.isEmpty())
+				{
+					statusField.setText("Set a status…");
+					statusField.setForeground(MUTED);
+					setStatus.accept("");
+				}
+				else
+				{
+					setStatus.accept(text);
+				}
+			}
+		});
+		statusField.addActionListener(e -> statusField.transferFocus());
+		((AbstractDocument) statusField.getDocument()).setDocumentFilter(new DocumentFilter()
+		{
+			@Override
+			public void insertString(FilterBypass fb, int offset, String string, AttributeSet attr)
+				throws BadLocationException
+			{
+				if (fb.getDocument().getLength() + string.length() <= STATUS_MAX_LEN)
+				{
+					super.insertString(fb, offset, string, attr);
+				}
+			}
+
+			@Override
+			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
+				throws BadLocationException
+			{
+				int newLen = fb.getDocument().getLength() - length + (text != null ? text.length() : 0);
+				if (newLen <= STATUS_MAX_LEN)
+				{
+					super.replace(fb, offset, length, text, attrs);
+				}
+			}
+		});
+
+		statusRow.add(statusField, BorderLayout.CENTER);
+		outer.add(statusRow);
+
+		return outer;
+	}
+
+	public void refreshLocationToggle()
+	{
+		SwingUtilities.invokeLater(() ->
+		{
+			if (locationShareToggle == null)
+			{
+				return;
+			}
+			boolean hasFolder = hasSharedFolder();
+			locationShareToggle.setEnabled(hasFolder);
+			locationShareToggle.setToolTipText(hasFolder
+				? "Periodically write your location to the shared folder"
+				: "Configure a shared folder first");
+			boolean active = hasFolder && isShareLocationEnabled.getAsBoolean();
+			if (locationShareToggle.isSelected() != active)
+			{
+				locationShareToggle.setSelected(active);
+			}
+		});
+	}
+
+	public void refreshStatus()
+	{
+		SwingUtilities.invokeLater(() ->
+		{
+			if (statusField == null)
+			{
+				return;
+			}
+			String current = getStatus.get();
+			if (current != null && !current.isEmpty())
+			{
+				statusField.setForeground(ColorScheme.LIGHT_GRAY_COLOR);
+				statusField.setText(current);
+			}
+			else if (!"Set a status…".equals(statusField.getText()))
+			{
+				statusField.setText("Set a status…");
+				statusField.setForeground(MUTED);
+			}
+		});
+	}
+
+	private boolean hasSharedFolder()
+	{
+		String folder = sharedFolderPath.get();
+		return folder != null && !folder.trim().isEmpty();
 	}
 
 	private JLabel mutedLabel(String text)

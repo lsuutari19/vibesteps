@@ -3,6 +3,7 @@ package com.gimprogresstracker;
 import com.gimprogresstracker.model.Guide;
 import com.gimprogresstracker.model.ItemStatus;
 import com.gimprogresstracker.model.Location;
+import com.gimprogresstracker.model.PlayerProgress;
 import com.gimprogresstracker.model.RequiredItem;
 import com.gimprogresstracker.model.StepEntry;
 import com.gimprogresstracker.ui.GIMProgressTrackerPanel;
@@ -20,6 +21,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -60,6 +62,7 @@ import net.runelite.client.ui.overlay.OverlayManager;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPoint;
 import net.runelite.client.ui.overlay.worldmap.WorldMapPointManager;
 import net.runelite.client.Notifier;
+import net.runelite.client.util.ImageUtil;
 import net.runelite.client.util.LinkBrowser;
 
 @Slf4j
@@ -117,8 +120,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 
 	private GIMProgressTrackerPanel panel;
 	private TeammatesPanel teammatesPanel;
+	private com.gimprogresstracker.ui.VibeStepsPanel combinedPanel;
 	private NavigationButton navButton;
-	private NavigationButton teammatesNavButton;
 	private WorldMapPoint mapPoint;
 	private WorldMapPoint teammateMapPoint;
 	private Runnable trackerListener;
@@ -142,6 +145,13 @@ public class GIMProgressTrackerPlugin extends Plugin
 	// the path target so Shortest Path recomputes from the new tile.
 	private WorldPoint lastPlayerLocation = null;
 
+	private static final int LOCATION_EXPORT_INTERVAL = 20; // ~12 seconds
+	private int locationExportTick = 0;
+
+	private static final int STEP_ICON_SIZE = 28;
+	private static final int TEAMMATE_ICON_SIZE = 22;
+	private BufferedImage teammateMapIcon;
+
 	// Skill name → real level, updated on login and StatChanged. Keyed by Skill.name()
 	// so the EDT can read it without touching the client API.
 	private final ConcurrentHashMap<String, Integer> cachedSkillLevels = new ConcurrentHashMap<>();
@@ -149,9 +159,11 @@ public class GIMProgressTrackerPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
-		mapPointIcon = buildMapPointIcon(config.highlightColor());
+		mapPointIcon = buildStepMapIcon();
+		teammateMapIcon = buildTeammateMapIcon();
 
-		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::resetProgress,
+		panel = new GIMProgressTrackerPanel(tracker, this::loadGuideFromFile, this::loadBundledGuide,
+			this::resetProgress,
 			this::isQuestHelperInstalled, this::openQuestHelperForQuest, this::openWikiForQuest,
 			itemManager, this::checkItemStatus,
 			id -> itemNameCache.getOrDefault(id, "Item #" + id),
@@ -161,25 +173,23 @@ public class GIMProgressTrackerPlugin extends Plugin
 			skill -> cachedSkillLevels.getOrDefault(skill.name(), 1),
 			this::openWorldMapAt,
 			this::isPathTrackingEnabled,
-			this::togglePathTracking);
+			this::togglePathTracking,
+			this::loadNotes, this::saveNotes);
+
+		teammatesPanel = new TeammatesPanel(tracker, progressStore, config::sharedFolderPath,
+			this::showTeammateMapPoint, config::shareLocation,
+			enabled -> configManager.setConfiguration(GIMProgressTrackerConfig.GROUP, "shareLocation", enabled),
+			this::getStatus, this::setAndExportStatus);
+
+		combinedPanel = new com.gimprogresstracker.ui.VibeStepsPanel(panel, teammatesPanel);
 
 		navButton = NavigationButton.builder()
 			.tooltip("Vibe Steps Progress Tracker")
 			.icon(PanelIcons.navIcon(GIMProgressTrackerPlugin.class))
 			.priority(7)
-			.panel(panel)
+			.panel(combinedPanel)
 			.build();
 		clientToolbar.addNavigation(navButton);
-
-		teammatesPanel = new TeammatesPanel(tracker, progressStore, config::sharedFolderPath,
-			this::showTeammateMapPoint);
-		teammatesNavButton = NavigationButton.builder()
-			.tooltip("Vibe Steps – Teammates")
-			.icon(PanelIcons.teammatesIcon())
-			.priority(8)
-			.panel(teammatesPanel)
-			.build();
-		clientToolbar.addNavigation(teammatesNavButton);
 
 		overlayManager.add(overlay);
 
@@ -191,6 +201,10 @@ public class GIMProgressTrackerPlugin extends Plugin
 		// dev client). Once the real account logs in, setPlayerName will swap to that profile.
 		String name = currentPlayerName();
 		tracker.setPlayerName(name != null ? name : "default");
+		if (name != null)
+		{
+			loadBankCaches(name);
+		}
 
 		// Load the configured guide, if any.
 		loadGuideFromConfig();
@@ -204,11 +218,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 			clientToolbar.removeNavigation(navButton);
 			navButton = null;
 		}
-		if (teammatesNavButton != null)
-		{
-			clientToolbar.removeNavigation(teammatesNavButton);
-			teammatesNavButton = null;
-		}
+		combinedPanel = null;
 		teammatesPanel = null;
 		overlayManager.remove(overlay);
 
@@ -219,6 +229,7 @@ public class GIMProgressTrackerPlugin extends Plugin
 		}
 		clearWorldMapPoint();
 		clearTeammateMapPoint();
+		clearLiveLocation();
 		if (config.useShortestPath())
 		{
 			clearShortestPath();
@@ -245,6 +256,11 @@ public class GIMProgressTrackerPlugin extends Plugin
 			if (name != null)
 			{
 				tracker.setPlayerName(name);
+				loadBankCaches(name);
+				if (panel != null)
+				{
+					panel.refreshNotes();
+				}
 			}
 			// Varbit 1777 (ACCOUNT_TYPE): 4=Group Ironman, 5=Hardcore Group Ironman, 6=Unranked Group Ironman
 			int acctType = client.getVarbitValue(Varbits.ACCOUNT_TYPE);
@@ -265,24 +281,39 @@ public class GIMProgressTrackerPlugin extends Plugin
 		if (!config.useShortestPath() || !isShortestPathInstalled())
 		{
 			lastPlayerLocation = null;
-			return;
 		}
-		Player local = client.getLocalPlayer();
-		if (local == null)
+		else
 		{
-			lastPlayerLocation = null;
-			return;
+			Player local = client.getLocalPlayer();
+			if (local == null)
+			{
+				lastPlayerLocation = null;
+			}
+			else
+			{
+				WorldPoint current = local.getWorldLocation();
+				WorldPoint previous = lastPlayerLocation;
+				lastPlayerLocation = current;
+				// Resend the path whenever the player tile changes (walk, run, teleport,
+				// stairs/plane). Shortest Path only auto-recomputes when the player goes
+				// off-path, so without this the displayed path "tail" wouldn't shrink as
+				// the player walks toward the target.
+				if (previous != null && !current.equals(previous))
+				{
+					maybeSendShortestPathTarget();
+				}
+			}
 		}
-		WorldPoint current = local.getWorldLocation();
-		WorldPoint previous = lastPlayerLocation;
-		lastPlayerLocation = current;
-		// Resend the path whenever the player tile changes (walk, run, teleport,
-		// stairs/plane). Shortest Path only auto-recomputes when the player goes
-		// off-path, so without this the displayed path "tail" wouldn't shrink as
-		// the player walks toward the target.
-		if (previous != null && !current.equals(previous))
+
+		locationExportTick++;
+		if (locationExportTick >= LOCATION_EXPORT_INTERVAL)
 		{
-			maybeSendShortestPathTarget();
+			locationExportTick = 0;
+			maybeExportLiveLocation();
+			if (teammatesPanel != null)
+			{
+				teammatesPanel.rebuild();
+			}
 		}
 	}
 
@@ -323,11 +354,27 @@ public class GIMProgressTrackerPlugin extends Plugin
 				loadGuideFromConfig();
 				break;
 			case "highlightColor":
-				mapPointIcon = buildMapPointIcon(config.highlightColor());
+				mapPointIcon = buildStepMapIcon();
 				refreshWorldMapPoint();
 				break;
 			case "showWorldMapArrow":
 				refreshWorldMapPoint();
+				break;
+			case "shareLocation":
+				if (!config.shareLocation())
+				{
+					clearLiveLocation();
+				}
+				if (teammatesPanel != null)
+				{
+					teammatesPanel.refreshLocationToggle();
+				}
+				break;
+			case "sharedFolderPath":
+				if (teammatesPanel != null)
+				{
+					teammatesPanel.refreshLocationToggle();
+				}
 				break;
 			case "useShortestPath":
 				if (config.useShortestPath())
@@ -423,23 +470,48 @@ public class GIMProgressTrackerPlugin extends Plugin
 		String pathStr = config.guideFilePath();
 		if (pathStr == null || pathStr.trim().isEmpty())
 		{
-			loadDefaultGuide();
+			// No guide configured — show the selection screen in the panel.
+			return;
+		}
+		if (pathStr.startsWith("bundled:"))
+		{
+			loadBundledGuideByResource(pathStr.substring("bundled:".length()));
 			return;
 		}
 		loadGuideFromFile(Paths.get(pathStr.trim()));
 	}
 
-	private void loadDefaultGuide()
+	private void loadBundledGuideByResource(String resourcePath)
 	{
 		try
 		{
-			Guide guide = guideImporter.loadFromResource(DEFAULT_GUIDE_RESOURCE);
+			Guide guide = guideImporter.loadFromResource(resourcePath);
 			tracker.setGuide(guide);
-			log.debug("Loaded bundled default guide '{}'", guide.getGuideName());
+			log.debug("Loaded bundled guide '{}' from {}", guide.getGuideName(), resourcePath);
 		}
 		catch (IOException e)
 		{
-			log.warn("Failed to load bundled default guide: {}", e.getMessage());
+			log.warn("Failed to load bundled guide {}: {}", resourcePath, e.getMessage());
+		}
+	}
+
+	public void loadBundledGuide(GuideImporter.BundledGuide bundledGuide)
+	{
+		try
+		{
+			Guide guide = guideImporter.loadFromResource(bundledGuide.getResourcePath());
+			tracker.setGuide(guide);
+			configManager.setConfiguration(GIMProgressTrackerConfig.GROUP, "guideFilePath",
+				"bundled:" + bundledGuide.getResourcePath());
+			log.debug("Loaded bundled guide '{}'", guide.getGuideName());
+		}
+		catch (IOException e)
+		{
+			log.warn("Failed to load bundled guide: {}", e.getMessage());
+			SwingUtilities.invokeLater(() ->
+				javax.swing.JOptionPane.showMessageDialog(panel,
+					"Could not load guide:\n" + e.getMessage(),
+					"Vibe Steps Progress Tracker", javax.swing.JOptionPane.ERROR_MESSAGE));
 		}
 	}
 
@@ -524,12 +596,13 @@ public class GIMProgressTrackerPlugin extends Plugin
 		WorldPoint wp = new WorldPoint(loc.getX(), loc.getY(), loc.getPlane());
 		teammateMapPoint = WorldMapPoint.builder()
 			.worldPoint(wp)
-			.image(buildMapPointIcon(new Color(60, 140, 230)))
+			.image(teammateMapIcon)
 			.snapToEdge(true)
 			.jumpOnClick(true)
-			.name("Teammate step location")
+			.name("Teammate location")
 			.build();
 		worldMapPointManager.add(teammateMapPoint);
+		clientThread.invoke(() -> client.getWorldMap().setWorldMapPositionTarget(wp));
 	}
 
 	private void clearTeammateMapPoint()
@@ -610,13 +683,17 @@ public class GIMProgressTrackerPlugin extends Plugin
 		}
 		if (id == InventoryID.BANK.getId())
 		{
-			cachedBank = buildItemMap(event.getItemContainer().getItems());
+			Map<Integer, Integer> bank = buildItemMap(event.getItemContainer().getItems());
+			cachedBank = bank;
 			relevant = true;
+			persistBankCache("bank", bank);
 		}
 		if (id == InventoryID.GROUP_STORAGE.getId())
 		{
-			cachedGimBank = buildItemMap(event.getItemContainer().getItems());
+			Map<Integer, Integer> gimBank = buildItemMap(event.getItemContainer().getItems());
+			cachedGimBank = gimBank;
 			relevant = true;
+			persistBankCache("gim_bank", gimBank);
 		}
 		if (relevant && panel != null)
 		{
@@ -779,9 +856,270 @@ public class GIMProgressTrackerPlugin extends Plugin
 		return (name == null || name.isEmpty()) ? null : name;
 	}
 
-	private static BufferedImage buildMapPointIcon(Color base)
+	private void loadBankCaches(String playerName)
 	{
-		int size = 18;
+		try
+		{
+			Map<Integer, Integer> bank = progressStore.loadBankCache(playerName, "bank");
+			if (!bank.isEmpty())
+			{
+				cachedBank = bank;
+			}
+		}
+		catch (IOException e)
+		{
+			log.debug("Could not load bank cache for {}", playerName, e);
+		}
+		try
+		{
+			Map<Integer, Integer> gimBank = progressStore.loadBankCache(playerName, "gim_bank");
+			if (!gimBank.isEmpty())
+			{
+				cachedGimBank = gimBank;
+			}
+		}
+		catch (IOException e)
+		{
+			log.debug("Could not load GIM bank cache for {}", playerName, e);
+		}
+		if (panel != null)
+		{
+			SwingUtilities.invokeLater(panel::refresh);
+		}
+	}
+
+	private void persistBankCache(String suffix, Map<Integer, Integer> cache)
+	{
+		String playerName = tracker.getPlayerName();
+		if (playerName == null || playerName.isEmpty() || "default".equals(playerName))
+		{
+			return;
+		}
+		try
+		{
+			progressStore.saveBankCache(playerName, suffix, cache);
+		}
+		catch (IOException e)
+		{
+			log.debug("Failed to save {} cache for {}", suffix, playerName, e);
+		}
+	}
+
+	private void maybeExportLiveLocation()
+	{
+		if (!config.shareLocation())
+		{
+			return;
+		}
+		String folder = config.sharedFolderPath();
+		if (folder == null || folder.trim().isEmpty())
+		{
+			return;
+		}
+		Path dir = Paths.get(folder.trim());
+		if (!Files.isDirectory(dir))
+		{
+			return;
+		}
+		PlayerProgress progress = tracker.getProgress();
+		if (progress == null)
+		{
+			return;
+		}
+		String playerName = progress.getPlayerName();
+		if (playerName == null || playerName.isEmpty())
+		{
+			return;
+		}
+		Player local = client.getLocalPlayer();
+		if (local == null)
+		{
+			return;
+		}
+		WorldPoint wp = local.getWorldLocation();
+		progress.setLiveLocation(new Location(wp.getX(), wp.getY(), wp.getPlane()));
+		progress.setLiveLocationUpdated(java.time.Instant.now().toString());
+
+		String fname = PluginPaths.sanitizeForFilename(playerName) + "_progress.json";
+		try
+		{
+			progressStore.exportTo(progress, dir.resolve(fname));
+		}
+		catch (IOException e)
+		{
+			log.debug("Failed to export live location", e);
+		}
+	}
+
+	private void clearLiveLocation()
+	{
+		String folder = config.sharedFolderPath();
+		if (folder == null || folder.trim().isEmpty())
+		{
+			return;
+		}
+		Path dir = Paths.get(folder.trim());
+		if (!Files.isDirectory(dir))
+		{
+			return;
+		}
+		PlayerProgress progress = tracker.getProgress();
+		if (progress == null)
+		{
+			return;
+		}
+		String playerName = progress.getPlayerName();
+		if (playerName == null || playerName.isEmpty())
+		{
+			return;
+		}
+		progress.setLiveLocation(null);
+		progress.setLiveLocationUpdated(null);
+
+		String fname = PluginPaths.sanitizeForFilename(playerName) + "_progress.json";
+		try
+		{
+			progressStore.exportTo(progress, dir.resolve(fname));
+		}
+		catch (IOException e)
+		{
+			log.debug("Failed to clear live location from shared folder", e);
+		}
+	}
+
+	private String loadNotes()
+	{
+		String playerName = tracker.getPlayerName();
+		if (playerName == null || playerName.isEmpty() || "default".equals(playerName))
+		{
+			return "";
+		}
+		try
+		{
+			Path f = PluginPaths.notesFile(playerName);
+			if (Files.exists(f))
+			{
+				return new String(Files.readAllBytes(f), StandardCharsets.UTF_8);
+			}
+		}
+		catch (IOException e)
+		{
+			log.debug("Could not load notes for {}", playerName, e);
+		}
+		return "";
+	}
+
+	private void saveNotes(String text)
+	{
+		String playerName = tracker.getPlayerName();
+		if (playerName == null || playerName.isEmpty() || "default".equals(playerName))
+		{
+			return;
+		}
+		try
+		{
+			Path f = PluginPaths.notesFile(playerName);
+			Files.write(f, text.getBytes(StandardCharsets.UTF_8));
+		}
+		catch (IOException e)
+		{
+			log.debug("Could not save notes for {}", playerName, e);
+		}
+	}
+
+	private String getStatus()
+	{
+		PlayerProgress progress = tracker.getProgress();
+		return progress != null ? progress.getStatus() : null;
+	}
+
+	private void setAndExportStatus(String status)
+	{
+		PlayerProgress progress = tracker.getProgress();
+		if (progress == null)
+		{
+			return;
+		}
+		progress.setStatus(status == null || status.isEmpty() ? null : status);
+		tracker.persist();
+
+		String folder = config.sharedFolderPath();
+		if (folder == null || folder.trim().isEmpty())
+		{
+			return;
+		}
+		Path dir = Paths.get(folder.trim());
+		if (!Files.isDirectory(dir))
+		{
+			return;
+		}
+		String playerName = progress.getPlayerName();
+		if (playerName == null || playerName.isEmpty())
+		{
+			return;
+		}
+		String fname = PluginPaths.sanitizeForFilename(playerName) + "_progress.json";
+		try
+		{
+			progressStore.exportTo(progress, dir.resolve(fname));
+		}
+		catch (IOException e)
+		{
+			log.debug("Failed to export status to shared folder", e);
+		}
+	}
+
+	private BufferedImage buildStepMapIcon()
+	{
+		try
+		{
+			BufferedImage raw = ImageUtil.loadImageResource(GIMProgressTrackerPlugin.class, "/step-marker.png");
+			if (raw != null)
+			{
+				return scaleMapImage(raw, STEP_ICON_SIZE);
+			}
+		}
+		catch (Exception ignored)
+		{
+		}
+		return buildFallbackMapIcon(config.highlightColor(), STEP_ICON_SIZE);
+	}
+
+	private BufferedImage buildTeammateMapIcon()
+	{
+		try
+		{
+			BufferedImage raw = ImageUtil.loadImageResource(GIMProgressTrackerPlugin.class, "/group-member.png");
+			if (raw != null)
+			{
+				return scaleMapImage(raw, TEAMMATE_ICON_SIZE);
+			}
+		}
+		catch (Exception ignored)
+		{
+		}
+		return buildFallbackMapIcon(new Color(60, 140, 230), TEAMMATE_ICON_SIZE);
+	}
+
+	private static BufferedImage scaleMapImage(BufferedImage src, int size)
+	{
+		BufferedImage scaled = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = scaled.createGraphics();
+		try
+		{
+			g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g.drawImage(src, 0, 0, size, size, null);
+		}
+		finally
+		{
+			g.dispose();
+		}
+		return scaled;
+	}
+
+	private static BufferedImage buildFallbackMapIcon(Color base, int size)
+	{
 		BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = img.createGraphics();
 		try
@@ -792,8 +1130,8 @@ public class GIMProgressTrackerPlugin extends Plugin
 			g.setColor(Color.BLACK);
 			g.drawOval(2, 2, size - 5, size - 5);
 			g.setColor(Color.WHITE);
-			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 10));
-			g.drawString("!", size / 2 - 2, size / 2 + 4);
+			g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, size / 2));
+			g.drawString("!", size / 2 - size / 9, size / 2 + size / 4);
 		}
 		finally
 		{

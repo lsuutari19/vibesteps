@@ -1,11 +1,13 @@
 package com.gimprogresstracker.ui;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import javax.swing.ImageIcon;
 import net.runelite.client.util.ImageUtil;
 
 public final class PanelIcons
@@ -18,15 +20,46 @@ public final class PanelIcons
 
 	public static BufferedImage navIcon(Class<?> anchor)
 	{
-		return loadOrGenerate(anchor, "/com/gimprogresstracker/icon.png", "VS", new Color(0, 122, 204));
+		return loadOrGenerate(anchor, "/icon.png", "VS", new Color(0, 122, 204));
 	}
 
 	public static BufferedImage teammatesIcon()
 	{
-		// Anchor on this class so the resource lookup works whether or not the
-		// caller is in the same package as the PNG.
-		return loadOrGenerate(PanelIcons.class, "/com/gimprogresstracker/teammates-icon.png",
+		return loadOrGenerate(PanelIcons.class, "/tm-icon.png",
 			"GRP", new Color(30, 80, 160));
+	}
+
+	public static ImageIcon githubIcon(int size)
+	{
+		BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = img.createGraphics();
+		try
+		{
+			g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+			// Dark circle background
+			g.setColor(new Color(36, 41, 47));
+			g.fillOval(0, 0, size, size);
+
+			// Outer ring
+			g.setColor(new Color(200, 200, 200));
+			g.setStroke(new BasicStroke(size / 10f));
+			g.drawOval(size / 10, size / 10, size - size / 5, size - size / 5);
+
+			// Simple "head" shape (circle on top)
+			int headR = size / 5;
+			g.setColor(new Color(200, 200, 200));
+			g.fillOval(size / 2 - headR / 2, size / 5, headR, headR);
+
+			// Body arc (lower half)
+			g.setStroke(new BasicStroke(size / 9f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+			g.drawArc(size / 4, size / 3, size / 2, size / 2, 0, -180);
+		}
+		finally
+		{
+			g.dispose();
+		}
+		return new ImageIcon(img);
 	}
 
 	private static BufferedImage loadOrGenerate(Class<?> anchor, String resourcePath, String fallbackText, Color fallbackColor)

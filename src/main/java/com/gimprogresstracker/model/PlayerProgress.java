@@ -21,6 +21,14 @@ public class PlayerProgress
 	private String currentStepDescription;
 	private Location currentStepLocation;
 
+	// Live location — written periodically when the player has location sharing enabled.
+	// Null when sharing is off or the player is not logged in.
+	private Location liveLocation;
+	private String liveLocationUpdated;
+
+	// Optional short status message set by the player and visible to teammates.
+	private String status;
+
 	public Set<Integer> getCompletedStepIds()
 	{
 		if (completedStepIds == null)
