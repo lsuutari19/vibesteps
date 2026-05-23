@@ -140,6 +140,11 @@ automatically on startup.
 Guides are JSON files. You can write one by hand, convert an existing
 BRUHsailer guide (see below), or start from the minimal example above.
 
+## Contributing
+
+Create a fork of this repository, put your guide into the `guides/` directory and create a PR.
+If you want to create a new feature just do it as you normally would in git and create a PR.
+
 ### Structure
 
 ```
