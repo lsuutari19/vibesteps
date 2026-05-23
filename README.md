@@ -1,7 +1,9 @@
-# Vibe Steps Progress Tracker
+
 
 <!--START_SECTION:buy-me-a-coffee-->
 <!--END_SECTION:buy-me-a-coffe-->
+# Vibe Steps Progress Tracker
+
 
 A RuneLite plugin for following shared step-by-step progression guides.
 Works for any account type — Group Ironman, regular accounts, or any group
